@@ -4,6 +4,8 @@ $host = 'localhost';
 $dbname = 'root';
 $username = 'root';
 $password = '3435';
+=======
+
 
 // Initialize variables
 $errors = [];
@@ -234,7 +236,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <!-- Signup Form -->
                     <form method="POST" action="" class="form-container">
                         <!-- Name Field -->
+<<<<<<< HEAD
                         <div class="flex max-w-full flex-wrap items-end gap-4 px-4 py-3">
+=======
+                        <!-- <div class="flex max-w-full flex-wrap items-end gap-4 px-4 py-3">
+>>>>>>> a50bbbf (changed html to php and created header and made cart and about code proper)
                             <label class="flex flex-col min-w-40 flex-1">
                                 <p class="text-[#121416] text-base font-medium leading-normal pb-2">Name *</p>
                                 <input
@@ -246,10 +252,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     required
                                 />
                             </label>
+<<<<<<< HEAD
                         </div>
                         
                         <!-- Email Field -->
                         <div class="flex max-w-full flex-wrap items-end gap-4 px-4 py-3">
+=======
+                        </div> -->
+                        
+                        <!-- Email Field -->
+                        <!-- <div class="flex max-w-full flex-wrap items-end gap-4 px-4 py-3">
+>>>>>>> a50bbbf (changed html to php and created header and made cart and about code proper)
                             <label class="flex flex-col min-w-40 flex-1">
                                 <p class="text-[#121416] text-base font-medium leading-normal pb-2">Email *</p>
                                 <input
@@ -261,7 +274,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     required
                                 />
                             </label>
+<<<<<<< HEAD
                         </div>
+=======
+                        </div> -->
+>>>>>>> a50bbbf (changed html to php and created header and made cart and about code proper)
                         
                         <!-- Mobile Field -->
                         <div class="flex max-w-full flex-wrap items-end gap-4 px-4 py-3">
