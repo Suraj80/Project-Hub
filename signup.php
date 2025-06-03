@@ -4,7 +4,6 @@ $host = 'localhost';
 $dbname = 'root';
 $username = 'root';
 $password = '3435';
-=======
 
 
 // Initialize variables
