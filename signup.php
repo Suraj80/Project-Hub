@@ -1,10 +1,9 @@
 <?php
 // Database configuration
 $host = 'localhost';
-$dbname = 'root';
-$username = 'root';
-$password = '3435';
-
+$dbname = 'project_hub';
+$username = 'suraj';
+$password = 'Suraj@123';
 
 // Initialize variables
 $errors = [];
@@ -13,24 +12,12 @@ $success_message = '';
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get form data and sanitize
-    $name = trim($_POST['name'] ?? '');
-    $email = trim($_POST['email'] ?? '');
     $mobile = trim($_POST['mobile'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
     $terms_agreed = isset($_POST['terms_agreed']);
 
     // Validation
-    if (empty($name)) {
-        $errors[] = "Name is required.";
-    }
-
-    if (empty($email)) {
-        $errors[] = "Email is required.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "Please enter a valid email address.";
-    }
-
     if (empty($mobile)) {
         $errors[] = "Mobile number is required.";
     } elseif (!preg_match('/^[0-9]{10}$/', $mobile)) {
@@ -58,19 +45,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            // Check if email already exists
-            $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
-            $stmt->execute([$email]);
+            // Check if mobile already exists
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE number = ?");
+            $stmt->execute([$mobile]);
             
             if ($stmt->rowCount() > 0) {
-                $errors[] = "An account with this email already exists.";
+                $errors[] = "An account with this mobile number already exists.";
             } else {
                 // Hash the password
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                 
                 // Insert user into database
-                $stmt = $pdo->prepare("INSERT INTO users (name, email, mobile, password, created_at) VALUES (?, ?, ?, ?, NOW())");
-                $stmt->execute([$name, $email, $mobile, $hashed_password]);
+                $stmt = $pdo->prepare("INSERT INTO users (number, password, created_at) VALUES (?, ?, NOW())");
+                $stmt->execute([$mobile, $hashed_password]);
                 
                 $success_message = "Account created successfully! You can now login.";
                 
@@ -96,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       onload="this.rel='stylesheet'"
       href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Space+Grotesk%3Awght%40400%3B500%3B700"
     />
-    <title>Stitch Design - Sign Up</title>
+    <title>CodeCraft - Sign Up</title>
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     
@@ -124,22 +111,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 display: none;
             }
             
-            .mobile-menu {
+            .mobile-menu-button {
                 display: block;
             }
             
-            .form-container {
-                padding: 1rem;
+            .mobile-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                border-top: 1px solid #f1f2f4;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                z-index: 50;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease-in-out;
             }
             
-            .text-\[28px\] {
-                font-size: 24px;
+            .mobile-menu.show {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .form-container {
+                padding: 0.5rem;
+            }
+            
+            .text-\[24px\] {
+                font-size: 20px;
+            }
+            
+            .compact-input {
+                height: 2.75rem !important;
+                padding: 0.5rem !important;
+            }
+            
+            .compact-spacing {
+                padding-top: 0.375rem;
+                padding-bottom: 0.375rem;
             }
         }
         
         @media (min-width: 769px) {
+            .mobile-menu-button {
+                display: none;
+            }
+            
             .mobile-menu {
                 display: none;
+            }
+            
+            .compact-input {
+                height: 3rem;
+                padding: 0.75rem;
+            }
+            
+            .compact-spacing {
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
             }
         }
         
@@ -148,24 +180,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #fee2e2;
             border: 1px solid #fecaca;
             color: #dc2626;
-            padding: 0.75rem;
+            padding: 0.5rem;
             border-radius: 0.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
         }
         
         .success-message {
             background-color: #dcfce7;
             border: 1px solid #bbf7d0;
             color: #16a34a;
-            padding: 0.75rem;
+            padding: 0.5rem;
             border-radius: 0.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
         }
         
         /* Form input focus improvements */
         .form-input:focus {
             border-color: #3b82f6 !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+        
+        /* Compact form styling */
+        .compact-form {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+        
+        .compact-label {
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .compact-field {
+            margin-bottom: 0.75rem;
+        }
+        
+        .compact-header {
+            margin-bottom: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Hamburger animation */
+        .hamburger {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger span {
+            display: block;
+            position: absolute;
+            height: 2px;
+            width: 100%;
+            background: #121416;
+            border-radius: 1px;
+            opacity: 1;
+            left: 0;
+            transform: rotate(0deg);
+            transition: all 0.3s ease;
+        }
+
+        .hamburger span:nth-child(1) {
+            top: 0px;
+        }
+
+        .hamburger span:nth-child(2) {
+            top: 8px;
+        }
+
+        .hamburger span:nth-child(3) {
+            top: 16px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            top: 8px;
+            transform: rotate(135deg);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+            left: -60px;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            top: 8px;
+            transform: rotate(-135deg);
         }
     </style>
 </head>
@@ -175,8 +279,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         <div class="layout-container flex h-full grow flex-col">
             <!-- Header -->
-            <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f1f2f4] px-4 md:px-10 py-3">
-                <div class="flex items-center gap-4 text-[#121416]">
+            <!-- <header class="relative flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f1f2f4] px-4 md:px-10 py-3">
+                <div class="flex items-center gap-3 text-[#121416]">
                     <div class="size-4">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor"></path>
@@ -184,40 +288,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </svg>
                     </div>
                     <h2 class="text-[#121416] text-lg font-bold leading-tight tracking-[-0.015em]">CodeCraft</h2>
-                </div>
+                </div> -->
                 
                 <!-- Desktop Navigation -->
-                <div class="header-nav flex flex-1 justify-end gap-8">
-                    <div class="flex items-center gap-9">
-                        <a class="text-[#121416] text-sm font-medium leading-normal" href="#">Home</a>
-                        <a class="text-[#121416] text-sm font-medium leading-normal" href="#">Projects</a>
-                        <a class="text-[#121416] text-sm font-medium leading-normal" href="#">About Us</a>
-                        <a class="text-[#121416] text-sm font-medium leading-normal" href="#">Contact</a>
+                <!-- <div class="header-nav flex flex-1 justify-end gap-6">
+                    <div class="flex items-center gap-6">
+                        <a class="text-[#121416] text-sm font-medium leading-normal hover:text-[#3b82f6] transition-colors" href="#">Home</a>
+                        <a class="text-[#121416] text-sm font-medium leading-normal hover:text-[#3b82f6] transition-colors" href="#">Projects</a>
+                        <a class="text-[#121416] text-sm font-medium leading-normal hover:text-[#3b82f6] transition-colors" href="#">About Us</a>
+                        <a class="text-[#121416] text-sm font-medium leading-normal hover:text-[#3b82f6] transition-colors" href="#">Contact</a>
                     </div>
-                    <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em]">
+                    <button class="flex min-w-[70px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-3 bg-[#f1f2f4] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#dde0e3] transition-colors">
                         <span class="truncate">Login</span>
                     </button>
-                </div>
+                </div> -->
                 
                 <!-- Mobile Menu Button -->
-                <div class="mobile-menu">
-                    <button class="text-[#121416] p-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-                </div>
-            </header>
+                <!-- <div class="mobile-menu-button">
+                    <div class="hamburger" id="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div> -->
 
+                <!-- Mobile Menu -->
+                <!-- <div class="mobile-menu" id="mobile-menu">
+                    <nav class="flex flex-col py-4">
+                        <a class="text-[#121416] text-sm font-medium leading-normal px-6 py-3 hover:bg-[#f8f9fa] transition-colors" href="#">Home</a>
+                        <a class="text-[#121416] text-sm font-medium leading-normal px-6 py-3 hover:bg-[#f8f9fa] transition-colors" href="#">Projects</a>
+                        <a class="text-[#121416] text-sm font-medium leading-normal px-6 py-3 hover:bg-[#f8f9fa] transition-colors" href="#">About Us</a>
+                        <a class="text-[#121416] text-sm font-medium leading-normal px-6 py-3 hover:bg-[#f8f9fa] transition-colors" href="#">Contact</a>
+                        <div class="px-6 py-3">
+                            <button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#dde0e3] transition-colors">
+                                <span class="truncate">Login</span>
+                            </button>
+                        </div>
+                    </nav>
+                </div>
+            </header> -->
+
+             <?php  include 'header.php'; ?>
             <!-- Main Content -->
-            <div class="px-4 md:px-40 flex flex-1 justify-center py-5">
-                <div class="layout-content-container flex flex-col w-full max-w-[512px] py-5 flex-1">
-                    <h2 class="text-[#121416] tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-3 pt-5">Create your account</h2>
+            <div class="px-4 md:px-20 flex flex-1 justify-center py-2">
+                <div class="layout-content-container flex flex-col w-full max-w-[420px] py-2 flex-1">
+                    <h2 class="text-[#121416] tracking-light text-[24px] font-bold leading-tight text-center compact-header">Create your account</h2>
                     
                     <!-- Error Messages -->
                     <?php if (!empty($errors)): ?>
-                        <div class="error-message mx-4">
-                            <ul class="list-disc list-inside">
+                        <div class="error-message">
+                            <ul class="list-disc list-inside text-sm">
                                 <?php foreach ($errors as $error): ?>
                                     <li><?php echo htmlspecialchars($error); ?></li>
                                 <?php endforeach; ?>
@@ -227,68 +347,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     <!-- Success Message -->
                     <?php if ($success_message): ?>
-                        <div class="success-message mx-4">
+                        <div class="success-message">
                             <?php echo htmlspecialchars($success_message); ?>
                         </div>
                     <?php endif; ?>
                     
                     <!-- Signup Form -->
-                    <form method="POST" action="" class="form-container">
-                        <!-- Name Field -->
-<<<<<<< HEAD
-                        <div class="flex max-w-full flex-wrap items-end gap-4 px-4 py-3">
-=======
-                        <!-- <div class="flex max-w-full flex-wrap items-end gap-4 px-4 py-3">
->>>>>>> a50bbbf (changed html to php and created header and made cart and about code proper)
-                            <label class="flex flex-col min-w-40 flex-1">
-                                <p class="text-[#121416] text-base font-medium leading-normal pb-2">Name *</p>
-                                <input
-                                    name="name"
-                                    type="text"
-                                    placeholder="Enter your name"
-                                    value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>"
-                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white h-14 placeholder:text-[#6a7581] p-[15px] text-base font-normal leading-normal"
-                                    required
-                                />
-                            </label>
-<<<<<<< HEAD
-                        </div>
-                        
-                        <!-- Email Field -->
-                        <div class="flex max-w-full flex-wrap items-end gap-4 px-4 py-3">
-=======
-                        </div> -->
-                        
-                        <!-- Email Field -->
-                        <!-- <div class="flex max-w-full flex-wrap items-end gap-4 px-4 py-3">
->>>>>>> a50bbbf (changed html to php and created header and made cart and about code proper)
-                            <label class="flex flex-col min-w-40 flex-1">
-                                <p class="text-[#121416] text-base font-medium leading-normal pb-2">Email *</p>
-                                <input
-                                    name="email"
-                                    type="email"
-                                    placeholder="Enter your email"
-                                    value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
-                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white h-14 placeholder:text-[#6a7581] p-[15px] text-base font-normal leading-normal"
-                                    required
-                                />
-                            </label>
-<<<<<<< HEAD
-                        </div>
-=======
-                        </div> -->
->>>>>>> a50bbbf (changed html to php and created header and made cart and about code proper)
-                        
+                    <form method="POST" action="" class="form-container compact-form">
                         <!-- Mobile Field -->
-                        <div class="flex max-w-full flex-wrap items-end gap-4 px-4 py-3">
-                            <label class="flex flex-col min-w-40 flex-1">
-                                <p class="text-[#121416] text-base font-medium leading-normal pb-2">Mobile Number *</p>
+                        <div class="compact-field px-2">
+                            <label class="flex flex-col">
+                                <p class="text-[#121416] compact-label">Mobile Number *</p>
                                 <input
                                     name="mobile"
                                     type="tel"
                                     placeholder="Enter your mobile number"
-                                    value="<?php echo htmlspecialchars($_POST['mobile'] ?? ''); ?>"
-                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white h-14 placeholder:text-[#6a7581] p-[15px] text-base font-normal leading-normal"
+                                    class="form-input compact-input flex w-full resize-none overflow-hidden rounded-lg text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white placeholder:text-[#6a7581] text-sm font-normal leading-normal"
                                     pattern="[0-9]{10}"
                                     title="Please enter a valid 10-digit mobile number"
                                     required
@@ -297,14 +371,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         
                         <!-- Password Field -->
-                        <div class="flex max-w-full flex-wrap items-end gap-4 px-4 py-3">
-                            <label class="flex flex-col min-w-40 flex-1">
-                                <p class="text-[#121416] text-base font-medium leading-normal pb-2">Password *</p>
+                        <div class="compact-field px-2">
+                            <label class="flex flex-col">
+                                <p class="text-[#121416] compact-label">Password *</p>
                                 <input
                                     name="password"
                                     type="password"
                                     placeholder="Enter your password"
-                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white h-14 placeholder:text-[#6a7581] p-[15px] text-base font-normal leading-normal"
+                                    class="form-input compact-input flex w-full resize-none overflow-hidden rounded-lg text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white placeholder:text-[#6a7581] text-sm font-normal leading-normal"
                                     minlength="6"
                                     required
                                 />
@@ -312,44 +386,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         
                         <!-- Confirm Password Field -->
-                        <div class="flex max-w-full flex-wrap items-end gap-4 px-4 py-3">
-                            <label class="flex flex-col min-w-40 flex-1">
-                                <p class="text-[#121416] text-base font-medium leading-normal pb-2">Confirm Password *</p>
+                        <div class="compact-field px-2">
+                            <label class="flex flex-col">
+                                <p class="text-[#121416] compact-label">Confirm Password *</p>
                                 <input
                                     name="confirm_password"
                                     type="password"
                                     placeholder="Confirm your password"
-                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white h-14 placeholder:text-[#6a7581] p-[15px] text-base font-normal leading-normal"
+                                    class="form-input compact-input flex w-full resize-none overflow-hidden rounded-lg text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white placeholder:text-[#6a7581] text-sm font-normal leading-normal"
                                     required
                                 />
                             </label>
                         </div>
                         
                         <!-- Terms Checkbox -->
-                        <div class="px-4">
-                            <label class="flex gap-x-3 py-3 flex-row">
+                        <div class="px-2 compact-field">
+                            <label class="flex gap-x-3 items-start">
                                 <input
                                     name="terms_agreed"
                                     type="checkbox"
-                                    class="h-5 w-5 rounded border-[#dde0e3] border-2 bg-transparent text-[#dce7f3] checked:bg-[#dce7f3] checked:border-[#dce7f3] checked:bg-[image:--checkbox-tick-svg] focus:ring-0 focus:ring-offset-0 focus:border-[#dde0e3] focus:outline-none"
+                                    class="h-4 w-4 mt-0.5 rounded border-[#dde0e3] border-2 bg-transparent text-[#dce7f3] checked:bg-[#dce7f3] checked:border-[#dce7f3] checked:bg-[image:--checkbox-tick-svg] focus:ring-0 focus:ring-offset-0 focus:border-[#dde0e3] focus:outline-none"
                                     required
                                 />
-                                <p class="text-[#121416] text-base font-normal leading-normal">I agree to the Terms & Conditions *</p>
+                                <p class="text-[#121416] text-sm font-normal leading-normal">I agree to the <a style="color:blue;" href="term.html">Terms & Conditions</a></p>
                             </label>
                         </div>
                         
                         <!-- Submit Button -->
-                        <div class="flex px-4 py-3">
+                        <div class="px-2 py-2">
                             <button
                                 type="submit"
-                                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 flex-1 bg-[#dce7f3] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#c8ddf0] transition-colors"
+                                class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#dce7f3] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#c8ddf0] transition-colors"
                             >
                                 <span class="truncate">Sign Up</span>
                             </button>
                         </div>
                     </form>
                     
-                    <p class="text-[#6a7581] text-sm font-normal leading-normal pb-3 pt-1 px-4 text-center">
+                    <p class="text-[#6a7581] text-sm font-normal leading-normal px-2 text-center mt-2">
                         Already have an account? <a href="login.php" class="text-[#3b82f6] hover:underline">Login</a>
                     </p>
                 </div>
@@ -358,6 +432,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <script>
+        // // Mobile menu toggle functionality
+        // const hamburger = document.getElementById('hamburger');
+        // const mobileMenu = document.getElementById('mobile-menu');
+
+        // hamburger.addEventListener('click', function() {
+        //     hamburger.classList.toggle('active');
+        //     mobileMenu.classList.toggle('show');
+        // });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const isClickInsideNav = hamburger.contains(event.target) || mobileMenu.contains(event.target);
+            
+            if (!isClickInsideNav && mobileMenu.classList.contains('show')) {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('show');
+            }
+        });
+
+        // Close mobile menu when clicking on a link
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('show');
+            });
+        });
+
+        // Close mobile menu on window resize to desktop
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('show');
+            }
+        });
+
         // Basic form validation on client side
         document.querySelector('form').addEventListener('submit', function(e) {
             const password = document.querySelector('input[name="password"]').value;

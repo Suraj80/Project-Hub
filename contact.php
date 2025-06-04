@@ -16,7 +16,7 @@
   <body>
     <div class="relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden" style='font-family: "Space Grotesk", "Noto Sans", sans-serif;'>
       <div class="layout-container flex h-full grow flex-col">
-        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf4] px-10 py-3">
+        <!-- <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf4] px-10 py-3">
           <div class="flex items-center gap-4 text-[#0d141c]">
             <div class="size-4">
               <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -51,7 +51,11 @@
               </button>
             </div>
           </div>
-        </header>
+        </header> -->
+
+        <?php  include 'header.php'; ?>
+
+        
         <div class="px-40 flex flex-1 justify-center py-5">
           <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
             <div class="flex flex-wrap justify-between gap-3 p-4">
@@ -86,7 +90,7 @@
               This project delivers a sophisticated AI-powered chatbot designed to enhance customer support for businesses. The chatbot leverages natural language processing (NLP)
               and machine learning (ML) techniques to understand and respond to customer inquiries effectively. It can handle a wide range of questions, provide instant support,
               and improve customer satisfaction. The project includes a user-friendly interface for both customers and administrators, allowing for easy integration and
-              customization.
+              customizgitation.
             </p>
             <h2 class="text-[#0d141c] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Key Features</h2>
             <div class="flex items-center gap-4 bg-slate-50 px-4 min-h-14">
