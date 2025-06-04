@@ -1,8 +1,6 @@
 <?php
 session_start();
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -22,90 +20,92 @@ session_start();
 </head>
 <body>
     <div class="relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden" style='font-family: "Space Grotesk", "Noto Sans", sans-serif;'>
-        <div class="layout-container flex h-full grow flex-col">
-            <!-- Mobile-Responsive Header -->
-            <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf4] px-4 sm:px-6 lg:px-10 py-3">
-                <div class="flex items-center gap-4 text-[#0d141c]">
-                    <div class="size-4">
-                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor"></path>
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor"></path>
-                        </svg>
-                    </div>
-                    <h2 class="text-[#0d141c] text-lg font-bold leading-tight tracking-[-0.015em]">CodeCraft</h2>
-                </div>
-                
-                <!-- Desktop Navigation -->
-                <div class="hidden lg:flex flex-1 justify-end gap-8">
-                    <div class="flex items-center gap-9">
-                        <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors" href="#home">Home</a>
-                        <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors" href="#projects">Projects</a>
-                        <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors" href="#about">About</a>
-                        <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors" href="#contact">Contact</a>
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#0c7ff2] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#0a6fd1] transition-colors">
-                            <span class="truncate">Signup</span>
-                        </button>
-                        <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#e7edf4] text-[#0d141c] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#d1dce7] transition-colors">
-                            <span class="truncate">Login</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Mobile Menu Button -->
-                <button class="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-[#e7edf4] text-[#0d141c] hover:bg-[#d1dce7] transition-colors" id="mobile-menu-button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-                        <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path>
+        <!-- Fixed Header with backdrop blur for better visibility -->
+        <!-- <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7edf4] px-4 sm:px-6 lg:px-10 py-3 bg-white/95 backdrop-blur-sm shadow-sm">
+            <div class="flex items-center gap-4 text-[#0d141c]">
+                <div class="size-4">
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor"></path>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor"></path>
                     </svg>
-                </button>
-            </header>
+                </div>
+                <h2 class="text-[#0d141c] text-lg font-bold leading-tight tracking-[-0.015em]">CodeCraft</h2>
+            </div> -->
+            
+            <!-- Desktop Navigation -->
+            <!-- <div class="hidden lg:flex flex-1 justify-end gap-8">
+                <div class="flex items-center gap-9">
+                    <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors" href="index.php">Home</a>
+                    <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors" href="products.php">Projects</a>
+                    <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors" href="about.php">About</a>
+                    <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors" href="contact.php">Contact</a>
+                </div>
+                <div class="flex gap-2">
+                    <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#0c7ff2] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#0a6fd1] transition-colors">
+                        <span class="truncate">Signup</span>
+                    </button>
+                    <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#e7edf4] text-[#0d141c] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#d1dce7] transition-colors">
+                        <span class="truncate">Login</span>
+                    </button>
+                </div>
+            </div> -->
 
-            <!-- Mobile Navigation Menu -->
-            <div class="lg:hidden hidden bg-white border-b border-[#e7edf4] px-4 py-4" id="mobile-menu">
-                <div class="flex flex-col gap-4">
-                    <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors py-2" href="#home">Home</a>
-                    <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors py-2" href="#projects">Projects</a>
-                    <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors py-2" href="#about">About</a>
-                    <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors py-2" href="#contact">Contact</a>
-                    <div class="flex flex-col gap-2 pt-4 border-t border-[#e7edf4]">
-                        <button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#0c7ff2] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#0a6fd1] transition-colors">
-                            <span class="truncate">Signup</span>
-                        </button>
-                        <button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#e7edf4] text-[#0d141c] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#d1dce7] transition-colors">
-                            <span class="truncate">Login</span>
-                        </button>
+            <!-- Mobile Menu Button -->
+            <!-- <button class="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-[#e7edf4] text-[#0d141c] hover:bg-[#d1dce7] transition-colors" id="mobile-menu-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path>
+                </svg>
+            </button>
+        </header> -->
+
+        <!-- Mobile Navigation Menu - Also fixed -->
+        <!-- <div class="lg:hidden hidden fixed top-[73px] left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-b border-[#e7edf4] px-4 py-4 shadow-sm" id="mobile-menu">
+            <div class="flex flex-col gap-4">
+                <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors py-2" href="#home">Home</a>
+                <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors py-2" href="#projects">Projects</a>
+                <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors py-2" href="#about">About</a>
+                <a class="text-[#0d141c] text-sm font-medium leading-normal hover:text-[#0c7ff2] transition-colors py-2" href="#contact">Contact</a>
+                <div class="flex flex-col gap-2 pt-4 border-t border-[#e7edf4]">
+                    <button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#0c7ff2] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#0a6fd1] transition-colors">
+                        <span class="truncate">Signup</span>
+                    </button>
+                    <button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#e7edf4] text-[#0d141c] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#d1dce7] transition-colors">
+                        <span class="truncate">Login</span>
+                    </button>
+                </div>
+            </div>
+        </div> -->
+
+        
+        <?php include 'header2.php'; ?>
+
+        <!-- Main Content Container with top padding to account for fixed header -->
+        <div class="flex-1 pt-[73px]">
+            <!-- Hero Section -->
+            <div class="@container" id="home">
+                <div class="w-full">
+                    <div class="flex w-full min-h-[500px] sm:min-h-[550px] flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center p-4 sm:p-6 lg:p-8"
+                         style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("assets/images/background1.jpg");'>
+                        <div class="flex flex-col gap-2 text-center max-w-4xl">
+                            <h1 class="text-white text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black leading-tight tracking-[-0.033em]">
+                                Ready-to-Use Computer Science Projects
+                            </h1>
+                            <h2 class="text-white text-sm sm:text-base lg:text-lg font-normal leading-normal px-4">
+                                Get high-quality, affordable projects instantly. Perfect for students looking to enhance their skills and grades.
+                            </h2>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3 justify-center w-full max-w-md">
+                            <button class="flex min-w-[140px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 sm:h-12 px-4 sm:px-5 bg-[#0c7ff2] text-slate-50 text-sm sm:text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#0a6fd1] transition-colors">
+                                <span class="truncate">Browse Projects</span>
+                            </button>
+                            <button class="flex min-w-[140px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 sm:h-12 px-4 sm:px-5 bg-[#e7edf4] text-[#0d141c] text-sm sm:text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#d1dce7] transition-colors">
+                                <span class="truncate">Get Started</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Main Content -->
-            <div class="px-4 sm:px-6 lg:px-10 xl:px-20 2xl:px-40 flex flex-1 justify-center py-5">
-                <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-                    
-                    <!-- Hero Section -->
-                    <div class="@container" id="home">
-                        <div class="@[480px]:p-4">
-                            <div class="flex min-h-[400px] sm:min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-lg items-center justify-center p-4 sm:p-6 lg:p-8" style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuAKlGXF-AlBubm2gUL9mZtx89GvW_-LfOQ_Heb8cbY8DiAmSX3EZSaMxU9UFRsxHGsUa28LMJunqF-F-FqbwDxLkVSxEbvGXXCnEunq0pQyZZR6zqRoAJHTKTYq8Ip-xgZjQJ8aPKYOIQMJujD5sucMcagFdoB_6Y9ZxatVOLV_pzMPcmqxeAny_NVLRWD8iAzGB_jePSrKMRQImQCMqsXQb8BB6Frhun7PvEOAklxnVOlOibAnoBNUR6zRFqvxXQPPzDuagrN15iE");'>
-                                <div class="flex flex-col gap-2 text-center max-w-4xl">
-                                    <h1 class="text-white text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black leading-tight tracking-[-0.033em]">
-                                        Ready-to-Use Computer Science Projects
-                                    </h1>
-                                    <h2 class="text-white text-sm sm:text-base lg:text-lg font-normal leading-normal px-4">
-                                        Get high-quality, affordable projects instantly. Perfect for students looking to enhance their skills and grades.
-                                    </h2>
-                                </div>
-                                <div class="flex flex-col sm:flex-row gap-3 justify-center w-full max-w-md">
-                                    <button class="flex min-w-[140px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 sm:h-12 px-4 sm:px-5 bg-[#0c7ff2] text-slate-50 text-sm sm:text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#0a6fd1] transition-colors">
-                                        <span class="truncate">Browse Projects</span>
-                                    </button>
-                                    <button class="flex min-w-[140px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 sm:h-12 px-4 sm:px-5 bg-[#e7edf4] text-[#0d141c] text-sm sm:text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#d1dce7] transition-colors">
-                                        <span class="truncate">Get Started</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- About Section -->
                     <div class="flex flex-col gap-10 px-4 py-10 @container" id="about">
@@ -308,29 +308,7 @@ session_start();
                         </div>
                     </div>
 
-                    <!-- Newsletter Section -->
-                    <div class="flex flex-col gap-6 px-4 sm:px-6 py-8 sm:py-10 bg-[#0c7ff2] rounded-lg mx-4 my-10">
-                        <div class="flex flex-col gap-4 text-center">
-                            <h2 class="text-white text-xl sm:text-2xl font-bold leading-tight tracking-[-0.015em]">Stay Updated with CodeCraft</h2>
-                            <p class="text-white text-sm sm:text-base font-normal leading-normal max-w-[600px] mx-auto">
-                                Subscribe to our newsletter and be the first to know about new projects, special offers, and coding tips that will help you excel in your studies.
-                            </p>
-                        </div>
-                        <div class="flex flex-col sm:flex-row gap-3 max-w-[400px] mx-auto w-full">
-                            <input 
-                                type="email" 
-                                placeholder="Enter your email address" 
-                                class="flex-1 h-12 px-4 rounded-lg border border-white/20 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm sm:text-base"
-                                id="newsletter-email"
-                            />
-                            <button class="flex min-w-[120px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-white text-[#0c7ff2] text-sm sm:text-base font-bold leading-normal tracking-[0.015em] hover:bg-gray-100 transition-colors" id="subscribe-btn">
-                                <span class="truncate">Subscribe</span>
-                            </button>
-                        </div>
-                        <p class="text-white/80 text-xs sm:text-sm text-center">
-                            No spam, unsubscribe at any time. We respect your privacy.
-                        </p>
-                    </div>
+                    
 
                     <!-- Customer Testimonials -->
                     <h2 class="text-[#0d141c] text-xl sm:text-2xl font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">What Our Customers Say</h2>
@@ -370,6 +348,8 @@ session_start();
                                     </svg>
                                 </div>
                             </div>
+
+                            
                             <p class="text-[#0d141c] text-sm sm:text-base font-normal leading-normal">
                                 "CodeCraft's projects are a lifesaver! The quality is excellent, and they've helped me understand complex concepts better. The documentation is thorough and the code is clean and well-commented."
                             </p>
@@ -453,6 +433,30 @@ session_start();
                     </div>
                 </div>
             </div>
+
+            <!-- Newsletter Section -->
+                    <div class="flex flex-col gap-6 px-4 sm:px-6 py-8 sm:py-10 bg-[#0c7ff2] rounded-lg mx-4 my-10">
+                        <div class="flex flex-col gap-4 text-center">
+                            <h2 class="text-white text-xl sm:text-2xl font-bold leading-tight tracking-[-0.015em]">Stay Updated with CodeCraft</h2>
+                            <p class="text-white text-sm sm:text-base font-normal leading-normal max-w-[600px] mx-auto">
+                                Subscribe to our newsletter and be the first to know about new projects, special offers, and coding tips that will help you excel in your studies.
+                            </p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3 max-w-[600px] mx-auto w-full">
+                            <input 
+                                type="email" 
+                                placeholder="Enter your email address" 
+                                class="flex-1 h-12 px-4 rounded-lg border border-white/20 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm sm:text-base"
+                                id="newsletter-email"
+                            />
+                            <button class="flex min-w-[120px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-white text-[#0c7ff2] text-sm sm:text-base font-bold leading-normal tracking-[0.015em] hover:bg-gray-100 transition-colors" id="subscribe-btn">
+                                <span class="truncate">Subscribe</span>
+                            </button>
+                        </div>
+                        <p class="text-white/80 text-xs sm:text-sm text-center">
+                            No spam, unsubscribe at any time. We respect your privacy.
+                        </p>
+                    </div>
 
             <!-- Enhanced Footer -->
             <footer class="bg-[#0d141c] text-white">
@@ -580,21 +584,21 @@ session_start();
 
     <!-- Enhanced JavaScript -->
     <script>
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
+        // // Mobile menu toggle
+        // const mobileMenuButton = document.getElementById('mobile-menu-button');
+        // const mobileMenu = document.getElementById('mobile-menu');
 
-        mobileMenuButton.addEventListener('click', function() {
-            mobileMenu.classList.toggle('hidden');
-        });
+        // mobileMenuButton.addEventListener('click', function() {
+        //     mobileMenu.classList.toggle('hidden');
+        // });
 
-        // Close mobile menu when clicking on links
-        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                mobileMenu.classList.add('hidden');
-            });
-        });
+        // // Close mobile menu when clicking on links
+        // const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        // mobileMenuLinks.forEach(link => {
+        //     link.addEventListener('click', function() {
+        //         mobileMenu.classList.add('hidden');
+        //     });
+        // });
 
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -673,5 +677,38 @@ session_start();
             observer.observe(el);
         });
     </script>
+    <!-- <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking on links
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const headerHeight = 73; // Height of fixed header
+                    const targetPosition = target.offsetTop - headerHeight;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script> -->
 </body>
 </html>

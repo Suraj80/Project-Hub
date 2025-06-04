@@ -1,7 +1,8 @@
 <?php
+session_start();
 
-
-include 'header.php';
+// Database configuration
+include 'config.php';
 
 
 // Initialize variables

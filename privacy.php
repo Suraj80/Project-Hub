@@ -8,7 +8,7 @@
       href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Space+Grotesk%3Awght%40400%3B500%3B700"
     />
 
-    <title>Stitch Design</title>
+    <title>Privacy Policy - CodeCraft</title>
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -16,72 +16,153 @@
   <body>
     <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden" style='font-family: "Space Grotesk", "Noto Sans", sans-serif;'>
       <div class="layout-container flex h-full grow flex-col">
-        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f5] px-10 py-3">
-          <div class="flex items-center gap-4 text-[#111418]">
-            <div class="size-4">
-              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z"
-                  fill="currentColor"
-                ></path>
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z"
-                  fill="currentColor"
-                ></path>
-              </svg>
-            </div>
-            <h2 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em]">CodeCraft</h2>
-          </div>
-          <div class="flex flex-1 justify-end gap-8">
-            <div class="flex items-center gap-9">
-              <a class="text-[#111418] text-sm font-medium leading-normal" href="#">Projects</a>
-              <a class="text-[#111418] text-sm font-medium leading-normal" href="#">Tutorials</a>
-              <a class="text-[#111418] text-sm font-medium leading-normal" href="#">Community</a>
-              <a class="text-[#111418] text-sm font-medium leading-normal" href="#">About</a>
-            </div>
-            <button
-              class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#f0f2f5] text-[#111418] text-sm font-bold leading-normal tracking-[0.015em]"
-            >
-              <span class="truncate">Sign in</span>
-            </button>
-          </div>
-        </header>
-        <div class="px-40 flex flex-1 justify-center py-5">
+        <?php include 'header.php'; ?>
+
+
+        <div class="px-4 sm:px-10 lg:px-40 flex flex-1 justify-center py-5">
           <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <div class="flex flex-wrap justify-between gap-3 p-4"><p class="text-[#111418] tracking-light text-[32px] font-bold leading-tight min-w-72">Privacy Policy</p></div>
-            <h3 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">What Data We Collect</h3>
+            <div class="flex flex-wrap justify-between gap-3 p-4">
+              <h1 class="text-[#111418] tracking-light text-[32px] font-bold leading-tight min-w-72">Privacy Policy</h1>
+            </div>
+            
+            <div class="px-4 pb-4">
+              <p class="text-[#60758a] text-base font-medium leading-normal mb-2"><strong>Effective Date:</strong> 15th June 2025</p>
+              <p class="text-[#60758a] text-base font-medium leading-normal mb-4"><strong>Last Updated:</strong> 5th June 2025 </p>
+              
+              <p class="text-[#111418] text-base font-normal leading-normal pb-4">
+                Welcome to <strong>Projecthub.com</strong> . We value your trust and are committed to protecting your privacy. This Privacy Policy describes how we collect, use, disclose, and safeguard your information when you visit our website <strong>Projecthub.com</strong>. Please read this policy carefully to understand our practices regarding your information.
+              </p>
+            </div>
+
+            <h2 class="text-[#111418] text-xl font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">1. Information We Collect</h2>
             <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
-              We collect information you provide directly to us, such as when you create an account, purchase a project, or contact us for support. This may include your name,
-              email address, payment information, and project preferences. We also collect data automatically, such as your IP address, browser type, and usage patterns on our
-              site, to improve our services and personalize your experience.
+              We collect the following types of information when you use our services:
             </p>
-            <h3 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">How We Use Your Information</h3>
+
+            <h3 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">a) Personal Information</h3>
             <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
-              We use the information we collect to provide, maintain, and improve our services, process transactions, communicate with you, and personalize your experience. This
-              includes sending you project updates, promotional materials, and responding to your inquiries. We may also use your data for analytics and research purposes to
-              understand user behavior and optimize our platform.
+              When you register, place an order, or contact us, we may collect:
             </p>
-            <h3 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Your Rights</h3>
+            <ul class="text-[#111418] text-base font-normal leading-normal pb-3 px-4 ml-4">
+              <li>• Full Name</li>
+              <li>• Email Address</li>
+              <li>• Phone Number</li>
+              <li>• College/University Name (if provided)</li>
+              <li>• Billing and Payment Information</li>
+              <li>• IP Address and Browser Information</li>
+            </ul>
+
+            <h3 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">b) Non-Personal Information</h3>
+            <ul class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4 ml-4">
+              <li>• Device type and operating system</li>
+              <li>• Pages visited, time spent, and referring site</li>
+              <li>• Cookies and similar tracking technologies (see Section 6)</li>
+            </ul>
+
+            <h2 class="text-[#111418] text-xl font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">2. How We Use Your Information</h2>
             <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
-              You have the right to access, correct, or delete your personal information. You can manage your account settings or contact us directly to exercise these rights. We
-              will respond to your requests within a reasonable timeframe. You also have the right to opt-out of receiving promotional communications from us at any time.
+              We use your data to:
             </p>
+            <ul class="text-[#111418] text-base font-normal leading-normal pb-3 px-4 ml-4">
+              <li>• Process and deliver your orders</li>
+              <li>• Communicate with you regarding your queries, orders, or support</li>
+              <li>• Improve our website and services</li>
+              <li>• Send you updates, offers, or marketing emails (you can opt-out anytime)</li>
+              <li>• Comply with applicable laws and regulations</li>
+            </ul>
+
+            <h2 class="text-[#111418] text-xl font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">3. Sharing of Information</h2>
+            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
+              We <strong>do not sell or rent</strong> your personal data to any third party. However, we may share your information with:
+            </p>
+            <ul class="text-[#111418] text-base font-normal leading-normal pb-3 px-4 ml-4">
+              <li>• <strong>Service Providers:</strong> For hosting, payment processing, or order fulfillment.</li>
+              <li>• <strong>Legal Authorities:</strong> If required by law, legal process, or governmental request.</li>
+              <li>• <strong>Business Transfers:</strong> In case of a merger, acquisition, or asset sale.</li>
+            </ul>
+
+            <h2 class="text-[#111418] text-xl font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">4. Data Security</h2>
+            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
+              We implement industry-standard security measures including:
+            </p>
+            <ul class="text-[#111418] text-base font-normal leading-normal pb-3 px-4 ml-4">
+              <li>• SSL encryption for secure transactions</li>
+              <li>• Secure servers and restricted access</li>
+              <li>• Regular malware and vulnerability scans</li>
+            </ul>
+            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
+              Despite our efforts, no method of transmission over the Internet is 100% secure. You use our services at your own risk.
+            </p>
+
+            <h2 class="text-[#111418] text-xl font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">5. Your Rights</h2>
+            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
+              You have the right to:
+            </p>
+            <ul class="text-[#111418] text-base font-normal leading-normal pb-3 px-4 ml-4">
+              <li>• Access, correct, or delete your personal data</li>
+              <li>• Opt-out of marketing communications</li>
+              <li>• Request data portability (if applicable under local laws)</li>
+            </ul>
+            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
+              To exercise any of these rights, contact us at <strong>Surajjangavali18@gmail.com</strong>.
+            </p>
+
+            <h2 class="text-[#111418] text-xl font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">6. Cookies Policy</h2>
+            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
+              We use cookies to:
+            </p>
+            <ul class="text-[#111418] text-base font-normal leading-normal pb-3 px-4 ml-4">
+              <li>• Remember your preferences</li>
+              <li>• Analyze traffic and usage</li>
+              <li>• Enhance your user experience</li>
+            </ul>
+            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
+              You can manage or disable cookies via your browser settings.
+            </p>
+
+            <h2 class="text-[#111418] text-xl font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">7. Children's Privacy</h2>
+            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
+              We do not knowingly collect data from individuals under the age of 13. If you are a parent or guardian and believe your child has provided us information, please contact us immediately.
+            </p>
+
+            <h2 class="text-[#111418] text-xl font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">8. Third-Party Links</h2>
+            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
+              Our site may contain links to other websites. We are not responsible for the privacy practices or content of these sites. Please review their privacy policies before using them.
+            </p>
+
+            <h2 class="text-[#111418] text-xl font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">9. Compliance with Indian Laws</h2>
+            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
+              This website operates in accordance with:
+            </p>
+            <ul class="text-[#111418] text-base font-normal leading-normal pb-3 px-4 ml-4">
+              <li>• <strong>The Information Technology Act, 2000</strong></li>
+              <li>• <strong>Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011</strong></li>
+            </ul>
+            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
+              We comply with applicable laws and cooperate with law enforcement if legally required.
+            </p>
+
+            <h2 class="text-[#111418] text-xl font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">10. Policy Updates</h2>
+            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
+              We may update this Privacy Policy from time to time. Any changes will be posted on this page with a revised "Last Updated" date. Your continued use of the site after such updates means you accept the changes.
+            </p>
+
+            <h2 class="text-[#111418] text-xl font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">11. Contact Us</h2>
+            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
+              If you have any questions or concerns about this Privacy Policy, contact us at:
+            </p>
+            <div class="text-[#111418] text-base font-normal leading-normal pb-3 px-4 ml-4">
+              <p>📧 <strong>Email:</strong> Surajjangavali18@gmail.com</p>
+              <p>📞 <strong>Phone:</strong> +91 9353286885</p>
+              <!-- <p>📍 <strong>Address (if applicable):</strong> [optional]</p> -->
+            </div>
+
+            
+
+           
           </div>
         </div>
-        <footer class="flex justify-center">
-          <div class="flex max-w-[960px] flex-1 flex-col">
-            <footer class="flex flex-col gap-6 px-5 py-10 text-center @container">
-              <div class="flex flex-wrap items-center justify-center gap-6 @[480px]:flex-row @[480px]:justify-around">
-                <a class="text-[#60758a] text-base font-normal leading-normal min-w-40" href="#">Terms of Service</a>
-                <a class="text-[#60758a] text-base font-normal leading-normal min-w-40" href="#">Privacy Policy</a>
-                <a class="text-[#60758a] text-base font-normal leading-normal min-w-40" href="#">Contact Us</a>
-              </div>
-              <p class="text-[#60758a] text-base font-normal leading-normal">© 2023 CodeCraft. All rights reserved.</p>
-            </footer>
+        <?php include 'footer.php'; ?>
           </div>
         </footer>
       </div>
