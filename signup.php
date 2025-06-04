@@ -1,9 +1,8 @@
 <?php
-// Database configuration
-$host = 'localhost';
-$dbname = 'project_hub';
-$username = 'suraj';
-$password = 'Suraj@123';
+
+
+include 'header.php';
+
 
 // Initialize variables
 $errors = [];
