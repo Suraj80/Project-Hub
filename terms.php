@@ -8,107 +8,174 @@
       href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Space+Grotesk%3Awght%40400%3B500%3B700"
     />
 
-    <title>Stitch Design</title>
+    <title>Terms of Service - CodeCraft</title>
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
     <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden" style='font-family: "Space Grotesk", "Noto Sans", sans-serif;'>
       <div class="layout-container flex h-full grow flex-col">
-        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f5] px-10 py-3">
-          <div class="flex items-center gap-4 text-[#111418]">
-            <div class="size-4">
-              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z"
-                  fill="currentColor"
-                ></path>
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z"
-                  fill="currentColor"
-                ></path>
-              </svg>
+        
+        <?php include 'header.php'; ?>
+
+        
+        <!-- Mobile-first responsive container -->
+        <div class="px-3 sm:px-6 md:px-10 lg:px-40 flex flex-1 justify-center py-3 sm:py-5">
+          <div class="layout-content-container flex flex-col w-full max-w-[960px] flex-1">
+            <!-- Title Section - Responsive -->
+            <div class="flex flex-wrap justify-between gap-3 p-2 sm:p-4">
+              <h1 class="text-[#111418] tracking-light text-2xl sm:text-3xl lg:text-[32px] font-bold leading-tight min-w-0 w-full sm:min-w-72">Terms of Service</h1>
             </div>
-            <h2 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em]">CodeCraft</h2>
-          </div>
-          <div class="flex flex-1 justify-end gap-8">
-            <div class="flex items-center gap-9">
-              <a class="text-[#111418] text-sm font-medium leading-normal" href="#">Projects</a>
-              <a class="text-[#111418] text-sm font-medium leading-normal" href="#">Pricing</a>
-              <a class="text-[#111418] text-sm font-medium leading-normal" href="#">Reviews</a>
-              <a class="text-[#111418] text-sm font-medium leading-normal" href="#">About</a>
+            
+            <!-- Header Info - Mobile Optimized -->
+            <div class="px-2 sm:px-4 pb-3 sm:pb-4">
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-normal pb-2">
+                <strong>Effective Date:</strong> [Insert Date]
+              </p>
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-normal pb-3 sm:pb-4">
+                <strong>Last Updated:</strong> [Insert Date]
+              </p>
+              
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-4 sm:pb-6">
+                Welcome to <strong>[Your Website Name]</strong> ("we", "us", "our"). By accessing or using our website located at <strong>[www.yourwebsite.com]</strong> (the "Site"), you agree to be bound by the following Terms of Service. If you do not agree to these terms, you must not use our website or services.
+              </p>
             </div>
-            <div class="flex gap-2">
-              <button
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#0b79ee] text-white text-sm font-bold leading-normal tracking-[0.015em]"
-              >
-                <span class="truncate">Get started</span>
-              </button>
-              <button
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#f0f2f5] text-[#111418] text-sm font-bold leading-normal tracking-[0.015em]"
-              >
-                <span class="truncate">Log in</span>
-              </button>
+
+            <!-- Section 1 - Mobile Optimized -->
+            <div class="mb-4 sm:mb-6">
+              <h2 class="text-[#111418] text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em] px-2 sm:px-4 pb-2 pt-2 sm:pt-4">1. Eligibility</h2>
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-3 pt-1 px-2 sm:px-4">
+                You must be at least 18 years old or have the consent of a legal guardian to use this website. By using our services, you represent and warrant that you meet these requirements.
+              </p>
             </div>
-          </div>
-        </header>
-        <div class="px-40 flex flex-1 justify-center py-5">
-          <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <div class="flex flex-wrap justify-between gap-3 p-4">
-              <p class="text-[#111418] tracking-light text-[32px] font-bold leading-tight min-w-72">Terms and Conditions</p>
+
+            <!-- Section 2 - Mobile Optimized -->
+            <div class="mb-4 sm:mb-6">
+              <h2 class="text-[#111418] text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em] px-2 sm:px-4 pb-2 pt-2 sm:pt-4">2. Use of Our Services</h2>
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-2 pt-1 px-2 sm:px-4">
+                You agree to use the Site only for lawful purposes. You must not:
+              </p>
+              <ul class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-3 pt-1 px-2 sm:px-4 ml-2 sm:ml-4 space-y-1">
+                <li class="pb-1">• Use our content or products for resale, commercial distribution, or unethical academic practices (e.g., plagiarism).</li>
+                <li class="pb-1">• Submit any false or misleading information.</li>
+                <li class="pb-1">• Interfere with the site's operation or security.</li>
+              </ul>
             </div>
-            <h3 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Introduction</h3>
-            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
-              Welcome to CodeCraft! These Terms and Conditions govern your use of our website and services. By accessing or using our services, you agree to comply with these
-              terms. Please read them carefully.
-            </p>
-            <h3 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">User Responsibilities</h3>
-            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
-              You are responsible for maintaining the confidentiality of your account information and for all activities that occur under your account. You agree not to use our
-              services for any unlawful or prohibited purposes.
-            </p>
-            <h3 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Payment Terms</h3>
-            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
-              Payments for projects are due as specified in the project agreement. We accept various payment methods, including credit cards and online payment platforms. Late
-              payments may result in project delays or termination.
-            </p>
-            <h3 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Refund Policy</h3>
-            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
-              Refunds are subject to our refund policy, which is available on our website. Generally, refunds are considered on a case-by-case basis and may be issued under
-              specific circumstances, such as project non-delivery or significant deviations from the agreed specifications.
-            </p>
-            <h3 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Privacy Policy</h3>
-            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
-              Your privacy is important to us. Please refer to our Privacy Policy for details on how we collect, use, and protect your personal information.
-            </p>
-            <h3 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Modification of Terms</h3>
-            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
-              We reserve the right to modify these Terms and Conditions at any time. Changes will be effective immediately upon posting on our website. Your continued use of our
-              services after any modifications constitutes your acceptance of the revised terms.
-            </p>
-            <h3 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Contact Information</h3>
-            <p class="text-[#111418] text-base font-normal leading-normal pb-3 pt-1 px-4">
-              If you have any questions or concerns about these Terms and Conditions, please contact us at support@codecraft.com.
-            </p>
+
+            <!-- Section 3 - Mobile Optimized -->
+            <div class="mb-4 sm:mb-6">
+              <h2 class="text-[#111418] text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em] px-2 sm:px-4 pb-2 pt-2 sm:pt-4">3. Academic Responsibility</h2>
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-3 pt-1 px-2 sm:px-4">
+                Our projects are for <strong>educational and reference purposes only</strong>. It is your responsibility to ensure that your use of our materials complies with your university's academic integrity policies. We are not liable for any academic consequences.
+              </p>
+            </div>
+
+            <!-- Section 4 - Mobile Optimized -->
+            <div class="mb-4 sm:mb-6">
+              <h2 class="text-[#111418] text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em] px-2 sm:px-4 pb-2 pt-2 sm:pt-4">4. Purchases and Payments</h2>
+              <ul class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-3 pt-1 px-2 sm:px-4 ml-2 sm:ml-4 space-y-1">
+                <li class="pb-1">• All prices are listed in Indian Rupees (INR).</li>
+                <li class="pb-1">• Payments must be made in full before project delivery.</li>
+                <li class="pb-1">• We do not store any payment details on our servers.</li>
+                <li class="pb-1">• Once the digital project is delivered, <strong>no refunds</strong> will be issued (see Section 5).</li>
+              </ul>
+            </div>
+
+            <!-- Section 5 - Mobile Optimized -->
+            <div class="mb-4 sm:mb-6">
+              <h2 class="text-[#111418] text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em] px-2 sm:px-4 pb-2 pt-2 sm:pt-4">5. Refund Policy</h2>
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-3 pt-1 px-2 sm:px-4">
+                Due to the digital nature of our products, <strong>all sales are final</strong>. We only offer replacements in case of file corruption or incomplete delivery. Requests must be made within <strong>48 hours</strong> of purchase.
+              </p>
+            </div>
+
+            <!-- Section 6 - Mobile Optimized -->
+            <div class="mb-4 sm:mb-6">
+              <h2 class="text-[#111418] text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em] px-2 sm:px-4 pb-2 pt-2 sm:pt-4">6. Intellectual Property</h2>
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-3 pt-1 px-2 sm:px-4">
+                All content and materials on this site, including project files, images, logos, and text, are our intellectual property. You may not reproduce, copy, modify, or distribute them without written permission.
+              </p>
+            </div>
+
+            <!-- Section 7 - Mobile Optimized -->
+            <div class="mb-4 sm:mb-6">
+              <h2 class="text-[#111418] text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em] px-2 sm:px-4 pb-2 pt-2 sm:pt-4">7. Limitation of Liability</h2>
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-2 pt-1 px-2 sm:px-4">
+                We are not responsible for:
+              </p>
+              <ul class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-2 pt-1 px-2 sm:px-4 ml-2 sm:ml-4 space-y-1">
+                <li class="pb-1">• Any misuse of the project files.</li>
+                <li class="pb-1">• Academic penalties resulting from misuse.</li>
+                <li class="pb-1">• Technical issues or downtime of the website.</li>
+                <li class="pb-1">• Loss of data or business profits due to website use.</li>
+              </ul>
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-3 pt-1 px-2 sm:px-4">
+                Our liability is limited to the amount paid by the user for the specific product.
+              </p>
+            </div>
+
+            <!-- Section 8 - Mobile Optimized -->
+            <div class="mb-4 sm:mb-6">
+              <h2 class="text-[#111418] text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em] px-2 sm:px-4 pb-2 pt-2 sm:pt-4">8. Account Responsibilities</h2>
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-2 pt-1 px-2 sm:px-4">
+                If you create an account on our site:
+              </p>
+              <ul class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-3 pt-1 px-2 sm:px-4 ml-2 sm:ml-4 space-y-1">
+                <li class="pb-1">• You are responsible for maintaining the confidentiality of your account.</li>
+                <li class="pb-1">• You agree to notify us immediately if you suspect unauthorized use.</li>
+              </ul>
+            </div>
+
+            <!-- Section 9 - Mobile Optimized -->
+            <div class="mb-4 sm:mb-6">
+              <h2 class="text-[#111418] text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em] px-2 sm:px-4 pb-2 pt-2 sm:pt-4">9. Third-Party Links</h2>
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-3 pt-1 px-2 sm:px-4">
+                Our website may contain links to external websites. We are not responsible for their content, policies, or practices. You access such sites at your own risk.
+              </p>
+            </div>
+
+            <!-- Section 10 - Mobile Optimized -->
+            <div class="mb-4 sm:mb-6">
+              <h2 class="text-[#111418] text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em] px-2 sm:px-4 pb-2 pt-2 sm:pt-4">10. Privacy</h2>
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-3 pt-1 px-2 sm:px-4">
+                Your use of the website is also governed by our Privacy Policy. Please review it for information on how we collect, use, and safeguard your personal data.
+              </p>
+            </div>
+
+            <!-- Section 11 - Mobile Optimized -->
+            <div class="mb-4 sm:mb-6">
+              <h2 class="text-[#111418] text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em] px-2 sm:px-4 pb-2 pt-2 sm:pt-4">11. Changes to Terms</h2>
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-3 pt-1 px-2 sm:px-4">
+                We reserve the right to update or modify these Terms at any time. Changes will be posted on this page with an updated "Last Updated" date. Continued use of the site indicates acceptance of the updated terms.
+              </p>
+            </div>
+
+            <!-- Section 12 - Mobile Optimized -->
+            <div class="mb-4 sm:mb-6">
+              <h2 class="text-[#111418] text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em] px-2 sm:px-4 pb-2 pt-2 sm:pt-4">12. Governing Law</h2>
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-3 pt-1 px-2 sm:px-4">
+                These Terms shall be governed by and interpreted in accordance with the laws of <strong>India</strong>. Any disputes shall be subject to the jurisdiction of the courts of <strong>[Your City, e.g., Hubli, Karnataka]</strong>.
+              </p>
+            </div>
+
+            <!-- Section 13 - Mobile Optimized -->
+            <div class="mb-4 sm:mb-6">
+              <h2 class="text-[#111418] text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em] px-2 sm:px-4 pb-2 pt-2 sm:pt-4">13. Contact Us</h2>
+              <p class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-3 pt-1 px-2 sm:px-4">
+                If you have any questions about these Terms, please contact:
+              </p>
+              <div class="text-[#111418] text-sm sm:text-base font-normal leading-relaxed pb-3 pt-1 px-2 sm:px-4 ml-2 sm:ml-4 space-y-1">
+                <p class="pb-1">📧 <strong>Email:</strong> [your email]</p>
+                <p class="pb-1">📞 <strong>Phone:</strong> [your phone]</p>
+              </div>
+            </div>
           </div>
         </div>
-        <footer class="flex justify-center">
-          <div class="flex max-w-[960px] flex-1 flex-col">
-            <footer class="flex flex-col gap-6 px-5 py-10 text-center @container">
-              <div class="flex flex-wrap items-center justify-center gap-6 @[480px]:flex-row @[480px]:justify-around">
-                <a class="text-[#60758a] text-base font-normal leading-normal min-w-40" href="#">Terms of Service</a>
-                <a class="text-[#60758a] text-base font-normal leading-normal min-w-40" href="#">Privacy Policy</a>
-                <a class="text-[#60758a] text-base font-normal leading-normal min-w-40" href="#">Contact Us</a>
-              </div>
-              <p class="text-[#60758a] text-base font-normal leading-normal">© 2024 CodeCraft. All rights reserved.</p>
-            </footer>
-          </div>
-        </footer>
+        
+        <?php include 'footer.php'; ?>
+
       </div>
     </div>
   </body>

@@ -1,3 +1,53 @@
+<?php
+
+$host = 'localhost';
+$dbname = 'project_hub';
+$username = 'suraj';
+$password = 'Suraj@123';
+
+// Include authentication helper if not already included
+if (!function_exists('isLoggedIn')) {
+    require_once 'auth.php';
+}
+
+
+
+// Initialize authentication
+initAuth();
+
+// Get current user data
+$currentUser = getCurrentUser();
+$isLoggedIn = isLoggedIn();
+
+// Get cart count (you can implement this function based on your database)
+$cartCount = $isLoggedIn ? getCartCount() : 0;
+
+function getWishlistCount() {
+    if (!isLoggedIn()) {
+        return 0;
+    }
+    
+    try {
+        require_once 'config.php';
+        
+        $pdo = new PDO(
+            "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+            DB_USER,
+            DB_PASS
+        );
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM wishlist WHERE user_id = ?");
+        $stmt->execute([getCurrentUserId()]);
+        return $stmt->fetchColumn();
+    } catch (PDOException $e) {
+        error_log("Error getting wishlist count: " . $e->getMessage());
+        return 0;
+    }
+}
+
+$wishlistCount = $isLoggedIn ? getWishlistCount() : 0;
+?>
 <html>
   <head>
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
@@ -18,11 +68,45 @@
         opacity: 0;
         visibility: hidden;
         transition: all 0.3s ease;
-      }
-      .profile-container:hover .profile-dropdown {
+    }
+    .profile-container:hover .profile-dropdown {
         transform: translateY(0);
         opacity: 1;
         visibility: visible;
+    }
+    
+    /* Wishlist button hover effect */
+    .group:hover svg {
+        animation: heartBeat 0.6s ease-in-out;
+    }
+    
+    @keyframes heartBeat {
+        0% { transform: scale(1); }
+        25% { transform: scale(1.1); }
+        50% { transform: scale(1); }
+        75% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+        .flex.gap-8 {
+            gap: 1rem;
+        }
+        
+        .min-w-40 {
+            min-width: 120px;
+        }
+        
+        .profile-dropdown {
+            right: -20px;
+            width: 160px;
+        }
+        
+        .flex.items-center.gap-9 {
+            display: none;
+        }
+    
       }
       .price-slider {
         position: relative;
@@ -451,3 +535,4 @@
     </script>
   </body>
 </html>
+

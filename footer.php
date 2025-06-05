@@ -74,8 +74,8 @@
       <div class="flex flex-col md:flex-row justify-between items-center gap-4">
         <p class="text-gray-400 text-sm">© 2024 CodeCraft. All rights reserved.</p>
         <div class="flex gap-6">
-          <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</a>
-          <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Terms of Service</a>
+          <a href="privacy.php" class="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</a>
+          <a href="" class="text-gray-400 hover:text-white transition-colors text-sm">Terms of Service</a>
           <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Cookie Policy</a>
         </div>
       </div>
