@@ -1,71 +1,165 @@
 <?php
+// Secure session configuration
+ini_set('session.cookie_httponly', 1);
+ini_set('session.cookie_secure', 1);
+ini_set('session.use_strict_mode', 1);
 session_start();
+
+// Regenerate session ID to prevent session fixation
+if (!isset($_SESSION['initiated'])) {
+    session_regenerate_id(true);
+    $_SESSION['initiated'] = true;
+}
 
 // Database configuration
 include 'config.php';
-
 
 // Initialize variables
 $errors = [];
 $success_message = '';
 
+// CSRF Token Generation
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Rate limiting (simple implementation)
+$max_attempts = 5;
+$time_window = 300; // 5 minutes
+$client_ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+
+if (!isset($_SESSION['signup_attempts'])) {
+    $_SESSION['signup_attempts'] = [];
+}
+
+// Clean old attempts
+$_SESSION['signup_attempts'] = array_filter(
+    $_SESSION['signup_attempts'],
+    function($timestamp) use ($time_window) {
+        return (time() - $timestamp) < $time_window;
+    }
+);
+
+// Check for success message from redirect
+if (isset($_SESSION['signup_success'])) {
+    $success_message = $_SESSION['signup_success'];
+    unset($_SESSION['signup_success']);
+}
+
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get form data and sanitize
-    $mobile = trim($_POST['mobile'] ?? '');
-    $password = $_POST['password'] ?? '';
-    $confirm_password = $_POST['confirm_password'] ?? '';
-    $terms_agreed = isset($_POST['terms_agreed']);
-
-    // Validation
-    if (empty($mobile)) {
-        $errors[] = "Mobile number is required.";
-    } elseif (!preg_match('/^[0-9]{10}$/', $mobile)) {
-        $errors[] = "Please enter a valid 10-digit mobile number.";
-    }
-
-    if (empty($password)) {
-        $errors[] = "Password is required.";
-    } elseif (strlen($password) < 6) {
-        $errors[] = "Password must be at least 6 characters long.";
-    }
-
-    if ($password !== $confirm_password) {
-        $errors[] = "Passwords do not match.";
-    }
-
-    if (!$terms_agreed) {
-        $errors[] = "You must agree to the Terms & Conditions.";
-    }
-
-    // If no errors, proceed with database insertion
-    if (empty($errors)) {
-        try {
-            // Create PDO connection
-            $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            // Check if mobile already exists
-            $stmt = $pdo->prepare("SELECT id FROM users WHERE number = ?");
-            $stmt->execute([$mobile]);
+    // CSRF Token Validation
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        $errors[] = "Invalid request. Please try again.";
+    } else {
+        // Rate limiting check
+        if (count($_SESSION['signup_attempts']) >= $max_attempts) {
+            $errors[] = "Too many signup attempts. Please try again later.";
+        } else {
+            // Add current attempt
+            $_SESSION['signup_attempts'][] = time();
             
-            if ($stmt->rowCount() > 0) {
-                $errors[] = "An account with this mobile number already exists.";
-            } else {
-                // Hash the password
-                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                
-                // Insert user into database
-                $stmt = $pdo->prepare("INSERT INTO users (number, password, created_at) VALUES (?, ?, NOW())");
-                $stmt->execute([$mobile, $hashed_password]);
-                
-                $success_message = "Account created successfully! You can now login.";
-                
-                // Optional: Redirect to login page after 2 seconds
-                // header("refresh:2;url=login.php");
+            // Get form data and sanitize
+            $mobile = trim($_POST['mobile'] ?? '');
+            $password = $_POST['password'] ?? '';
+            $confirm_password = $_POST['confirm_password'] ?? '';
+            $terms_agreed = isset($_POST['terms_agreed']);
+
+            // Enhanced Validation
+            if (empty($mobile)) {
+                $errors[] = "Mobile number is required.";
+            } elseif (!preg_match('/^[6-9][0-9]{9}$/', $mobile)) {
+                $errors[] = "Please enter a valid Indian mobile number.";
             }
-        } catch (PDOException $e) {
-            $errors[] = "Database error: " . $e->getMessage();
+
+            if (empty($password)) {
+                $errors[] = "Password is required.";
+            } elseif (strlen($password) < 8) {
+                $errors[] = "Password must be at least 8 characters long.";
+            } elseif (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/', $password)) {
+                $errors[] = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.";
+            }
+
+            if ($password !== $confirm_password) {
+                $errors[] = "Passwords do not match.";
+            }
+
+            if (!$terms_agreed) {
+                $errors[] = "You must agree to the Terms & Conditions.";
+            }
+
+            // If no errors, proceed with database insertion
+            if (empty($errors)) {
+                try {
+                    // Create PDO connection with secure settings
+                    $db_password = $db_pass; // Use different variable name to avoid conflict
+                    $pdo = new PDO(
+                        "mysql:host=$host;dbname=$dbname;charset=utf8mb4", 
+                        $username, 
+                        $db_password,
+                        [
+                            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                            PDO::ATTR_EMULATE_PREPARES => false,
+                        ]
+                    );
+
+                    // Check if mobile already exists
+                    $stmt = $pdo->prepare("SELECT id FROM users WHERE number = ? LIMIT 1");
+                    $stmt->execute([$mobile]);
+                    
+                    if ($stmt->rowCount() > 0) {
+                        $errors[] = "An account with this mobile number already exists.";
+                    } else {
+                        // Hash the password with stronger algorithm
+                        $hashed_password = password_hash($password, PASSWORD_ARGON2ID, [
+                            'memory_cost' => 65536, // 64 MB
+                            'time_cost' => 4,       // 4 iterations
+                            'threads' => 3,         // 3 threads
+                        ]);
+                        
+                        // Insert user into database with additional security fields
+                        $stmt = $pdo->prepare("
+                            INSERT INTO users (number, password, created_at, ip_address, is_verified, status) 
+                            VALUES (?, ?, NOW(), ?, 0, 'active')
+                        ");
+                        $stmt->execute([$mobile, $hashed_password, $client_ip]);
+                        
+                        // Clear password from memory
+                        $password = null;
+                        $confirm_password = null;
+                        
+                        // Log successful registration (without sensitive data)
+                        error_log("Successful registration for mobile: " . substr($mobile, 0, 3) . "XXXXX" . substr($mobile, -2));
+                        
+                        // Reset rate limiting after successful registration
+                        $_SESSION['signup_attempts'] = [];
+                        
+                        // Store success message in session
+                        $_SESSION['signup_success'] = "Account created successfully! Please verify your mobile number to login.";
+                        
+                        // Regenerate CSRF token
+                        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+                        
+                        // SOLUTION: Redirect to prevent form resubmission and show success page
+                        // Option 1: Redirect to login page with success message
+                        header("Location: login.php?signup=success");
+                        exit();
+                        
+                        // Option 2: Redirect to same page to show success message (uncomment if preferred)
+                        // header("Location: " . $_SERVER['PHP_SELF'] . "?success=1");
+                        // exit();
+                        
+                        // Option 3: Redirect to a verification page (uncomment if you have one)
+                        // header("Location: verify.php?mobile=" . urlencode($mobile));
+                        // exit();
+                    }
+                } catch (PDOException $e) {
+                    // Log detailed error for developers (not shown to users)
+                    error_log("Database error in signup: " . $e->getMessage());
+                    $errors[] = "Registration failed. Please try again later.";
+                }
+            }
         }
     }
 }
@@ -76,6 +170,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
     <link
       rel="stylesheet"
@@ -88,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     
     <style>
-        /* Custom responsive styles */
+        /* Your existing CSS styles remain the same */
         @media (max-width: 768px) {
             .layout-container {
                 padding: 0 1rem;
@@ -115,27 +215,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 display: block;
             }
             
-            .mobile-menu {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: white;
-                border-top: 1px solid #f1f2f4;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-                z-index: 50;
-                transform: translateY(-100%);
-                opacity: 0;
-                visibility: hidden;
-                transition: all 0.3s ease-in-out;
-            }
-            
-            .mobile-menu.show {
-                transform: translateY(0);
-                opacity: 1;
-                visibility: visible;
-            }
-            
             .form-container {
                 padding: 0.5rem;
             }
@@ -160,10 +239,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 display: none;
             }
             
-            .mobile-menu {
-                display: none;
-            }
-            
             .compact-input {
                 height: 3rem;
                 padding: 0.75rem;
@@ -175,14 +250,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         
-        /* Error and success message styles */
         .error-message {
             background-color: #fee2e2;
             border: 1px solid #fecaca;
             color: #dc2626;
-            padding: 0.5rem;
+            padding: 0.75rem;
             border-radius: 0.5rem;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
             font-size: 0.875rem;
         }
         
@@ -190,19 +264,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #dcfce7;
             border: 1px solid #bbf7d0;
             color: #16a34a;
-            padding: 0.5rem;
+            padding: 0.75rem;
             border-radius: 0.5rem;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
             font-size: 0.875rem;
+            font-weight: 500;
+            text-align: center;
         }
         
-        /* Form input focus improvements */
         .form-input:focus {
             border-color: #3b82f6 !important;
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
         }
         
-        /* Compact form styling */
         .compact-form {
             max-height: calc(100vh - 200px);
             overflow-y: auto;
@@ -223,137 +297,92 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-top: 0.5rem;
         }
 
-        /* Hamburger animation */
-        .hamburger {
-            cursor: pointer;
-            width: 24px;
-            height: 24px;
-            position: relative;
-            transition: all 0.3s ease;
+        /* Password strength indicator */
+        .password-strength {
+            margin-top: 0.25rem;
+            font-size: 0.75rem;
         }
+        
+        .strength-weak { color: #dc2626; }
+        .strength-medium { color: #f59e0b; }
+        .strength-strong { color: #16a34a; }
 
-        .hamburger span {
-            display: block;
-            position: absolute;
-            height: 2px;
-            width: 100%;
-            background: #121416;
-            border-radius: 1px;
-            opacity: 1;
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
             left: 0;
-            transform: rotate(0deg);
-            transition: all 0.3s ease;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
         }
-
-        .hamburger span:nth-child(1) {
-            top: 0px;
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
-
-        .hamburger span:nth-child(2) {
-            top: 8px;
-        }
-
-        .hamburger span:nth-child(3) {
-            top: 16px;
-        }
-
-        .hamburger.active span:nth-child(1) {
-            top: 8px;
-            transform: rotate(135deg);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-            left: -60px;
-        }
-
-        .hamburger.active span:nth-child(3) {
-            top: 8px;
-            transform: rotate(-135deg);
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
     <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden"
          style='--checkbox-tick-svg: url(&apos;data:image/svg+xml,%3csvg viewBox=%270 0 16 16%27 fill=%27rgb(18,20,22)%27 xmlns=%27http://www.w3.org/2000/svg%27%3e%3cpath d=%27M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z%27/%3e%3c/svg%3e&apos;); font-family: "Space Grotesk", "Noto Sans", sans-serif;'>
         
         <div class="layout-container flex h-full grow flex-col">
-            <!-- Header -->
-            <!-- <header class="relative flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f1f2f4] px-4 md:px-10 py-3">
-                <div class="flex items-center gap-3 text-[#121416]">
-                    <div class="size-4">
-                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor"></path>
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor"></path>
-                        </svg>
-                    </div>
-                    <h2 class="text-[#121416] text-lg font-bold leading-tight tracking-[-0.015em]">CodeCraft</h2>
-                </div> -->
-                
-                <!-- Desktop Navigation -->
-                <!-- <div class="header-nav flex flex-1 justify-end gap-6">
-                    <div class="flex items-center gap-6">
-                        <a class="text-[#121416] text-sm font-medium leading-normal hover:text-[#3b82f6] transition-colors" href="#">Home</a>
-                        <a class="text-[#121416] text-sm font-medium leading-normal hover:text-[#3b82f6] transition-colors" href="#">Projects</a>
-                        <a class="text-[#121416] text-sm font-medium leading-normal hover:text-[#3b82f6] transition-colors" href="#">About Us</a>
-                        <a class="text-[#121416] text-sm font-medium leading-normal hover:text-[#3b82f6] transition-colors" href="#">Contact</a>
-                    </div>
-                    <button class="flex min-w-[70px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-3 bg-[#f1f2f4] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#dde0e3] transition-colors">
-                        <span class="truncate">Login</span>
-                    </button>
-                </div> -->
-                
-                <!-- Mobile Menu Button -->
-                <!-- <div class="mobile-menu-button">
-                    <div class="hamburger" id="hamburger">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                </div> -->
-
-                <!-- Mobile Menu -->
-                <!-- <div class="mobile-menu" id="mobile-menu">
-                    <nav class="flex flex-col py-4">
-                        <a class="text-[#121416] text-sm font-medium leading-normal px-6 py-3 hover:bg-[#f8f9fa] transition-colors" href="#">Home</a>
-                        <a class="text-[#121416] text-sm font-medium leading-normal px-6 py-3 hover:bg-[#f8f9fa] transition-colors" href="#">Projects</a>
-                        <a class="text-[#121416] text-sm font-medium leading-normal px-6 py-3 hover:bg-[#f8f9fa] transition-colors" href="#">About Us</a>
-                        <a class="text-[#121416] text-sm font-medium leading-normal px-6 py-3 hover:bg-[#f8f9fa] transition-colors" href="#">Contact</a>
-                        <div class="px-6 py-3">
-                            <button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#dde0e3] transition-colors">
-                                <span class="truncate">Login</span>
-                            </button>
-                        </div>
-                    </nav>
-                </div>
-            </header> -->
-
-             <?php  include 'header.php'; ?>
+            <?php include 'header.php'; ?>
+            
             <!-- Main Content -->
             <div class="px-4 md:px-20 flex flex-1 justify-center py-2">
                 <div class="layout-content-container flex flex-col w-full max-w-[420px] py-2 flex-1">
                     <h2 class="text-[#121416] tracking-light text-[24px] font-bold leading-tight text-center compact-header">Create your account</h2>
                     
+                    <!-- Success Message (if redirected back) -->
+                    <?php if ($success_message): ?>
+                        <div class="success-message">
+                            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">✅</div>
+                            <?php echo htmlspecialchars($success_message, ENT_QUOTES, 'UTF-8'); ?>
+                            <br><br>
+                            <a href="login.php" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+                                Go to Login
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                    
                     <!-- Error Messages -->
                     <?php if (!empty($errors)): ?>
                         <div class="error-message">
+                            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">❌</div>
                             <ul class="list-disc list-inside text-sm">
                                 <?php foreach ($errors as $error): ?>
-                                    <li><?php echo htmlspecialchars($error); ?></li>
+                                    <li><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
                     <?php endif; ?>
                     
-                    <!-- Success Message -->
-                    <?php if ($success_message): ?>
-                        <div class="success-message">
-                            <?php echo htmlspecialchars($success_message); ?>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <!-- Signup Form -->
-                    <form method="POST" action="" class="form-container compact-form">
+                    <!-- Signup Form (hide if success) -->
+                    <?php if (!$success_message): ?>
+                    <form method="POST" action="" class="form-container compact-form" novalidate id="signup-form">
+                        <!-- CSRF Token -->
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
+                        
                         <!-- Mobile Field -->
                         <div class="compact-field px-2">
                             <label class="flex flex-col">
@@ -361,11 +390,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <input
                                     name="mobile"
                                     type="tel"
-                                    placeholder="Enter your mobile number"
+                                    placeholder="Enter your 10-digit mobile number"
                                     class="form-input compact-input flex w-full resize-none overflow-hidden rounded-lg text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white placeholder:text-[#6a7581] text-sm font-normal leading-normal"
-                                    pattern="[0-9]{10}"
-                                    title="Please enter a valid 10-digit mobile number"
+                                    pattern="[6-9][0-9]{9}"
+                                    title="Please enter a valid Indian mobile number starting with 6, 7, 8, or 9"
+                                    maxlength="10"
+                                    value="<?php echo htmlspecialchars($_POST['mobile'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                                     required
+                                    autocomplete="tel"
                                 />
                             </label>
                         </div>
@@ -377,11 +409,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <input
                                     name="password"
                                     type="password"
-                                    placeholder="Enter your password"
+                                    placeholder="Enter a strong password"
                                     class="form-input compact-input flex w-full resize-none overflow-hidden rounded-lg text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white placeholder:text-[#6a7581] text-sm font-normal leading-normal"
-                                    minlength="6"
+                                    minlength="8"
+                                    maxlength="128"
                                     required
+                                    autocomplete="new-password"
+                                    id="password"
                                 />
+                                <div id="password-strength" class="password-strength"></div>
                             </label>
                         </div>
                         
@@ -395,6 +431,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     placeholder="Confirm your password"
                                     class="form-input compact-input flex w-full resize-none overflow-hidden rounded-lg text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white placeholder:text-[#6a7581] text-sm font-normal leading-normal"
                                     required
+                                    autocomplete="new-password"
+                                    id="confirm-password"
                                 />
                             </label>
                         </div>
@@ -408,7 +446,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     class="h-4 w-4 mt-0.5 rounded border-[#dde0e3] border-2 bg-transparent text-[#dce7f3] checked:bg-[#dce7f3] checked:border-[#dce7f3] checked:bg-[image:--checkbox-tick-svg] focus:ring-0 focus:ring-offset-0 focus:border-[#dde0e3] focus:outline-none"
                                     required
                                 />
-                                <p class="text-[#121416] text-sm font-normal leading-normal">I agree to the <a style="color:blue;" href="term.html">Terms & Conditions</a></p>
+                                <p class="text-[#121416] text-sm font-normal leading-normal">I agree to the <a style="color:blue;" href="term.html" target="_blank" rel="noopener noreferrer">Terms & Conditions</a></p>
                             </label>
                         </div>
                         
@@ -416,12 +454,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="px-2 py-2">
                             <button
                                 type="submit"
-                                class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#dce7f3] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#c8ddf0] transition-colors"
+                                class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#dce7f3] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#c8ddf0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                id="submit-btn"
                             >
                                 <span class="truncate">Sign Up</span>
                             </button>
                         </div>
                     </form>
+                    <?php endif; ?>
                     
                     <p class="text-[#6a7581] text-sm font-normal leading-normal px-2 text-center mt-2">
                         Already have an account? <a href="login.php" class="text-[#3b82f6] hover:underline">Login</a>
@@ -432,58 +472,157 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <script>
-        // // Mobile menu toggle functionality
-        // const hamburger = document.getElementById('hamburger');
-        // const mobileMenu = document.getElementById('mobile-menu');
+        // Enhanced form validation and security
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('signup-form');
+            const passwordField = document.getElementById('password');
+            const confirmPasswordField = document.getElementById('confirm-password');
+            const strengthIndicator = document.getElementById('password-strength');
+            const submitBtn = document.getElementById('submit-btn');
+            const mobileField = document.querySelector('input[name="mobile"]');
+            const loadingOverlay = document.getElementById('loading-overlay');
 
-        // hamburger.addEventListener('click', function() {
-        //     hamburger.classList.toggle('active');
-        //     mobileMenu.classList.toggle('show');
-        // });
+            // Exit if form doesn't exist (success page)
+            if (!form) return;
 
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const isClickInsideNav = hamburger.contains(event.target) || mobileMenu.contains(event.target);
-            
-            if (!isClickInsideNav && mobileMenu.classList.contains('show')) {
-                hamburger.classList.remove('active');
-                mobileMenu.classList.remove('show');
-            }
-        });
-
-        // Close mobile menu when clicking on a link
-        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                hamburger.classList.remove('active');
-                mobileMenu.classList.remove('show');
+            // Mobile number formatting and validation
+            mobileField.addEventListener('input', function(e) {
+                // Remove non-digits
+                let value = e.target.value.replace(/\D/g, '');
+                // Limit to 10 digits
+                if (value.length > 10) {
+                    value = value.substring(0, 10);
+                }
+                e.target.value = value;
             });
+
+            // Password strength checker
+            function checkPasswordStrength(password) {
+                let strength = 0;
+                let feedback = [];
+
+                if (password.length >= 8) strength++;
+                else feedback.push('At least 8 characters');
+
+                if (/[a-z]/.test(password)) strength++;
+                else feedback.push('One lowercase letter');
+
+                if (/[A-Z]/.test(password)) strength++;
+                else feedback.push('One uppercase letter');
+
+                if (/\d/.test(password)) strength++;
+                else feedback.push('One number');
+
+                if (/[@$!%*?&]/.test(password)) strength++;
+                else feedback.push('One special character');
+
+                return { strength, feedback };
+            }
+
+            passwordField.addEventListener('input', function() {
+                const password = this.value;
+                const result = checkPasswordStrength(password);
+                
+                let strengthText = '';
+                let strengthClass = '';
+
+                if (password.length === 0) {
+                    strengthText = '';
+                } else if (result.strength < 3) {
+                    strengthText = 'Weak - Missing: ' + result.feedback.join(', ');
+                    strengthClass = 'strength-weak';
+                } else if (result.strength < 5) {
+                    strengthText = 'Medium - Missing: ' + result.feedback.join(', ');
+                    strengthClass = 'strength-medium';
+                } else {
+                    strengthText = 'Strong password!';
+                    strengthClass = 'strength-strong';
+                }
+
+                strengthIndicator.textContent = strengthText;
+                strengthIndicator.className = 'password-strength ' + strengthClass;
+            });
+
+            // Real-time password matching
+            function checkPasswordMatch() {
+                const password = passwordField.value;
+                const confirmPassword = confirmPasswordField.value;
+                
+                if (confirmPassword && password !== confirmPassword) {
+                    confirmPasswordField.setCustomValidity('Passwords do not match');
+                } else {
+                    confirmPasswordField.setCustomValidity('');
+                }
+            }
+
+            passwordField.addEventListener('input', checkPasswordMatch);
+            confirmPasswordField.addEventListener('input', checkPasswordMatch);
+
+            // Enhanced form validation
+            form.addEventListener('submit', function(e) {
+                const password = passwordField.value;
+                const confirmPassword = confirmPasswordField.value;
+                const mobile = mobileField.value;
+
+                // Show loading overlay
+                loadingOverlay.style.display = 'flex';
+
+                // Disable submit button to prevent double submission
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="truncate">Creating Account...</span>';
+
+                // Mobile validation
+                if (!/^[6-9][0-9]{9}$/.test(mobile)) {
+                    e.preventDefault();
+                    alert('Please enter a valid Indian mobile number starting with 6, 7, 8, or 9');
+                    resetSubmitButton();
+                    return false;
+                }
+
+                // Password validation
+                if (password !== confirmPassword) {
+                    e.preventDefault();
+                    alert('Passwords do not match!');
+                    resetSubmitButton();
+                    return false;
+                }
+
+                if (password.length < 8) {
+                    e.preventDefault();
+                    alert('Password must be at least 8 characters long!');
+                    resetSubmitButton();
+                    return false;
+                }
+
+                const strengthResult = checkPasswordStrength(password);
+                if (strengthResult.strength < 4) {
+                    e.preventDefault();
+                    alert('Please use a stronger password. Missing: ' + strengthResult.feedback.join(', '));
+                    resetSubmitButton();
+                    return false;
+                }
+
+                // If validation passes, form will be submitted and page will redirect
+            });
+
+            function resetSubmitButton() {
+                loadingOverlay.style.display = 'none';
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="truncate">Sign Up</span>';
+            }
+
+            // Prevent form resubmission on page refresh
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.href);
+            }
         });
 
-        // Close mobile menu on window resize to desktop
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 768) {
-                hamburger.classList.remove('active');
-                mobileMenu.classList.remove('show');
-            }
-        });
-
-        // Basic form validation on client side
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const password = document.querySelector('input[name="password"]').value;
-            const confirmPassword = document.querySelector('input[name="confirm_password"]').value;
-            
-            if (password !== confirmPassword) {
-                e.preventDefault();
-                alert('Passwords do not match!');
-                return false;
-            }
-            
-            if (password.length < 6) {
-                e.preventDefault();
-                alert('Password must be at least 6 characters long!');
-                return false;
-            }
+        // Security: Clear sensitive data from memory on page unload
+        window.addEventListener('beforeunload', function() {
+            const passwordInputs = document.querySelectorAll('input[type="password"]');
+            passwordInputs.forEach(input => {
+                input.value = '';
+            });
         });
     </script>
 </body>

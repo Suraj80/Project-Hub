@@ -1,9 +1,18 @@
 <?php
+// Secure session configuration
+ini_set('session.cookie_httponly', 1);
+ini_set('session.cookie_secure', 1);
+ini_set('session.use_strict_mode', 1);
 session_start();
+
+// Regenerate session ID to prevent session fixation
+if (!isset($_SESSION['initiated'])) {
+    session_regenerate_id(true);
+    $_SESSION['initiated'] = true;
+}
 
 // Database configuration
 include 'config.php';
-
 
 // Initialize variables
 $errors = [];
@@ -15,66 +24,139 @@ if (isset($_SESSION['user_id'])) {
     exit();
 }
 
+// CSRF Token Generation
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Rate limiting (simple implementation)
+$max_attempts = 5;
+$time_window = 300; // 5 minutes
+$client_ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+
+if (!isset($_SESSION['login_attempts'])) {
+    $_SESSION['login_attempts'] = [];
+}
+
+// Clean old attempts
+$_SESSION['login_attempts'] = array_filter(
+    $_SESSION['login_attempts'],
+    function($timestamp) use ($time_window) {
+        return (time() - $timestamp) < $time_window;
+    }
+);
+
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get form data and sanitize
-    $mobile = trim($_POST['mobile'] ?? '');
-    $user_password = $_POST['password'] ?? '';
-    $remember_me = isset($_POST['remember_me']);
-
-    // Validation
-    if (empty($mobile)) {
-        $errors[] = "Mobile number is required.";
-    } elseif (!preg_match('/^[0-9]{10}$/', $mobile)) {
-        $errors[] = "Please enter a valid 10-digit mobile number.";
-    }
-
-    if (empty($user_password)) {
-        $errors[] = "Password is required.";
-    }
-
-    // If no errors, proceed with authentication
-    if (empty($errors)) {
-        try {
-            // Create PDO connection - use correct variable name
-            $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            // Check if user exists and get password hash
-            $stmt = $pdo->prepare("SELECT id, password FROM users WHERE number = ?");
-            $stmt->execute([$mobile]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    // CSRF Token Validation
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        $errors[] = "Invalid request. Please try again.";
+    } else {
+        // Rate limiting check
+        if (count($_SESSION['login_attempts']) >= $max_attempts) {
+            $errors[] = "Too many login attempts. Please try again later.";
+        } else {
+            // Add current attempt
+            $_SESSION['login_attempts'][] = time();
             
-            if ($user && password_verify($user_password, $user['password'])) {
-                // Login successful
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_mobile'] = $mobile;
-                
-                // Update last login time (uncommented)
-                $stmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE id = ?");
-                $stmt->execute([$user['id']]);
-                
-                // Set remember me cookie if checked
-                if ($remember_me) {
-                    $cookie_value = base64_encode($user['id'] . ':' . hash('sha256', $user['password']));
-                    setcookie('remember_user', $cookie_value, time() + (30 * 24 * 60 * 60), '/', '', false, true); // Added httpOnly flag for security
-                }
-                
-                // Redirect to index page
-                header("Location: index.php");
-                exit();
-            } else {
-                $errors[] = "Invalid mobile number or password.";
+            // Get form data and sanitize
+            $mobile = trim($_POST['mobile'] ?? '');
+            $user_password = $_POST['password'] ?? '';
+            $remember_me = isset($_POST['remember_me']);
+
+            // Enhanced Validation
+            if (empty($mobile)) {
+                $errors[] = "Mobile number is required.";
+            } elseif (!preg_match('/^[6-9][0-9]{9}$/', $mobile)) {
+                $errors[] = "Please enter a valid Indian mobile number.";
             }
-        } catch (PDOException $e) {
-            $errors[] = "Database connection failed. Please try again later.";
-            // Log the actual error for debugging (don't show to user)
-            error_log("Database error: " . $e->getMessage());
+
+            if (empty($user_password)) {
+                $errors[] = "Password is required.";
+            }
+
+            // If no errors, proceed with authentication
+            if (empty($errors)) {
+                try {
+                    // Create PDO connection with secure settings
+                    $db_password = $db_pass; // Use different variable name to avoid conflict
+                    $pdo = new PDO(
+                        "mysql:host=$host;dbname=$dbname;charset=utf8mb4", 
+                        $username, 
+                        $db_password,
+                        [
+                            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                            PDO::ATTR_EMULATE_PREPARES => false,
+                        ]
+                    );
+
+                    // Check if user exists and get user data
+                    $stmt = $pdo->prepare("SELECT id, password, is_verified, status FROM users WHERE number = ? LIMIT 1");
+                    $stmt->execute([$mobile]);
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($user && password_verify($user_password, $user['password'])) {
+                        // Check if account is active and verified
+                        if ($user['status'] !== 'active') {
+                            $errors[] = "Your account has been deactivated. Please contact support.";
+                        } elseif ($user['is_verified'] == 0) {
+                            $errors[] = "Please verify your mobile number before logging in.";
+                        } else {
+                            // Login successful
+                            $_SESSION['user_id'] = $user['id'];
+                            $_SESSION['user_mobile'] = $mobile;
+                            $_SESSION['login_time'] = time();
+                            
+                            // Update last login time
+                            $stmt = $pdo->prepare("UPDATE users SET last_login = NOW(), ip_address = ? WHERE id = ?");
+                            $stmt->execute([$client_ip, $user['id']]);
+                            
+                            // Set secure remember me cookie if checked
+                            if ($remember_me) {
+                                // Generate secure token
+                                $remember_token = bin2hex(random_bytes(32));
+                                $hashed_token = hash('sha256', $remember_token);
+                                
+                                // Store hashed token in database
+                                $stmt = $pdo->prepare("UPDATE users SET remember_token = ?, remember_expires = DATE_ADD(NOW(), INTERVAL 30 DAY) WHERE id = ?");
+                                $stmt->execute([$hashed_token, $user['id']]);
+                                
+                                // Set secure cookie
+                                $cookie_value = base64_encode($user['id'] . ':' . $remember_token);
+                                setcookie('remember_user', $cookie_value, time() + (30 * 24 * 60 * 60), '/', '', true, true);
+                            }
+                            
+                            // Log successful login (without sensitive data)
+                            error_log("Successful login for mobile: " . substr($mobile, 0, 3) . "XXXXX" . substr($mobile, -2));
+                            
+                            // Reset rate limiting after successful login
+                            $_SESSION['login_attempts'] = [];
+                            
+                            // Regenerate CSRF token
+                            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+                            
+                            // Redirect to index page
+                            header("Location: index.php");
+                            exit();
+                        }
+                    } else {
+                        $errors[] = "Invalid mobile number or password.";
+                        
+                        // Log failed login attempt
+                        error_log("Failed login attempt for mobile: " . substr($mobile, 0, 3) . "XXXXX" . substr($mobile, -2) . " from IP: " . $client_ip);
+                    }
+                } catch (PDOException $e) {
+                    // Log detailed error for developers (not shown to users)
+                    error_log("Database error in login: " . $e->getMessage());
+                    $errors[] = "Login failed. Please try again later.";
+                }
+            }
         }
     }
 }
 
-// Check for remember me cookie
+// Check for remember me cookie on page load
 if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
     try {
         $cookie_data = base64_decode($_COOKIE['remember_user']);
@@ -82,28 +164,45 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
         
         if (count($parts) === 2) {
             $user_id = $parts[0];
-            $password_hash = $parts[1];
+            $remember_token = $parts[1];
+            $hashed_token = hash('sha256', $remember_token);
             
-            $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            // Create PDO connection
+            $db_password = $db_pass;
+            $pdo = new PDO(
+                "mysql:host=$host;dbname=$dbname;charset=utf8mb4", 
+                $username, 
+                $db_password,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                ]
+            );
             
-            $stmt = $pdo->prepare("SELECT id, number, password FROM users WHERE id = ?");
-            $stmt->execute([$user_id]);
+            $stmt = $pdo->prepare("SELECT id, number, remember_token, remember_expires FROM users WHERE id = ? AND remember_token = ? AND remember_expires > NOW() LIMIT 1");
+            $stmt->execute([$user_id, $hashed_token]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            if ($user && hash('sha256', $user['password']) === $password_hash) {
+            if ($user) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_mobile'] = $user['number'];
+                $_SESSION['login_time'] = time();
+                
+                // Update last login
+                $stmt = $pdo->prepare("UPDATE users SET last_login = NOW(), ip_address = ? WHERE id = ?");
+                $stmt->execute([$client_ip, $user['id']]);
+                
                 header("Location: index.php");
                 exit();
             } else {
-                // Invalid cookie, remove it
-                setcookie('remember_user', '', time() - 3600, '/', '', false, true);
+                // Invalid or expired cookie, remove it
+                setcookie('remember_user', '', time() - 3600, '/', '', true, true);
             }
         }
     } catch (Exception $e) {
         // Invalid cookie, remove it
-        setcookie('remember_user', '', time() - 3600, '/', '', false, true);
+        setcookie('remember_user', '', time() - 3600, '/', '', true, true);
         error_log("Cookie validation error: " . $e->getMessage());
     }
 }
@@ -114,6 +213,12 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
     <link
       rel="stylesheet"
@@ -126,7 +231,7 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     
     <style>
-        /* Custom responsive styles */
+        /* Your existing CSS styles remain the same */
         @media (max-width: 768px) {
             .layout-container {
                 padding: 0 1rem;
@@ -153,27 +258,6 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
                 display: block;
             }
             
-            .mobile-menu {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: white;
-                border-top: 1px solid #f1f2f4;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-                z-index: 50;
-                transform: translateY(-100%);
-                opacity: 0;
-                visibility: hidden;
-                transition: all 0.3s ease-in-out;
-            }
-            
-            .mobile-menu.show {
-                transform: translateY(0);
-                opacity: 1;
-                visibility: visible;
-            }
-            
             .form-container {
                 padding: 0.5rem;
             }
@@ -198,10 +282,6 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
                 display: none;
             }
             
-            .mobile-menu {
-                display: none;
-            }
-            
             .compact-input {
                 height: 3rem;
                 padding: 0.75rem;
@@ -213,7 +293,6 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
             }
         }
         
-        /* Error and success message styles */
         .error-message {
             background-color: #fee2e2;
             border: 1px solid #fecaca;
@@ -234,13 +313,11 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
             font-size: 0.875rem;
         }
         
-        /* Form input focus improvements */
         .form-input:focus {
             border-color: #3b82f6 !important;
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
         }
         
-        /* Compact form styling */
         .compact-form {
             max-height: calc(100vh - 200px);
             overflow-y: auto;
@@ -261,56 +338,6 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
             margin-top: 0.5rem;
         }
 
-        /* Hamburger animation */
-        .hamburger {
-            cursor: pointer;
-            width: 24px;
-            height: 24px;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .hamburger span {
-            display: block;
-            position: absolute;
-            height: 2px;
-            width: 100%;
-            background: #121416;
-            border-radius: 1px;
-            opacity: 1;
-            left: 0;
-            transform: rotate(0deg);
-            transition: all 0.3s ease;
-        }
-
-        .hamburger span:nth-child(1) {
-            top: 0px;
-        }
-
-        .hamburger span:nth-child(2) {
-            top: 8px;
-        }
-
-        .hamburger span:nth-child(3) {
-            top: 16px;
-        }
-
-        .hamburger.active span:nth-child(1) {
-            top: 8px;
-            transform: rotate(135deg);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-            left: -60px;
-        }
-
-        .hamburger.active span:nth-child(3) {
-            top: 8px;
-            transform: rotate(-135deg);
-        }
-
-        /* Welcome back text styling */
         .welcome-text {
             color: #6a7581;
             font-size: 0.875rem;
@@ -337,7 +364,7 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
                         <div class="error-message">
                             <ul class="list-disc list-inside text-sm">
                                 <?php foreach ($errors as $error): ?>
-                                    <li><?php echo htmlspecialchars($error); ?></li>
+                                    <li><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
@@ -346,12 +373,15 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
                     <!-- Success Message -->
                     <?php if ($success_message): ?>
                         <div class="success-message">
-                            <?php echo htmlspecialchars($success_message); ?>
+                            <?php echo htmlspecialchars($success_message, ENT_QUOTES, 'UTF-8'); ?>
                         </div>
                     <?php endif; ?>
                     
                     <!-- Login Form -->
-                    <form method="POST" action="" class="form-container compact-form">
+                    <form method="POST" action="" class="form-container compact-form" novalidate>
+                        <!-- CSRF Token -->
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
+                        
                         <!-- Mobile Field -->
                         <div class="compact-field px-2">
                             <label class="flex flex-col">
@@ -359,12 +389,14 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
                                 <input
                                     name="mobile"
                                     type="tel"
-                                    placeholder="Enter your mobile number"
+                                    placeholder="Enter your 10-digit mobile number"
                                     class="form-input compact-input flex w-full resize-none overflow-hidden rounded-lg text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white placeholder:text-[#6a7581] text-sm font-normal leading-normal"
-                                    pattern="[0-9]{10}"
-                                    title="Please enter a valid 10-digit mobile number"
-                                    value="<?php echo isset($_POST['mobile']) ? htmlspecialchars($_POST['mobile']) : ''; ?>"
+                                    pattern="[6-9][0-9]{9}"
+                                    title="Please enter a valid Indian mobile number starting with 6, 7, 8, or 9"
+                                    maxlength="10"
+                                    value="<?php echo htmlspecialchars($_POST['mobile'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                                     required
+                                    autocomplete="tel"
                                 />
                             </label>
                         </div>
@@ -379,6 +411,7 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
                                     placeholder="Enter your password"
                                     class="form-input compact-input flex w-full resize-none overflow-hidden rounded-lg text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white placeholder:text-[#6a7581] text-sm font-normal leading-normal"
                                     required
+                                    autocomplete="current-password"
                                 />
                             </label>
                         </div>
@@ -399,7 +432,8 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
                         <div class="px-2 py-2">
                             <button
                                 type="submit"
-                                class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#dce7f3] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#c8ddf0] transition-colors"
+                                class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#dce7f3] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#c8ddf0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                id="submit-btn"
                             >
                                 <span class="truncate">Sign In</span>
                             </button>
@@ -408,7 +442,7 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
                     
                     <!-- Forgot Password Link -->
                     <div class="px-2 text-center mb-2">
-                        <a href="#" class="text-[#3b82f6] text-sm hover:underline">Forgot your password?</a>
+                        <a href="forgot-password.php" class="text-[#3b82f6] text-sm hover:underline">Forgot your password?</a>
                     </div>
                     
                     <p class="text-[#6a7581] text-sm font-normal leading-normal px-2 text-center mt-2">
@@ -420,72 +454,75 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
     </div>
 
     <script>
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const hamburger = document.getElementById('hamburger');
-            const mobileMenu = document.getElementById('mobile-menu');
-            
-            if (hamburger && mobileMenu) {
-                const isClickInsideNav = hamburger.contains(event.target) || mobileMenu.contains(event.target);
-                
-                if (!isClickInsideNav && mobileMenu.classList.contains('show')) {
-                    hamburger.classList.remove('active');
-                    mobileMenu.classList.remove('show');
-                }
-            }
-        });
+        // Enhanced form validation and security
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const submitBtn = document.getElementById('submit-btn');
+            const mobileField = document.querySelector('input[name="mobile"]');
+            const passwordField = document.querySelector('input[name="password"]');
 
-        // Close mobile menu when clicking on a link
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (mobileMenu) {
-            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-            mobileMenuLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    const hamburger = document.getElementById('hamburger');
-                    if (hamburger) {
-                        hamburger.classList.remove('active');
-                        mobileMenu.classList.remove('show');
-                    }
-                });
+            // Mobile number formatting and validation
+            mobileField.addEventListener('input', function(e) {
+                // Remove non-digits
+                let value = e.target.value.replace(/\D/g, '');
+                // Limit to 10 digits
+                if (value.length > 10) {
+                    value = value.substring(0, 10);
+                }
+                e.target.value = value;
             });
-        }
 
-        // Close mobile menu on window resize to desktop
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 768) {
-                const hamburger = document.getElementById('hamburger');
-                const mobileMenu = document.getElementById('mobile-menu');
-                if (hamburger && mobileMenu) {
-                    hamburger.classList.remove('active');
-                    mobileMenu.classList.remove('show');
+            // Enhanced form validation
+            form.addEventListener('submit', function(e) {
+                const mobile = mobileField.value;
+                const password = passwordField.value;
+
+                // Disable submit button to prevent double submission
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="truncate">Signing In...</span>';
+
+                // Mobile validation
+                if (!/^[6-9][0-9]{9}$/.test(mobile)) {
+                    e.preventDefault();
+                    alert('Please enter a valid Indian mobile number starting with 6, 7, 8, or 9');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span class="truncate">Sign In</span>';
+                    return false;
                 }
+
+                // Password validation
+                if (password.length === 0) {
+                    e.preventDefault();
+                    alert('Password is required!');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span class="truncate">Sign In</span>';
+                    return false;
+                }
+
+                // Re-enable button if form submission fails for other reasons
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span class="truncate">Sign In</span>';
+                }, 5000);
+            });
+
+            // Auto-focus on mobile field when page loads
+            if (mobileField && !mobileField.value) {
+                mobileField.focus();
+            }
+
+            // Prevent form resubmission on page refresh
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.href);
             }
         });
 
-        // Basic form validation on client side
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const mobile = document.querySelector('input[name="mobile"]').value;
-            const password = document.querySelector('input[name="password"]').value;
-            
-            if (mobile.length !== 10 || !/^[0-9]+$/.test(mobile)) {
-                e.preventDefault();
-                alert('Please enter a valid 10-digit mobile number!');
-                return false;
-            }
-            
-            if (password.length === 0) {
-                e.preventDefault();
-                alert('Password is required!');
-                return false;
-            }
-        });
-
-        // Auto-focus on mobile field when page loads
-        window.addEventListener('load', function() {
-            const mobileInput = document.querySelector('input[name="mobile"]');
-            if (mobileInput && !mobileInput.value) {
-                mobileInput.focus();
-            }
+        // Security: Clear sensitive data from memory on page unload
+        window.addEventListener('beforeunload', function() {
+            const passwordInputs = document.querySelectorAll('input[type="password"]');
+            passwordInputs.forEach(input => {
+                input.value = '';
+            });
         });
     </script>
 </body>

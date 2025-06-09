@@ -1,0 +1,166 @@
+-- Secure database schema with proper indexing and constraints
+
+-- Users table with enhanced security fields
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    number VARCHAR(10) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NULL,
+    full_name VARCHAR(100) NULL,
+    status ENUM('active', 'inactive', 'banned', 'pending') DEFAULT 'pending',
+    is_verified BOOLEAN DEFAULT FALSE,
+    email_verified BOOLEAN DEFAULT FALSE,
+    phone_verified BOOLEAN DEFAULT FALSE,
+    
+    -- Security tracking
+    failed_login_attempts INT DEFAULT 0,
+    last_failed_login TIMESTAMP NULL,
+    account_locked_until TIMESTAMP NULL,
+    password_reset_token VARCHAR(255) NULL,
+    password_reset_expires TIMESTAMP NULL,
+    verification_token VARCHAR(255) NULL,
+    verification_expires TIMESTAMP NULL,
+    
+    -- Audit trail
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    last_login TIMESTAMP NULL,
+    last_activity TIMESTAMP NULL,
+    ip_address VARCHAR(45) NULL, -- Support IPv6
+    user_agent TEXT NULL,
+    
+    -- Indexes for performance
+    INDEX idx_number (number),
+    INDEX idx_email (email),
+    INDEX idx_status (status),
+    INDEX idx_created_at (created_at),
+    INDEX idx_last_login (last_login)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Login attempts tracking table
+CREATE TABLE IF NOT EXISTS login_attempts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    identifier VARCHAR(100) NOT NULL, -- Can be IP, username, etc.
+    attempt_type ENUM('login', 'signup', 'password_reset') NOT NULL,
+    success BOOLEAN DEFAULT FALSE,
+    ip_address VARCHAR(45) NOT NULL,
+    user_agent TEXT NULL,
+    attempted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    INDEX idx_identifier (identifier),
+    INDEX idx_ip_address (ip_address),
+    INDEX idx_attempted_at (attempted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Security events log table
+CREATE TABLE IF NOT EXISTS security_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NULL,
+    event_type VARCHAR(50) NOT NULL,
+    event_description TEXT NULL,
+    ip_address VARCHAR(45) NULL,
+    user_agent TEXT NULL,
+    additional_data JSON NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+    INDEX idx_user_id (user_id),
+    INDEX idx_event_type (event_type),
+    INDEX idx_created_at (created_at),
+    INDEX idx_ip_address (ip_address)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Sessions table for database session storage (optional but recommended)
+CREATE TABLE IF NOT EXISTS user_sessions (
+    session_id VARCHAR(128) NOT NULL PRIMARY KEY,
+    user_id INT NULL,
+    ip_address VARCHAR(45) NOT NULL,
+    user_agent TEXT NULL,
+    session_data LONGTEXT NULL,
+    last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_expires_at (expires_at),
+    INDEX idx_last_activity (last_activity)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Create a stored procedure to clean expired data PENDING FROM HERE
+DELIMITER //
+CREATE PROCEDURE CleanExpiredData()
+BEGIN
+    -- Clean expired login attempts (older than 24 hours)
+    DELETE FROM login_attempts 
+    WHERE attempted_at < DATE_SUB(NOW(), INTERVAL 24 HOUR);
+    
+    -- Clean expired sessions
+    DELETE FROM user_sessions 
+    WHERE expires_at < NOW();
+    
+    -- Clean old security logs (older than 90 days)
+    DELETE FROM security_logs 
+    WHERE created_at < DATE_SUB(NOW(), INTERVAL 90 DAY);
+    
+    -- Reset failed login attempts for unlocked accounts
+    UPDATE users 
+    SET failed_login_attempts = 0, 
+        last_failed_login = NULL 
+    WHERE account_locked_until IS NOT NULL 
+    AND account_locked_until < NOW();
+    
+    -- Clear expired password reset tokens
+    UPDATE users 
+    SET password_reset_token = NULL, 
+        password_reset_expires = NULL 
+    WHERE password_reset_expires IS NOT NULL 
+    AND password_reset_expires < NOW();
+    
+    -- Clear expired verification tokens
+    UPDATE users 
+    SET verification_token = NULL, 
+        verification_expires = NULL 
+    WHERE verification_expires IS NOT NULL 
+    AND verification_expires < NOW();
+END //
+DELIMITER ;
+
+-- Create an event to run cleanup daily
+CREATE EVENT IF NOT EXISTS daily_cleanup
+ON SCHEDULE EVERY 1 DAY
+STARTS CURRENT_TIMESTAMP
+DO CALL CleanExpiredData();
+
+-- Sample queries for monitoring security
+
+-- Check for suspicious login patterns
+-- SELECT ip_address, COUNT(*) as attempts, 
+--        MAX(attempted_at) as last_attempt
+-- FROM login_attempts 
+-- WHERE success = FALSE 
+-- AND attempted_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+-- GROUP BY ip_address 
+-- HAVING attempts > 10;
+
+-- Check for multiple failed logins from same IP
+-- SELECT ip_address, identifier, COUNT(*) as failed_attempts
+-- FROM login_attempts 
+-- WHERE success = FALSE 
+-- AND attempted_at > DATE_SUB(NOW(), INTERVAL 1 DAY)
+-- GROUP BY ip_address, identifier
+-- ORDER BY failed_attempts DESC;
+
+-- Monitor account lockouts
+-- SELECT number, failed_login_attempts, last_failed_login, account_locked_until
+-- FROM users 
+-- WHERE account_locked_until > NOW() 
+-- OR failed_login_attempts > 3;
+
+News Letter table 
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    subscribed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ip_address VARCHAR(45) NULL,
+    user_agent TEXT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
