@@ -115,7 +115,7 @@ include 'header2.php';
     <div class="relative min-h-screen overflow-x-hidden">
         
         <!-- Hero Section -->
-        <section id="home" class="relative min-h-screen flex items-center justify-center black-bg code-pattern">
+        <section id="home" class="relative min-h-screen flex items-center justify-center gradient-bg code-pattern">
             <!-- Animated Background Elements -->
             <div class="absolute inset-0 overflow-hidden">
                 <div class="absolute top-20 left-10 w-20 h-20 bg-primary-400 rounded-full opacity-20 animate-float"></div>
@@ -250,6 +250,46 @@ include 'header2.php';
                         </p>
                     </div>
                     
+                    <!-- Feature 4 -->
+                    <div class="group p-8 bg-dark-700/50 rounded-2xl border border-dark-600 hover:border-primary-500 transition-all duration-300 hover:transform hover:scale-105">
+                        <div class="w-16 h-16 bg-gradient-to-br from-accent-500 to-primary-500 rounded-xl flex items-center justify-center mb-6 group-hover:animate-pulse">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 text-white">Expert Support</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            Get help from experienced developers. We're here to answer questions and help you understand the code.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature 5 -->
+                    <div class="group p-8 bg-dark-700/50 rounded-2xl border border-dark-600 hover:border-primary-500 transition-all duration-300 hover:transform hover:scale-105">
+                        <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center mb-6 group-hover:animate-pulse">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 text-white">100% Original</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            All projects are original and plagiarism-free. Unique implementations ensure academic integrity.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature 6 -->
+                    <div class="group p-8 bg-dark-700/50 rounded-2xl border border-dark-600 hover:border-primary-500 transition-all duration-300 hover:transform hover:scale-105">
+                        <div class="w-16 h-16 bg-gradient-to-br from-accent-500 to-primary-500 rounded-xl flex items-center justify-center mb-6 group-hover:animate-pulse">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 text-white">Regular Updates</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            Our library is constantly updated with new projects and latest technologies to keep you ahead.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Featured Projects Section -->
@@ -355,7 +395,96 @@ include 'header2.php';
                         </div>
                     </div>
                     
+                    <!-- Project 4 -->
+                    <div class="group bg-dark-800 rounded-2xl overflow-hidden border border-dark-700 hover:border-primary-500 transition-all duration-300 hover:transform hover:scale-105">
+                        <div class="relative h-48 bg-gradient-to-br from-accent-600 to-primary-600 flex items-center justify-center">
+                            <svg class="w-16 h-16 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
+                            </svg>
+                            <div class="absolute top-4 right-4 bg-black/20 backdrop-blur-sm rounded-lg px-3 py-1">
+                                <span class="text-white text-sm font-mono">Java + MySQL</span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-3 text-white">Database Management System</h3>
+                            <p class="text-gray-300 mb-4 leading-relaxed">
+                                Complete DBMS with SQL queries, stored procedures, and intuitive user interface for data management.
+                            </p>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-2xl font-bold text-accent-400 font-mono">$24.99</span>
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                    </svg>
+                                    <span class="text-sm text-gray-400">4.7 (94)</span>
+                                </div>
+                            </div>
+                            <button class="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 rounded-xl transition-colors duration-300">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
                     
+                    <!-- Project 5 -->
+                    <div class="group bg-dark-800 rounded-2xl overflow-hidden border border-dark-700 hover:border-primary-500 transition-all duration-300 hover:transform hover:scale-105">
+                        <div class="relative h-48 bg-gradient-to-br from-primary-600 to-accent-600 flex items-center justify-center">
+                            <svg class="w-16 h-16 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
+                            <div class="absolute top-4 right-4 bg-black/20 backdrop-blur-sm rounded-lg px-3 py-1">
+                                <span class="text-white text-sm font-mono">Solidity + Web3</span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-3 text-white">Blockchain Voting System</h3>
+                            <p class="text-gray-300 mb-4 leading-relaxed">
+                                Secure and transparent voting application using blockchain technology with smart contracts.
+                            </p>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-2xl font-bold text-accent-400 font-mono">$49.99</span>
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                    </svg>
+                                    <span class="text-sm text-gray-400">4.8 (73)</span>
+                                </div>
+                            </div>
+                            <button class="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 rounded-xl transition-colors duration-300">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Project 6 -->
+                    <div class="group bg-dark-800 rounded-2xl overflow-hidden border border-dark-700 hover:border-primary-500 transition-all duration-300 hover:transform hover:scale-105">
+                        <div class="relative h-48 bg-gradient-to-br from-accent-600 to-primary-600 flex items-center justify-center">
+                            <svg class="w-16 h-16 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m-6-8h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z"></path>
+                            </svg>
+                            <div class="absolute top-4 right-4 bg-black/20 backdrop-blur-sm rounded-lg px-3 py-1">
+                                <span class="text-white text-sm font-mono">C++ + OpenGL</span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-3 text-white">Game Development Kit</h3>
+                            <p class="text-gray-300 mb-4 leading-relaxed">
+                                2D game engine with physics simulation, sprite animation, and level editor built with modern C++.
+                            </p>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-2xl font-bold text-accent-400 font-mono">$44.99</span>
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                    </svg>
+                                    <span class="text-sm text-gray-400">4.9 (112)</span>
+                                </div>
+                            </div>
+                            <button class="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 rounded-xl transition-colors duration-300">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="text-center mt-12">
                     <button class="px-8 py-4 bg-transparent border-2 border-primary-500 text-primary-400 hover:bg-primary-500 hover:text-white rounded-xl font-semibold text-lg transition-all duration-300">
@@ -455,12 +584,63 @@ include 'header2.php';
                                 <p class="text-gray-400 text-sm">Data Science Student</p>
                             </div>
                         </div>
-                        
+                        <div class="flex mb-4">
+                            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                            </svg>
+                            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                            </svg>
+                            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                            </svg>
+                            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                            </svg>
+                            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                            </svg>
+                        </div>
+                        <p class="text-gray-300 leading-relaxed">
+                            "The machine learning projects are outstanding! Well-documented code with detailed explanations helped me understand complex algorithms. Highly recommend!"
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        
+        <!-- Newsletter Section -->
+        <section class="py-20 bg-gradient-to-r from-primary-600 to-accent-600">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <div class="glass-effect rounded-3xl p-8 sm:p-12">
+                    <h2 class="text-3xl sm:text-4xl font-bold mb-6 text-white">
+                        Stay Updated with <span class="font-mono text-accent-200">CodeCraft</span>
+                    </h2>
+                    <p class="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
+                        Subscribe to our newsletter and be the first to know about new projects, special offers, and coding tips that will accelerate your learning journey.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                        <input 
+                            type="email" 
+                            placeholder="Enter your email address" 
+                            class="flex-1 px-6 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent backdrop-blur-sm"
+                            id="newsletter-email"
+                        />
+                        <button 
+                            class="px-8 py-4 bg-white text-primary-600 font-semibold rounded-xl hover:bg-gray-100 transition-colors duration-300 whitespace-nowrap"
+                            id="subscribe-btn"
+                        >
+                            Subscribe
+                        </button>
+                    </div>
+                    
+                    <p class="text-white/70 text-sm mt-6">
+                        No spam, unsubscribe at any time. We respect your privacy.
+                    </p>
+                </div>
+            </div>
+        </section>
 
         <!-- Footer -->
         <footer class="bg-dark-900 border-t border-dark-700">
@@ -505,7 +685,17 @@ include 'header2.php';
                         </div>
                     </div>
                     
-                   
+                    <!-- Quick Links -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-white mb-6">Quick Links</h4>
+                        <ul class="space-y-3">
+                            <li><a href="#home" class="text-gray-300 hover:text-primary-400 transition-colors duration-300">Home</a></li>
+                            <li><a href="#projects" class="text-gray-300 hover:text-primary-400 transition-colors duration-300">Projects</a></li>
+                            <li><a href="#features" class="text-gray-300 hover:text-primary-400 transition-colors duration-300">Features</a></li>
+                            <li><a href="#" class="text-gray-300 hover:text-primary-400 transition-colors duration-300">About</a></li>
+                            <li><a href="#contact" class="text-gray-300 hover:text-primary-400 transition-colors duration-300">Contact</a></li>
+                        </ul>
+                    </div>
                     
                     <!-- Categories -->
                     <div>
@@ -520,7 +710,46 @@ include 'header2.php';
                     </div>
                 </div>
                 
-               
+                <!-- Contact Info -->
+                <div class="border-t border-dark-700 mt-12 pt-8" id="contact">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-primary-600/20 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium">Email</p>
+                                <p class="text-gray-300 text-sm">support@codecraft.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-primary-600/20 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium">Phone</p>
+                                <p class="text-gray-300 text-sm">+1 (555) 123-4567</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-primary-600/20 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium">Support</p>
+                                <p class="text-gray-300 text-sm">24/7 Available</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- Bottom Footer -->
                 <div class="border-t border-dark-700 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">

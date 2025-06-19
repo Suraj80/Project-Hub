@@ -18,35 +18,187 @@ session_start();
     <title>CodeCraft - Ready-to-Use Computer Science Projects</title>
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', 'sans-serif'],
+            'mono': ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            primary: {
+              300: '#93c5fd',
+              400: '#60a5fa',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            accent: {
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              600: '#0369a1',
+            },
+            dark: {
+              900: '#0f172a'
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out',
+            'slide-up': 'slideUp 0.6s ease-out',
+            'slide-in-right': 'slideInRight 1s ease-out both',
+            'float': 'float 6s ease-in-out infinite',
+            'glow': 'glow 2s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            slideInRight: {
+              '0%': { opacity: '0', transform: 'translateX(50px)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-20px)' },
+            },
+            glow: {
+              '0%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)' },
+              '100%': { boxShadow: '0 0 30px rgba(59, 130, 246, 0.8)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .typewriter {
+      overflow: hidden;
+      border-right: 0.15em solid white;
+      white-space: nowrap;
+      margin: 0 auto;
+      animation:
+        typing 3s steps(50, end),
+        blink-caret 0.75s step-end infinite;
+      width: 100%;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: white }
+    }
+  </style>
 </head>
-<body>
-    <div class="relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden" style='font-family: "Space Grotesk", "Noto Sans", sans-serif;'>  
-        <!-- Main Content Container with top padding to account for fixed header -->
-        <div class="flex-1 pt-[83px]">
-            <!-- Hero Section -->
-            <div class="@container" id="home">
-                <div class="w-full">
-                    <div class="flex w-full min-h-[500px] sm:min-h-[550px] flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center p-4 sm:p-6 lg:p-8"
-                         style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("assets/images/background1.jpg");'>
-                        <div class="flex flex-col gap-2 text-center max-w-4xl">
-                            <h1 class="text-white text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black leading-tight tracking-[-0.033em]">
-                                Ready-to-Use Computer Science Projects
-                            </h1>
-                            <h2 class="text-white text-sm sm:text-base lg:text-lg font-normal leading-normal px-4">
-                                Get high-quality, affordable projects instantly. Perfect for students looking to enhance their skills and grades.
-                            </h2>
-                        </div>
-                        <div class="flex flex-col sm:flex-row gap-3 justify-center w-full max-w-md">
-                            <button class="flex min-w-[140px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 sm:h-12 px-4 sm:px-5 bg-[#0c7ff2] text-slate-50 text-sm sm:text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#0a6fd1] transition-colors">
-                                <span class="truncate">Browse Projects</span>
-                            </button>
-                            <button class="flex min-w-[140px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 sm:h-12 px-4 sm:px-5 bg-[#e7edf4] text-[#0d141c] text-sm sm:text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#d1dce7] transition-colors">
-                                <span class="truncate">Get Started</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+
+<body class="bg-dark-900 text-white font-sans">
+  <div class="relative min-h-screen overflow-x-hidden">
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center"
+      style='background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)), url("assets/images/background1.jpg"); background-size: cover; background-position: center;'>
+
+      <!-- Floating Bubbles -->
+      <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-20 left-10 w-20 h-20 bg-primary-400 rounded-full opacity-20 animate-float"></div>
+        <div class="absolute top-40 right-20 w-16 h-16 bg-accent-400 rounded-full opacity-20 animate-float" style="animation-delay: 2s;"></div>
+        <div class="absolute bottom-40 left-20 w-24 h-24 bg-primary-300 rounded-full opacity-20 animate-float" style="animation-delay: 4s;"></div>
+        <div class="absolute bottom-20 right-10 w-12 h-12 bg-accent-300 rounded-full opacity-20 animate-float" style="animation-delay: 1s;"></div>
+      </div>
+
+      <!-- Hero Content -->
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="animate-slide-up">
+          <!-- Code-style header -->
+          <div class="font-mono text-accent-300 text-sm mb-4">
+            <span class="text-primary-400">class</span> <span class="text-white">CodeCraft</span> <span class="text-accent-300">{</span>
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-tight animate-slide-in-right">
+            <span class="bg-gradient-to-r from-white to-primary-200 bg-clip-text text-transparent">
+              Premium CS Projects
+            </span>
+            <br>
+            <span class="text-accent-300 font-mono text-2xl sm:text-3xl lg:text-4xl">
+              for_students()
+            </span>
+          </h1>
+
+          <p class="text-lg sm:text-xl lg:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto leading-relaxed typewriter">
+            Get high-quality, professionally crafted computer science projects. 
+            <span class="text-accent-300 font-mono">Instant download</span>, 
+            <span class="text-primary-300 font-mono">clean code</span>, 
+            <span class="text-accent-300 font-mono">detailed docs</span>.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 animate-slide-in-right">
+            <button class="group relative px-8 py-4 bg-primary-600 hover:bg-primary-700 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl animate-glow">
+              <span class="relative z-10">Browse Projects</span>
+              <div class="absolute inset-0 bg-gradient-to-r from-primary-600 to-accent-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </button>
+
+            <button class="group px-8 py-4 bg-transparent border-2 border-white/30 hover:border-white rounded-xl font-semibold text-lg transition-all duration-300 glass-effect hover:bg-white/20">
+              <span class="flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m-6-8h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z">
+                  </path>
+                </svg>
+                View Demo
+              </span>
+            </button>
+          </div>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+            <div class="text-center">
+              <div class="text-2xl font-bold text-accent-300 font-mono">500+</div>
+              <div class="text-sm text-gray-300">Projects</div>
             </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-primary-300 font-mono">10k+</div>
+              <div class="text-sm text-gray-300">Students</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-accent-300 font-mono">4.9★</div>
+              <div class="text-sm text-gray-300">Rating</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-primary-300 font-mono">24/7</div>
+              <div class="text-sm text-gray-300">Support</div>
+            </div>
+          </div>
+
+          <div class="font-mono text-accent-300 text-sm mt-8">
+            <span class="text-accent-300">}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <svg class="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+        </svg>
+      </div>
+    </section>
+  </div>
+
 
 
                     <!-- About Section -->
