@@ -75,7 +75,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
 
 // Check if instant redirect is requested
 if (isset($_GET['redirect']) && $_GET['redirect'] === 'now') {
-    header("Location: login.php");
+    header("Location: index.php");
     exit();
 }
 ?>
@@ -255,9 +255,10 @@ if (isset($_GET['redirect']) && $_GET['redirect'] === 'now') {
             
             <!-- Countdown Timer -->
             <p class="countdown-text">
-                Redirecting to login page in <span id="countdown"><?php echo $redirect_delay; ?></span> seconds<span class="loading-dots"></span>
+                Redirecting to Main Page in <span id="countdown"><?php echo $redirect_delay; ?></span> seconds<span class="loading-dots"></span>
             </p>
-            
+            <p class="countdown-text">
+                If you are not redirected automatically, please click the buttons below.
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <a href="login.php" class="btn-primary">Login Again</a>

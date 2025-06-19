@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - Enhanced User Management</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #858796;
+            --success-color: #1cc88a;
+            --info-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+            --gradient-primary: linear-gradient(45deg, #4e73df, #224abe);
+        }
+
+        body {
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8f9fc;
+            color: #5a5c69;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 14rem;
+            min-height: 100vh;
+            background: var(--gradient-primary);
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem 1rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        .sidebar-brand:hover {
+            color: white;
+            text-decoration: none;
+        }
+
+        .sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-item .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+        }
+
+        .nav-item.active .nav-link,
+        .nav-item .nav-link:hover {
+            color: white;
+        }
+
+        /* Topbar */
+        .topbar {
+            height: 4.375rem;
+            background-color: white;
+            border-bottom: 1px solid #e3e6f0;
+        }
+
+        /* Main Content */
+        .container-fluid {
+            padding: 1.5rem;
+        }
+
+        /* Cards */
+        .card {
+            border: 0;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            border-radius: 0.35rem;
+        }
+
+        .card-header {
+            background-color: var(--light-color);
+            border-bottom: 1px solid #e3e6f0;
+        }
+
+        /* User Avatar */
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .user-avatar-sm {
+            width: 40px;
+            height: 40px;
+            font-size: 0.9rem;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-active { background-color: #d4edda; color: #155724; }
+        .status-inactive { background-color: #f8d7da; color: #721c24; }
+        .status-banned { background-color: #f5c6cb; color: #721c24; }
+        .status-pending { background-color: #fff3cd; color: #856404; }
+
+        /* Verification Badges */
+        .verification-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-right: 0.25rem;
+        }
+
+        .verified { background-color: #d1ecf1; color: #0c5460; }
+        .not-verified { background-color: #f8d7da; color: #721c24; }
+
+        /* Table Styles */
+        .table-responsive {
+            border-radius: 0.35rem;
+        }
+
+        .user-table th {
+            border-top: none;
+            background-color: var(--light-color);
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 0.85rem;
+        }
+
+        .user-row:hover {
+            background-color: var(--light-color);
+        }
+
+        /* Modal Enhancements */
+        .modal-xl {
+            max-width: 1200px;
+        }
+
+        .modal-content {
+            border: 0;
+            border-radius: 0.5rem;
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #e3e6f0;
+            background-color: var(--light-color);
+        }
+
+        /* Tab Styles */
+        .nav-tabs {
+            border-bottom: 2px solid #e3e6f0;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--secondary-color);
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            background-color: transparent;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .nav-tabs .nav-link:hover {
+            border-color: transparent;
+            color: var(--primary-color);
+        }
+
+        .tab-content {
+            padding: 1.5rem 0;
+        }
+
+        /* Info Cards */
+        .info-card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .info-card h6 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        /* Data Table */
+        .data-table {
+            font-size: 0.85rem;
+        }
+
+        .data-table th {
+            background-color: var(--light-color);
+            font-weight: 600;
+            color: var(--dark-color);
+            width: 200px;
+        }
+
+        .data-table td {
+            word-break: break-word;
+        }
+
+        /* Buttons */
+        .btn {
+            border-radius: 0.35rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-action {
+            margin-right: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Security Indicators */
+        .security-indicator {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .security-indicator i {
+            margin-right: 0.5rem;
+            width: 16px;
+        }
+
+        .text-success { color: var(--success-color) !important; }
+        .text-danger { color: var(--danger-color) !important; }
+        .text-warning { color: var(--warning-color) !important; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .modal-xl {
+                max-width: 95%;
+            }
+            
+            .nav-tabs .nav-link {
+                padding: 0.75rem 1rem;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper" class="d-flex">
+        <!-- Sidebar -->
+        <nav class="sidebar navbar-nav">
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Nav Item - Users -->
+            <li class="nav-item active">
+                <a class="nav-link" href="users.php">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline mt-4">
+                <button class="btn btn-link btn-sm rounded-circle text-white" id="sidebarToggle">
+                    <i class="fas fa-angle-left"></i>
+                </button>
+            </div>
+        </nav>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div class="flex-fill d-flex flex-column" id="content-wrapper">
+            <!-- Main Content -->
+            <div id="content" class="flex-fill">
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top">
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                <div class="user-avatar user-avatar-sm">DM</div>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Enhanced User Management</h1>
+                        <button class="btn btn-primary shadow-sm" onclick="addNewUser()">
+                            <i class="fas fa-plus fa-sm text-white-50"></i> Add New User
+                        </button>
+                    </div>
+
+                    <!-- Users Table -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Users List</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered user-table" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Number</th>
+                                            <th>Full Name</th>
+                                            <th>Email</th>
+                                            <th>Status</th>
+                                            <th>Verification</th>
+                                            <th>Last Login</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="user-row">
+                                            <td>1</td>
+                                            <td>USR001</td>
+                                            <td>John Doe</td>
+                                            <td>john.doe@example.com</td>
+                                            <td><span class="status-badge status-active">Active</span></td>
+                                            <td>
+                                                <span class="verification-badge verified">✓ Email</span>
+                                                <span class="verification-badge verified">✓ Phone</span>
+                                            </td>
+                                            <td>2025-06-10 14:30</td>
+                                            <td>
+                                                <button class="btn btn-info btn-sm btn-action" onclick="viewUser(1)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-warning btn-sm btn-action" onclick="editUser(1)">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr class="user-row">
+                                            <td>2</td>
+                                            <td>USR002</td>
+                                            <td>Jane Smith</td>
+                                            <td>jane.smith@example.com</td>
+                                            <td><span class="status-badge status-active">Active</span></td>
+                                            <td>
+                                                <span class="verification-badge verified">✓ Email</span>
+                                                <span class="verification-badge not-verified">✗ Phone</span>
+                                            </td>
+                                            <td>2025-06-12 10:15</td>
+                                            <td>
+                                                <button class="btn btn-info btn-sm btn-action" onclick="viewUser(2)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-warning btn-sm btn-action" onclick="editUser(2)">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr class="user-row">
+                                            <td>3</td>
+                                            <td>USR003</td>
+                                            <td>Mike Johnson</td>
+                                            <td>mike.johnson@example.com</td>
+                                            <td><span class="status-badge status-banned">Banned</span></td>
+                                            <td>
+                                                <span class="verification-badge not-verified">✗ Email</span>
+                                                <span class="verification-badge not-verified">✗ Phone</span>
+                                            </td>
+                                            <td>2025-05-28 16:45</td>
+                                            <td>
+                                                <button class="btn btn-info btn-sm btn-action" onclick="viewUser(3)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-warning btn-sm btn-action" onclick="editUser(3)">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr class="user-row">
+                                            <td>4</td>
+                                            <td>USR004</td>
+                                            <td>Sarah Wilson</td>
+                                            <td>sarah.wilson@example.com</td>
+                                            <td><span class="status-badge status-pending">Pending</span></td>
+                                            <td>
+                                                <span class="verification-badge not-verified">✗ Email</span>
+                                                <span class="verification-badge not-verified">✗ Phone</span>
+                                            </td>
+                                            <td>Never</td>
+                                            <td>
+                                                <button class="btn btn-info btn-sm btn-action" onclick="viewUser(4)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-warning btn-sm btn-action" onclick="editUser(4)">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="bg-white py-4 mt-auto">
+                <div class="container-fluid">
+                    <div class="copyright text-center">
+                        <span>Copyright &copy; Your Website 2025</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+        </div>
+        <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Enhanced View User Modal -->
+    <div class="modal fade" id="viewUserModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user-circle mr-2"></i>Complete User Profile
+                    </h5>
+                    <button class="close" type="button" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- User Header -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 text-center">
+                            <div class="user-avatar mx-auto" id="viewUserAvatar">JD</div>
+                            <h5 id="viewUserName">John Doe</h5>
+                            <p class="text-muted" id="viewUserNumber">USR001</p>
+                            <span class="status-badge status-active" id="viewUserStatus">Active</span>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="security-indicator">
+                                        <i class="fas fa-shield-alt text-success"></i>
+                                        <span>Account Verified</span>
+                                    </div>
+                                    <div class="security-indicator">
+                                        <i class="fas fa-envelope text-success"></i>
+                                        <span>Email Verified</span>
+                                    </div>
+                                    <div class="security-indicator">
+                                        <i class="fas fa-phone text-success"></i>
+                                        <span>Phone Verified</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="security-indicator">
+                                        <i class="fas fa-lock text-success"></i>
+                                        <span>Account Secure</span>
+                                    </div>
+                                    <div class="security-indicator">
+                                        <i class="fas fa-clock text-info"></i>
+                                        <span>Last Login: <span id="viewLastLogin">2025-06-10</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabs Navigation -->
+                    <ul class="nav nav-tabs" id="userTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basic-info" role="tab">
+                                <i class="fas fa-user mr-1"></i>Basic Info
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="security-tab" data-toggle="tab" href="#security-info" role="tab">
+                                <i class="fas fa-shield-alt mr-1"></i>Security
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="activity-tab" data-toggle="tab" href="#activity-logs" role="tab">
+                                <i class="fas fa-history mr-1"></i>Activity
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="sessions-tab" data-toggle="tab" href="#sessions" role="tab">
+                                <i class="fas fa-desktop mr-1"></i>Sessions
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="userTabContent">
+                        <!-- Basic Info Tab -->
+                        <div class="tab-pane fade show active" id="basic-info" role="tabpanel">
+                            <div class="info-card">
+                                <h6><i class="fas fa-info-circle mr-2"></i>Personal Information</h6>
+                                <table class="table table-borderless data-table">
+                                    <tbody>
+                                        <tr>
+                                            <th>User ID:</th>
+                                            <td id="viewBasicId">1</td>
+                                        </tr>
+                                        <tr>
+                                            <th>User Number:</th>
+                                            <td id="viewBasicNumber">USR001</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Full Name:</th>
+                                            <td id="viewBasicName">John Doe</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Email Address:</th>
+                                            <td id="viewBasicEmail">john.doe@example.com</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Account Status:</th>
+                                            <td id="viewBasicStatus">Active</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Created At:</th>
+                                            <td id="viewBasicCreated">2023-01-15 10:30:00</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Updated At:</th>
+                                            <td id="viewBasicUpdated">2025-06-10 14:30:00</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Security Tab -->
+                        <div class="tab-pane fade" id="security-info" role="tabpanel">
+                            <div class="info-card">
+                                <h6><i class="fas fa-shield-alt mr-2"></i>Security Status</h6>
+                                <table class="table table-borderless data-table">
+                                    <tbody>
+                                        <tr>
+                                            <th>Account Verified:</th>
+                                            <td><span class="badge badge-success">Yes</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Email Verified:</th>
+                                            <td><span class="badge badge-success">Yes</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Phone Verified:</th>
+                                            <td><span class="badge badge-success">Yes</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Failed Login Attempts:</th>
+                                            <td>0</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Last Failed Login:</th>
+                                            <td>Never</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Account Locked Until:</th>
+                                            <td>Not Locked</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Password Reset Token:</th>
+                                            <td>None Active</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Verification Token:</th>
+                                            <td>None Active</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Activity Tab -->
+                        <div class="tab-pane fade" id="activity-logs" role="tabpanel">
+                            <div class="info-card">
+                                <h6><i class="fas fa-history mr-2"></i>Recent Activity</h6>
+                                <table class="table table-borderless data-table">
+                                    <tbody>
+                                        <tr>
+                                            <th>Last Login:</th>
+                                            <td>2025-06-10 14:30:00</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Last Activity:</th>
+                                            <td>2025-06-10 16:45:00</td>
+                                        </tr>
+                                        <tr>
+                                            <th>IP Address:</th>
+                                            <td>192.168.1.100</td>
+                                        </tr>
+                                        <tr>
+                                            <th>User Agent:</th>
+                                            <td style="word-break: break-all;">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="info-card">
+                                <h6><i class="fas fa-list mr-2"></i>Login Attempts (Last 10)</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Date/Time</th>
+                                                <th>Status</th>
+                                                <th>IP Address</th>
+                                                <th>User Agent</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>2025-06-10 14:30</td>
+                                                <td><span class="badge badge-success">Success</span></td>
+                                                <td>192.168.1.100</td>
+                                                <td>Chrome/114</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2025-06-09 09:15</td>
+                                                <td><span class="badge badge-success">Success</span></td>
+                                                <td>192.168.1.100</td>
+                                                <td>Chrome/114</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sessions Tab -->
+                        <div class="tab-pane fade" id="sessions" role="tabpanel">
+                            <div class="info-card">
+                                <h6><i class="fas fa-desktop mr-2"></i>Active Sessions</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Session ID</th>
+                                                <th>Created</th>
+                                                <th>Last Activity</th>
+                                                <th>IP Address</th>
+                                                <th>User Agent</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>sess_abc123</td>
+                                                <td>2025-06-10 14:30</td>
+                                                <td>2025-06-10 16:45</td>
+                                                <td>192.168.1.100</td>
+                                                <td>Chrome/114</td>
+                                                <td>
+                                                    <button class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-sign-out-alt"></i> Revoke
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-warning" onclick="editUserFromView()">
+                        <i class="fas fa-edit"></i> Edit User
+                    </button>
+                    <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Edit User Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-edit mr-2"></i>Edit User
+                    </h5>
+                    <button class="close" type="button" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editUserId">User ID</label>
+                                    <input type="text" class="form-control" id="editUserId" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editUserNumber">User Number</label>
+                                    <input type="text" class="form-control" id="editUserNumber" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editFullName">Full Name</label>
+                            <input type="text" class="form-control" id="editFullName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editEmail">Email Address</label>
+                            <input type="email" class="form-control" id="editEmail" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editStatus">Account Status</label>
+                                    <select class="form-control" id="editStatus">
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                        <option value="banned">Banned</option>
+                                        <option value="pending">Pending</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Verification Status</label>
+                                    <div class="mt-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="editEmailVerified">
+                                            <label class="form-check-label" for="editEmailVerified">
+                                                Email Verified
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="editPhoneVerified">
+                                            <label class="form-check-label" for="editPhoneVerified">
+                                                Phone Verified
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editNotes">Admin Notes</label>
+                            <textarea class="form-control" id="editNotes" rows="3" placeholder="Add any admin notes here..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="saveUser()">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user-plus mr-2"></i>Add New User
+                    </h5>
+                    <button class="close" type="button" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addUserForm">
+                        <div class="form-group">
+                            <label for="newFullName">Full Name</label>
+                            <input type="text" class="form-control" id="newFullName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newEmail">Email Address</label>
+                            <input type="email" class="form-control" id="newEmail" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newPassword">Password</label>
+                            <input type="password" class="form-control" id="newPassword" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newPasswordConfirm">Confirm Password</label>
+                            <input type="password" class="form-control" id="newPasswordConfirm" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="newStatus">Initial Status</label>
+                                    <select class="form-control" id="newStatus">
+                                        <option value="pending">Pending</option>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Send Welcome Email</label>
+                                    <div class="mt-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="sendWelcomeEmail" checked>
+                                            <label class="form-check-label" for="sendWelcomeEmail">
+                                                Send welcome email to user
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="createUser()">
+                        <i class="fas fa-user-plus"></i> Create User
+                    </button>
+                    <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Sample user data - in a real application, this would come from a database
+        const users = {
+            1: {
+                id: 1,
+                number: 'USR001',
+                fullName: 'John Doe',
+                email: 'john.doe@example.com',
+                status: 'active',
+                emailVerified: true,
+                phoneVerified: true,
+                lastLogin: '2025-06-10 14:30:00',
+                createdAt: '2023-01-15 10:30:00',
+                updatedAt: '2025-06-10 14:30:00',
+                notes: 'Premium user with full access.'
+            },
+            2: {
+                id: 2,
+                number: 'USR002',
+                fullName: 'Jane Smith',
+                email: 'jane.smith@example.com',
+                status: 'active',
+                emailVerified: true,
+                phoneVerified: false,
+                lastLogin: '2025-06-12 10:15:00',
+                createdAt: '2023-02-20 15:45:00',
+                updatedAt: '2025-06-12 10:15:00',
+                notes: 'Regular user, pending phone verification.'
+            },
+            3: {
+                id: 3,
+                number: 'USR003',
+                fullName: 'Mike Johnson',
+                email: 'mike.johnson@example.com',
+                status: 'banned',
+                emailVerified: false,
+                phoneVerified: false,
+                lastLogin: '2025-05-28 16:45:00',
+                createdAt: '2023-03-10 09:20:00',
+                updatedAt: '2025-05-30 11:00:00',
+                notes: 'Banned due to policy violations.'
+            },
+            4: {
+                id: 4,
+                number: 'USR004',
+                fullName: 'Sarah Wilson',
+                email: 'sarah.wilson@example.com',
+                status: 'pending',
+                emailVerified: false,
+                phoneVerified: false,
+                lastLogin: 'Never',
+                createdAt: '2025-06-14 12:00:00',
+                updatedAt: '2025-06-14 12:00:00',
+                notes: 'New user awaiting email verification.'
+            }
+        };
+
+        // Function to get user initials for avatar
+        function getUserInitials(fullName) {
+            return fullName.split(' ').map(n => n[0]).join('').toUpperCase();
+        }
+
+        // Function to format status for display
+        function formatStatus(status) {
+            const statusMap = {
+                'active': { class: 'status-active', text: 'Active' },
+                'inactive': { class: 'status-inactive', text: 'Inactive' },
+                'banned': { class: 'status-banned', text: 'Banned' },
+                'pending': { class: 'status-pending', text: 'Pending' }
+            };
+            return statusMap[status] || { class: 'status-pending', text: 'Unknown' };
+        }
+
+        // View user function
+        function viewUser(userId) {
+            const user = users[userId];
+            if (!user) return;
+
+            // Update avatar and basic info
+            document.getElementById('viewUserAvatar').textContent = getUserInitials(user.fullName);
+            document.getElementById('viewUserName').textContent = user.fullName;
+            document.getElementById('viewUserNumber').textContent = user.number;
+            document.getElementById('viewLastLogin').textContent = user.lastLogin;
+            
+            const statusInfo = formatStatus(user.status);
+            const statusElement = document.getElementById('viewUserStatus');
+            statusElement.className = `status-badge ${statusInfo.class}`;
+            statusElement.textContent = statusInfo.text;
+
+            // Update Basic Info tab
+            document.getElementById('viewBasicId').textContent = user.id;
+            document.getElementById('viewBasicNumber').textContent = user.number;
+            document.getElementById('viewBasicName').textContent = user.fullName;
+            document.getElementById('viewBasicEmail').textContent = user.email;
+            document.getElementById('viewBasicStatus').textContent = statusInfo.text;
+            document.getElementById('viewBasicCreated').textContent = user.createdAt;
+            document.getElementById('viewBasicUpdated').textContent = user.updatedAt;
+
+            // Update verification indicators
+            const emailVerifyElements = document.querySelectorAll('#viewUserModal .security-indicator');
+            emailVerifyElements[1].innerHTML = user.emailVerified 
+                ? '<i class="fas fa-envelope text-success"></i><span>Email Verified</span>'
+                : '<i class="fas fa-envelope text-danger"></i><span>Email Not Verified</span>';
+            
+            emailVerifyElements[2].innerHTML = user.phoneVerified 
+                ? '<i class="fas fa-phone text-success"></i><span>Phone Verified</span>'
+                : '<i class="fas fa-phone text-danger"></i><span>Phone Not Verified</span>';
+
+            // Store current user ID for editing
+            document.getElementById('viewUserModal').setAttribute('data-user-id', userId);
+            
+            $('#viewUserModal').modal('show');
+        }
+
+        // Edit user function
+        function editUser(userId) {
+            const user = users[userId];
+            if (!user) return;
+
+            // Populate form
+            document.getElementById('editUserId').value = user.id;
+            document.getElementById('editUserNumber').value = user.number;
+            document.getElementById('editFullName').value = user.fullName;
+            document.getElementById('editEmail').value = user.email;
+            document.getElementById('editStatus').value = user.status;
+            document.getElementById('editEmailVerified').checked = user.emailVerified;
+            document.getElementById('editPhoneVerified').checked = user.phoneVerified;
+            document.getElementById('editNotes').value = user.notes || '';
+
+            // Store current user ID
+            document.getElementById('editUserModal').setAttribute('data-user-id', userId);
+            
+            $('#editUserModal').modal('show');
+        }
+
+        // Edit user from view modal
+        function editUserFromView() {
+            const userId = document.getElementById('viewUserModal').getAttribute('data-user-id');
+            $('#viewUserModal').modal('hide');
+            setTimeout(() => editUser(userId), 300);
+        }
+
+        // Save user function
+        function saveUser() {
+            const userId = document.getElementById('editUserModal').getAttribute('data-user-id');
+            const user = users[userId];
+            
+            if (!user) return;
+
+            // Update user data
+            user.fullName = document.getElementById('editFullName').value;
+            user.email = document.getElementById('editEmail').value;
+            user.status = document.getElementById('editStatus').value;
+            user.emailVerified = document.getElementById('editEmailVerified').checked;
+            user.phoneVerified = document.getElementById('editPhoneVerified').checked;
+            user.notes = document.getElementById('editNotes').value;
+            user.updatedAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+            // Update table row
+            updateTableRow(userId, user);
+            
+            $('#editUserModal').modal('hide');
+            
+            // Show success message
+            showNotification('User updated successfully!', 'success');
+        }
+
+        // Add new user function
+        function addNewUser() {
+            // Reset form
+            document.getElementById('addUserForm').reset();
+            document.getElementById('newStatus').value = 'pending';
+            document.getElementById('sendWelcomeEmail').checked = true;
+            
+            $('#addUserModal').modal('show');
+        }
+
+        // Create user function
+        function createUser() {
+            const fullName = document.getElementById('newFullName').value;
+            const email = document.getElementById('newEmail').value;
+            const password = document.getElementById('newPassword').value;
+            const passwordConfirm = document.getElementById('newPasswordConfirm').value;
+            const status = document.getElementById('newStatus').value;
+            const sendWelcome = document.getElementById('sendWelcomeEmail').checked;
+
+            // Basic validation
+            if (!fullName || !email || !password) {
+                showNotification('Please fill in all required fields.', 'error');
+                return;
+            }
+
+            if (password !== passwordConfirm) {
+                showNotification('Passwords do not match.', 'error');
+                return;
+            }
+
+            // Create new user ID
+            const newId = Math.max(...Object.keys(users).map(Number)) + 1;
+            const userNumber = `USR${String(newId).padStart(3, '0')}`;
+            
+            // Create user object
+            const newUser = {
+                id: newId,
+                number: userNumber,
+                fullName: fullName,
+                email: email,
+                status: status,
+                emailVerified: false,
+                phoneVerified: false,
+                lastLogin: 'Never',
+                createdAt: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                updatedAt: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                notes: 'New user account created.'
+            };
+
+            // Add to users object
+            users[newId] = newUser;
+
+            // Add to table
+            addTableRow(newUser);
+            
+            $('#addUserModal').modal('hide');
+            
+            // Show success message
+            let message = 'User created successfully!';
+            if (sendWelcome) {
+                message += ' Welcome email sent.';
+            }
+            showNotification(message, 'success');
+        }
+
+        // Update table row
+        function updateTableRow(userId, user) {
+            const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+            if (!row) return;
+
+            const statusInfo = formatStatus(user.status);
+            
+            row.innerHTML = `
+                <td>${user.id}</td>
+                <td>${user.number}</td>
+                <td>${user.fullName}</td>
+                <td>${user.email}</td>
+                <td><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></td>
+                <td>
+                    <span class="verification-badge ${user.emailVerified ? 'verified' : 'not-verified'}">
+                        ${user.emailVerified ? '✓' : '✗'} Email
+                    </span>
+                    <span class="verification-badge ${user.phoneVerified ? 'verified' : 'not-verified'}">
+                        ${user.phoneVerified ? '✓' : '✗'} Phone
+                    </span>
+                </td>
+                <td>${user.lastLogin}</td>
+                <td>
+                    <button class="btn btn-info btn-sm btn-action" onclick="viewUser(${user.id})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-warning btn-sm btn-action" onclick="editUser(${user.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+            `;
+        }
+
+        // Add new table row
+        function addTableRow(user) {
+            const tbody = document.querySelector('.user-table tbody');
+            const statusInfo = formatStatus(user.status);
+            
+            const row = document.createElement('tr');
+            row.className = 'user-row';
+            row.setAttribute('data-user-id', user.id);
+            row.innerHTML = `
+                <td>${user.id}</td>
+                <td>${user.number}</td>
+                <td>${user.fullName}</td>
+                <td>${user.email}</td>
+                <td><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></td>
+                <td>
+                    <span class="verification-badge ${user.emailVerified ? 'verified' : 'not-verified'}">
+                        ${user.emailVerified ? '✓' : '✗'} Email
+                    </span>
+                    <span class="verification-badge ${user.phoneVerified ? 'verified' : 'not-verified'}">
+                        ${user.phoneVerified ? '✓' : '✗'} Phone
+                    </span>
+                </td>
+                <td>${user.lastLogin}</td>
+                <td>
+                    <button class="btn btn-info btn-sm btn-action" onclick="viewUser(${user.id})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-warning btn-sm btn-action" onclick="editUser(${user.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+            `;
+            
+            tbody.appendChild(row);
+        }
+
+        // Show notification function
+        function showNotification(message, type = 'info') {
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-danger' : 'alert-info';
+            
+            const notification = document.createElement('div');
+            notification.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
+        }
+
+        // Sidebar toggle functionality
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('collapsed');
+        });
+
+        document.getElementById('sidebarToggleTop').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('collapsed');
+        });
+
+        // Add data-user-id attributes to existing table rows
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('.user-row');
+            rows.forEach((row, index) => {
+                row.setAttribute('data-user-id', index + 1);
+            });
+        });
+    </script>
+
+</body>
+</html>

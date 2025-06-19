@@ -1,3 +1,7 @@
+<?php
+        // Include the header file
+        include 'header2.php';
+        ?>
 
 <html>
   <head>
@@ -93,7 +97,7 @@
       style='--select-button-svg: url(&apos;data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724px%27 height=%2724px%27 fill=%27rgb(92,116,138)%27 viewBox=%270 0 256 256%27%3e%3cpath d=%27M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z%27%3e%3c/path%3e%3c/svg%3e&apos;); font-family: "Space Grotesk", "Noto Sans", sans-serif;'
     >
       <div class="layout-container flex h-full grow flex-col">
-        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#eaedf1] px-10 py-3">
+        <!-- <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#eaedf1] px-10 py-3">
           <div class="flex items-center gap-8">
             <div class="flex items-center gap-4 text-[#101518]">
               <div class="size-4">
@@ -160,7 +164,9 @@
               </div>
             </div>
           </div>
-        </header>
+        </header> -->
+        
+
         <div class="gap-1 px-6 flex flex-1 justify-center py-5">
           <div class="layout-content-container flex flex-col w-80">
             <h2 class="text-[#101518] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Filters</h2>

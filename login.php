@@ -1,8 +1,8 @@
 <?php
 // Secure session configuration
-ini_set('session.cookie_httponly', 1);
-ini_set('session.cookie_secure', 1);
-ini_set('session.use_strict_mode', 1);
+// ini_set('session.cookie_httponly', 1);
+// ini_set('session.cookie_secure', 1);
+// ini_set('session.use_strict_mode', 1);
 session_start();
 
 // Regenerate session ID to prevent session fixation
@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $_SESSION['login_attempts'] = [];
                             
                             // Regenerate CSRF token
-                            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+                            // $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                             
                             // Redirect to index page
                             header("Location: index.php");

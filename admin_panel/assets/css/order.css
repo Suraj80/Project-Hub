@@ -1,0 +1,308 @@
+/* Custom CSS for Order Management */
+
+/* General Styles */
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: #f8f9fc;
+}
+
+.text-gray-800 {
+    color: #5a5c69 !important;
+}
+
+/* Status badges */
+.status-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Purchase type badges */
+.purchase-type-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+    font-weight: 600;
+}
+
+/* Table action buttons */
+.table-actions .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Order details sections */
+.order-details-section {
+    border-left: 4px solid #4e73df;
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Filter section */
+.filter-section {
+    background-color: #f8f9fc;
+    border-radius: 0.35rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e3e6f0;
+}
+
+/* Pagination info */
+.pagination-info {
+    color: #858796;
+    font-size: 0.875rem;
+    margin-top: 1rem;
+}
+
+/* Status specific badge colors */
+.badge-placed {
+    background-color: #6c757d;
+    color: white;
+}
+
+.badge-processing {
+    background-color: #007bff;
+    color: white;
+}
+
+.badge-pending {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-shipped {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.badge-completed {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-delivered {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-cancelled {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Purchase type badge colors */
+.badge-download {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.badge-delivery {
+    background-color: #fd7e14;
+    color: white;
+}
+
+/* Card styles */
+.card {
+    border: none;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+}
+
+.card-header {
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+/* Table styles */
+.table {
+    color: #858796;
+}
+
+.table thead th {
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+    font-weight: 600;
+    color: #5a5c69;
+    padding: 0.75rem;
+}
+
+.table td {
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+.table-responsive {
+    border-radius: 0.35rem;
+}
+
+/* Modal styles */
+.modal-header {
+    background-color: #4e73df;
+    color: white;
+    border-bottom: none;
+}
+
+.modal-header .close {
+    color: white;
+    opacity: 0.8;
+}
+
+.modal-header .close:hover {
+    opacity: 1;
+}
+
+/* Form styles */
+.form-label {
+    font-weight: 600;
+    color: #5a5c69;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border: 1px solid #d1d3e2;
+    border-radius: 0.35rem;
+    font-size: 0.875rem;
+    padding: 0.625rem 0.75rem;
+}
+
+.form-control:focus {
+    border-color: #bac8f3;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+
+/* Button styles */
+.btn {
+    font-size: 0.875rem;
+    border-radius: 0.35rem;
+    font-weight: 400;
+}
+
+.btn-primary {
+    background-color: #4e73df;
+    border-color: #4e73df;
+}
+
+.btn-primary:hover {
+    background-color: #375a7f;
+    border-color: #375a7f;
+}
+
+.btn-info {
+    background-color: #36b9cc;
+    border-color: #36b9cc;
+}
+
+.btn-success {
+    background-color: #1cc88a;
+    border-color: #1cc88a;
+}
+
+.btn-warning {
+    background-color: #f6c23e;
+    border-color: #f6c23e;
+}
+
+.btn-danger {
+    background-color: #e74a3b;
+    border-color: #e74a3b;
+}
+
+.btn-outline-secondary {
+    color: #858796;
+    border-color: #858796;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #858796;
+    border-color: #858796;
+}
+
+/* Pagination styles */
+.pagination-sm .page-link {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.pagination .page-link {
+    color: #4e73df;
+    border-color: #e3e6f0;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #4e73df;
+    border-color: #4e73df;
+}
+
+.pagination .page-link:hover {
+    background-color: #eaecf4;
+    border-color: #dddfeb;
+}
+
+/* Loading and no data styles */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+#noDataMessage {
+    color: #858796;
+}
+
+#noDataMessage i {
+    opacity: 0.5;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .filter-section .col-md-4,
+    .filter-section .col-md-3,
+    .filter-section .col-md-2 {
+        margin-bottom: 1rem;
+    }
+    
+    .table-actions .btn {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .d-sm-flex {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+    
+    .d-sm-flex .btn {
+        margin-top: 1rem;
+        align-self: flex-start;
+    }
+}
+
+/* Utility classes */
+.text-truncate-custom {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+/* Custom scrollbar for table */
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

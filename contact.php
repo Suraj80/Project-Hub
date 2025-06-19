@@ -101,9 +101,9 @@ if ($_POST) {
                     <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
                         <!-- Contact Form -->
                         <div class="order-2 lg:order-1">
-                            <form method="POST" class="space-y-6">
+                            <form method="POST" class="space-y-3">
                                 <div>
-                                    <label for="name" class="block text-[#0d141c] text-sm sm:text-base font-medium mb-2">
+                                    <label for="name" class="block text-[#0d141c] text-sm font-medium mb-1">
                                         Name *
                                     </label>
                                     <input
@@ -113,12 +113,12 @@ if ($_POST) {
                                         required
                                         placeholder="Your Name"
                                         value="<?php echo isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''; ?>"
-                                        class="w-full h-12 sm:h-14 px-4 rounded-lg border border-[#cedbe8] bg-slate-50 text-[#0d141c] placeholder:text-[#49739c] focus:outline-none focus:ring-2 focus:ring-[#0c7ff2] focus:border-transparent text-sm sm:text-base"
+                                        class="w-full h-9 px-3 rounded-lg border border-[#cedbe8] bg-slate-50 text-[#0d141c] placeholder:text-[#49739c] focus:outline-none focus:ring-2 focus:ring-[#0c7ff2] focus:border-transparent text-sm"
                                     />
                                 </div>
 
                                 <div>
-                                    <label for="email" class="block text-[#0d141c] text-sm sm:text-base font-medium mb-2">
+                                    <label for="email" class="block text-[#0d141c] text-sm font-medium mb-1">
                                         Email *
                                     </label>
                                     <input
@@ -128,12 +128,12 @@ if ($_POST) {
                                         required
                                         placeholder="Your Email"
                                         value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>"
-                                        class="w-full h-12 sm:h-14 px-4 rounded-lg border border-[#cedbe8] bg-slate-50 text-[#0d141c] placeholder:text-[#49739c] focus:outline-none focus:ring-2 focus:ring-[#0c7ff2] focus:border-transparent text-sm sm:text-base"
+                                        class="w-full h-9 px-3 rounded-lg border border-[#cedbe8] bg-slate-50 text-[#0d141c] placeholder:text-[#49739c] focus:outline-none focus:ring-2 focus:ring-[#0c7ff2] focus:border-transparent text-sm"
                                     />
                                 </div>
 
                                 <div>
-                                    <label for="subject" class="block text-[#0d141c] text-sm sm:text-base font-medium mb-2">
+                                    <label for="subject" class="block text-[#0d141c] text-sm font-medium mb-1">
                                         Subject *
                                     </label>
                                     <input
@@ -143,27 +143,27 @@ if ($_POST) {
                                         required
                                         placeholder="Subject"
                                         value="<?php echo isset($_POST['subject']) ? htmlspecialchars($_POST['subject']) : ''; ?>"
-                                        class="w-full h-12 sm:h-14 px-4 rounded-lg border border-[#cedbe8] bg-slate-50 text-[#0d141c] placeholder:text-[#49739c] focus:outline-none focus:ring-2 focus:ring-[#0c7ff2] focus:border-transparent text-sm sm:text-base"
+                                        class="w-full h-9 px-3 rounded-lg border border-[#cedbe8] bg-slate-50 text-[#0d141c] placeholder:text-[#49739c] focus:outline-none focus:ring-2 focus:ring-[#0c7ff2] focus:border-transparent text-sm"
                                     />
                                 </div>
 
                                 <div>
-                                    <label for="message" class="block text-[#0d141c] text-sm sm:text-base font-medium mb-2">
+                                    <label for="message" class="block text-[#0d141c] text-sm font-medium mb-1">
                                         Message *
                                     </label>
                                     <textarea
                                         id="message"
                                         name="message"
                                         required
-                                        rows="6"
+                                        rows="4"
                                         placeholder="Your Message"
-                                        class="w-full px-4 py-3 rounded-lg border border-[#cedbe8] bg-slate-50 text-[#0d141c] placeholder:text-[#49739c] focus:outline-none focus:ring-2 focus:ring-[#0c7ff2] focus:border-transparent resize-vertical min-h-[120px] text-sm sm:text-base"
+                                        class="w-full px-3 py-2 rounded-lg border border-[#cedbe8] bg-slate-50 text-[#0d141c] placeholder:text-[#49739c] focus:outline-none focus:ring-2 focus:ring-[#0c7ff2] focus:border-transparent resize-vertical min-h-[80px] text-sm"
                                     ><?php echo isset($_POST['message']) ? htmlspecialchars($_POST['message']) : ''; ?></textarea>
                                 </div>
 
                                 <button
                                     type="submit"
-                                    class="w-full sm:w-auto px-8 py-3 bg-[#0c7ff2] text-white font-bold text-sm sm:text-base rounded-lg hover:bg-[#0b6fd1] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#0c7ff2] focus:ring-offset-2"
+                                    class="w-full sm:w-auto px-6 py-2 bg-[#0c7ff2] text-white font-bold text-sm rounded-lg hover:bg-[#0b6fd1] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#0c7ff2] focus:ring-offset-2"
                                 >
                                     Send Message
                                 </button>

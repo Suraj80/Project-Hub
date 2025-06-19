@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) NULL,
     full_name VARCHAR(100) NULL,
+    profile_image VARCHAR(255),
     status ENUM('active', 'inactive', 'banned', 'pending') DEFAULT 'pending',
     is_verified BOOLEAN DEFAULT FALSE,
     email_verified BOOLEAN DEFAULT FALSE,
@@ -85,6 +86,109 @@ CREATE TABLE IF NOT EXISTS user_sessions (
     INDEX idx_expires_at (expires_at),
     INDEX idx_last_activity (last_activity)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Table: Products
+CREATE TABLE `products` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `category` varchar(100) DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `difficulty` enum('Beginner','Intermediate','Advanced') DEFAULT NULL,
+  `rating` decimal(2,1) DEFAULT NULL,
+  `duration` varchar(50) DEFAULT NULL,
+  `description` text,
+  `image` varchar(500) DEFAULT NULL,
+  `featured` tinyint(1) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+-- Table: Product Technologies (many-to-one relationship with products)
+CREATE TABLE product_technologies (
+    product_id INT,
+    technology VARCHAR(100),
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+-- Table: Wishlist (to allow users to save favorite products)
+CREATE TABLE wishlist (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    added_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    UNIQUE (user_id, product_id)
+);
+
+-- Table: Cart (supports both download and delivery options)
+CREATE TABLE cart (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT DEFAULT 1,
+    purchase_type ENUM('download', 'delivery') NOT NULL,
+    added_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('pending', 'ordered', 'cancelled') DEFAULT 'pending',
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+-- Table: Delivery Details (only applicable if purchase_type is 'delivery')
+CREATE TABLE delivery_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cart_id INT,
+    full_name VARCHAR(150),
+    address TEXT,
+    city VARCHAR(100),
+    pincode VARCHAR(10),
+    phone VARCHAR(15),
+    delivery_status ENUM('pending', 'shipped', 'delivered') DEFAULT 'pending',
+    FOREIGN KEY (cart_id) REFERENCES cart(id) ON DELETE CASCADE
+);
+
+-- Table: Orders (manages lifecycle of placed orders)
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT DEFAULT 1,
+    order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    order_status ENUM('placed', 'processing', 'pending', 'shipped', 'completed', 'delivered', 'cancelled') DEFAULT 'placed',
+    purchase_type ENUM('download', 'delivery') NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+-- Payment methods table
+CREATE TABLE payment_methods (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    type ENUM('card', 'upi', 'netbanking', 'wallet') NOT NULL,
+    provider VARCHAR(50), -- Razorpay, Stripe, PayPal, etc.
+    last_four VARCHAR(4),
+    is_default BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Payment transactions table
+CREATE TABLE payment_transactions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    payment_method_id INT,
+    transaction_id VARCHAR(100) UNIQUE,
+    gateway_response JSON,
+    amount DECIMAL(10,2) NOT NULL,
+    currency VARCHAR(3) DEFAULT 'INR',
+    status ENUM('pending', 'processing', 'completed', 'failed', 'refunded') DEFAULT 'pending',
+    gateway VARCHAR(50), -- razorpay, stripe, etc.
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (payment_method_id) REFERENCES payment_methods(id) ON DELETE SET NULL
+);
 
 -- Create a stored procedure to clean expired data PENDING FROM HERE
 DELIMITER //

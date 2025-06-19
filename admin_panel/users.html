@@ -1,0 +1,742 @@
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>SB Admin 2 - User Management</title>
+
+        <!-- Custom fonts for this template-->
+        <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+        <!-- Custom styles for this template-->
+        <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+        <style>
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: linear-gradient(45deg, #4e73df, #36b9cc);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: bold;
+                font-size: 0.9rem;
+            }
+            
+            .status-badge {
+                display: inline-block;
+                padding: 0.25rem 0.5rem;
+                border-radius: 0.25rem;
+                font-size: 0.75rem;
+                font-weight: 600;
+                text-transform: uppercase;
+            }
+            
+            .status-active { background-color: #d4edda; color: #155724; }
+            .status-inactive { background-color: #f8d7da; color: #721c24; }
+            .status-pending { background-color: #fff3cd; color: #856404; }
+            .status-banned { background-color: #f5c6cb; color: #721c24; }
+            
+            .btn-action {
+                margin-right: 0.25rem;
+                margin-bottom: 0.25rem;
+            }
+            
+            .table-responsive {
+                border-radius: 0.35rem;
+            }
+            
+            .user-table th {
+                border-top: none;
+                background-color: #f8f9fc;
+                font-weight: 600;
+                color: #5a5c69;
+            }
+            
+            .user-row:hover {
+                background-color: #f8f9fc;
+            }
+
+            .search-filter-section {
+                background-color: #f8f9fc;
+                padding: 1.5rem;
+                border-radius: 0.35rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .pagination-section {
+                display: flex;
+                justify-content: between;
+                align-items: center;
+                margin-top: 1rem;
+                padding: 1rem 0;
+            }
+
+            .pagination-info {
+                color: #5a5c69;
+                font-size: 0.875rem;
+            }
+
+            .profile-image {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+        </style>
+    </head>
+
+    <body id="page-top">
+        <!-- Page Wrapper -->
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+                <!-- Sidebar - Brand -->
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                    <div class="sidebar-brand-icon rotate-n-15">
+                        <i class="fas fa-laugh-wink"></i>
+                    </div>
+                    <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+                </a>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider my-0">
+
+                <!-- Nav Item - Dashboard -->
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">
+                        <i class="fas fa-fw fa-tachometer-alt"></i>
+                        <span>Dashboard</span></a>
+                </li>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+
+                <!-- Nav Item - Users -->
+                <li class="nav-item active">
+                    <a class="nav-link" href="users.php">
+                        <i class="fas fa-fw fa-users"></i>
+                        <span>Users</span></a>
+                </li>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">
+
+                <!-- Sidebar Toggler (Sidebar) -->
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+                </div>
+            </ul>
+            <!-- End of Sidebar -->
+
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+                <!-- Main Content -->
+                <div id="content">
+                    <!-- Topbar -->
+                    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                        <!-- Sidebar Toggle (Topbar) -->
+                        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                            <i class="fa fa-bars"></i>
+                        </button>
+
+                        <!-- Topbar Navbar -->
+                        <ul class="navbar-nav ml-auto">
+                            <!-- Nav Item - User Information -->
+                            <li class="nav-item dropdown no-arrow">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                    <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <!-- End of Topbar -->
+
+                    <!-- Begin Page Content -->
+                    <div class="container-fluid">
+                        <!-- Page Heading -->
+                        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                            <h1 class="h3 mb-0 text-gray-800">User Management</h1>
+                        </div>
+
+                        <!-- Search and Filter Section -->
+                        <div class="search-filter-section">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group mb-3">
+                                        <label for="searchInput" class="font-weight-bold">Search Users</label>
+                                        <input type="text" class="form-control" id="searchInput" placeholder="Search by ID, Name, Number, or Email...">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group mb-3">
+                                        <label for="statusFilter" class="font-weight-bold">Filter by Status</label>
+                                        <select class="form-control" id="statusFilter">
+                                            <option value="">All Status</option>
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                            <option value="pending">Pending</option>
+                                            <option value="banned">Banned</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Users Table -->
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Users List</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered user-table" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Profile</th>
+                                                <th>Number</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Status</th>
+                                                <th>Last Login</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="userTableBody">
+                                            <!-- Users will be populated here by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- Pagination Section -->
+                                <div class="pagination-section">
+                                    <div class="pagination-info">
+                                        Showing <span id="showingStart">1</span> to <span id="showingEnd">10</span> of <span id="totalUsers">0</span> users
+                                    </div>
+                                    <div class="ml-auto">
+                                        <button class="btn btn-outline-primary btn-sm" id="prevPageBtn" onclick="changePage(-1)" disabled>
+                                            <i class="fas fa-chevron-left"></i> Previous
+                                        </button>
+                                        <span class="mx-2">Page <span id="currentPageSpan">1</span></span>
+                                        <button class="btn btn-outline-primary btn-sm" id="nextPageBtn" onclick="changePage(1)">
+                                            Next <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.container-fluid -->
+                </div>
+                <!-- End of Main Content -->
+
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; Your Website 2021</span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
+            </div>
+            <!-- End of Content Wrapper -->
+        </div>
+        <!-- End of Page Wrapper -->
+
+        <!-- View User Modal -->
+        <div class="modal fade" id="viewUserModal" tabindex="-1" role="dialog" aria-labelledby="viewUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewUserModalLabel">
+                            <i class="fas fa-user-circle mr-2"></i>User Details
+                        </h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <div id="viewUserProfileImage"></div>
+                                <h5 id="viewUserName">User Name</h5>
+                                <p class="text-muted" id="viewUserNumber">Number</p>
+                                <span class="status-badge" id="viewUserStatus">Status</span>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="font-weight-bold">User ID:</label>
+                                    <p class="form-control-plaintext" id="viewUserId">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Number:</label>
+                                    <p class="form-control-plaintext" id="viewUserNumberDetail">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Full Name:</label>
+                                    <p class="form-control-plaintext" id="viewUserFullName">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Email Address:</label>
+                                    <p class="form-control-plaintext" id="viewUserEmail">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Last Login:</label>
+                                    <p class="form-control-plaintext" id="viewUserLastLogin">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Created At:</label>
+                                    <p class="form-control-plaintext" id="viewUserCreatedAt">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold">IP Address:</label>
+                                    <p class="form-control-plaintext" id="viewUserIpAddress">-</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Failed Login Attempts:</label>
+                                    <p class="form-control-plaintext" id="viewUserFailedAttempts">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap core JavaScript-->
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Core plugin JavaScript-->
+        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="js/sb-admin-2.min.js"></script>
+
+        <script>
+            // Sample user data based on the database structure
+            const users = [
+                {
+                    id: 1,
+                    number: '1234567890',
+                    email: 'john.doe@example.com',
+                    full_name: 'John Doe',
+                    profile_image: null,
+                    status: 'active',
+                    failed_login_attempts: 0,
+                    last_failed_login: null,
+                    created_at: '2023-01-15T10:30:00Z',
+                    updated_at: '2025-06-10T14:30:00Z',
+                    last_login: '2025-06-14T09:20:00Z',
+                    last_activity: '2025-06-14T09:25:00Z',
+                    ip_address: '192.168.1.100',
+                    user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                },
+                {
+                    id: 2,
+                    number: '2345678901',
+                    email: 'jane.smith@example.com',
+                    full_name: 'Jane Smith',
+                    profile_image: null,
+                    status: 'active',
+                    failed_login_attempts: 1,
+                    last_failed_login: '2025-06-10T08:15:00Z',
+                    created_at: '2023-03-20T14:45:00Z',
+                    updated_at: '2025-06-12T10:15:00Z',
+                    last_login: '2025-06-12T10:15:00Z',
+                    last_activity: '2025-06-12T11:30:00Z',
+                    ip_address: '192.168.1.101',
+                    user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
+                },
+                {
+                    id: 3,
+                    number: '3456789012',
+                    email: 'mike.johnson@example.com',
+                    full_name: 'Mike Johnson',
+                    profile_image: null,
+                    status: 'inactive',
+                    failed_login_attempts: 3,
+                    last_failed_login: '2025-05-28T16:45:00Z',
+                    created_at: '2022-11-10T12:00:00Z',
+                    updated_at: '2025-05-28T16:45:00Z',
+                    last_login: '2025-05-28T16:45:00Z',
+                    last_activity: '2025-05-28T17:00:00Z',
+                    ip_address: '192.168.1.102',
+                    user_agent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36'
+                },
+                {
+                    id: 4,
+                    number: '4567890123',
+                    email: 'sarah.wilson@example.com',
+                    full_name: 'Sarah Wilson',
+                    profile_image: null,
+                    status: 'pending',
+                    failed_login_attempts: 0,
+                    last_failed_login: null,
+                    created_at: '2025-06-01T09:30:00Z',
+                    updated_at: '2025-06-01T09:30:00Z',
+                    last_login: null,
+                    last_activity: null,
+                    ip_address: null,
+                    user_agent: null
+                },
+                {
+                    id: 5,
+                    number: '5678901234',
+                    email: 'david.brown@example.com',
+                    full_name: 'David Brown',
+                    profile_image: null,
+                    status: 'active',
+                    failed_login_attempts: 0,
+                    last_failed_login: null,
+                    created_at: '2023-08-15T11:20:00Z',
+                    updated_at: '2025-06-14T09:20:00Z',
+                    last_login: '2025-06-14T09:20:00Z',
+                    last_activity: '2025-06-14T10:45:00Z',
+                    ip_address: '192.168.1.103',
+                    user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                },
+                {
+                    id: 6,
+                    number: '6789012345',
+                    email: 'alice.cooper@example.com',
+                    full_name: 'Alice Cooper',
+                    profile_image: null,
+                    status: 'banned',
+                    failed_login_attempts: 5,
+                    last_failed_login: '2025-06-05T20:30:00Z',
+                    created_at: '2023-02-10T15:00:00Z',
+                    updated_at: '2025-06-05T20:30:00Z',
+                    last_login: '2025-06-01T14:20:00Z',
+                    last_activity: '2025-06-01T14:25:00Z',
+                    ip_address: '192.168.1.104',
+                    user_agent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15'
+                },
+                {
+                    id: 7,
+                    number: '7890123456',
+                    email: 'bob.martin@example.com',
+                    full_name: 'Bob Martin',
+                    profile_image: null,
+                    status: 'inactive',
+                    failed_login_attempts: 2,
+                    last_failed_login: '2025-05-20T12:15:00Z',
+                    created_at: '2023-05-12T08:30:00Z',
+                    updated_at: '2025-05-20T12:15:00Z',
+                    last_login: '2025-05-15T16:40:00Z',
+                    last_activity: '2025-05-15T17:10:00Z',
+                    ip_address: '192.168.1.105',
+                    user_agent: 'Mozilla/5.0 (Android 11; Mobile; rv:68.0) Gecko/68.0 Firefox/88.0'
+                },
+                {
+                    id: 8,
+                    number: '8901234567',
+                    email: 'carol.white@example.com',
+                    full_name: 'Carol White',
+                    profile_image: null,
+                    status: 'active',
+                    failed_login_attempts: 0,
+                    last_failed_login: null,
+                    created_at: '2024-01-20T13:45:00Z',
+                    updated_at: '2025-06-13T15:30:00Z',
+                    last_login: '2025-06-13T15:30:00Z',
+                    last_activity: '2025-06-13T16:00:00Z',
+                    ip_address: '192.168.1.106',
+                    user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0'
+                },
+                {
+                    id: 9,
+                    number: '9012345678',
+                    email: 'daniel.garcia@example.com',
+                    full_name: 'Daniel Garcia',
+                    profile_image: null,
+                    status: 'pending',
+                    failed_login_attempts: 0,
+                    last_failed_login: null,
+                    created_at: '2025-06-10T07:15:00Z',
+                    updated_at: '2025-06-10T07:15:00Z',
+                    last_login: null,
+                    last_activity: null,
+                    ip_address: null,
+                    user_agent: null
+                },
+                {
+                    id: 10,
+                    number: '0123456789',
+                    email: 'eva.rodriguez@example.com',
+                    full_name: 'Eva Rodriguez',
+                    profile_image: null,
+                    status: 'active',
+                    failed_login_attempts: 1,
+                    last_failed_login: '2025-06-08T11:20:00Z',
+                    created_at: '2023-12-05T16:30:00Z',
+                    updated_at: '2025-06-14T08:45:00Z',
+                    last_login: '2025-06-14T08:45:00Z',
+                    last_activity: '2025-06-14T09:15:00Z',
+                    ip_address: '192.168.1.107',
+                    user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15'
+                },
+                {
+                    id: 11,
+                    number: '1122334455',
+                    email: 'frank.miller@example.com',
+                    full_name: 'Frank Miller',
+                    profile_image: null,
+                    status: 'banned',
+                    failed_login_attempts: 8,
+                    last_failed_login: '2025-06-12T19:45:00Z',
+                    created_at: '2022-09-18T10:20:00Z',
+                    updated_at: '2025-06-12T19:45:00Z',
+                    last_login: '2025-06-10T12:30:00Z',
+                    last_activity: '2025-06-10T13:00:00Z',
+                    ip_address: '192.168.1.108',
+                    user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                },
+                {
+                    id: 12,
+                    number: '2233445566',
+                    email: 'grace.lee@example.com',
+                    full_name: 'Grace Lee',
+                    profile_image: null,
+                    status: 'active',
+                    failed_login_attempts: 0,
+                    last_failed_login: null,
+                    created_at: '2024-03-14T14:10:00Z',
+                    updated_at: '2025-06-14T12:20:00Z',
+                    last_login: '2025-06-14T12:20:00Z',
+                    last_activity: '2025-06-14T12:50:00Z',
+                    ip_address: '192.168.1.109',
+                    user_agent: 'Mozilla/5.0 (iPad; CPU OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15'
+                }
+            ];
+
+            let currentPage = 1;
+            const usersPerPage = 10;
+            let filteredUsers = [...users];
+
+            function getInitials(fullName) {
+                if (!fullName) return 'N/A';
+                const names = fullName.split(' ');
+                return names.map(name => name.charAt(0)).join('').toUpperCase();
+            }
+
+            function getStatusClass(status) {
+                switch(status.toLowerCase()) {
+                    case 'active': return 'status-active';
+                    case 'inactive': return 'status-inactive';
+                    case 'pending': return 'status-pending';
+                    case 'banned': return 'status-banned';
+                    default: return 'status-active';
+                }
+            }
+
+            function formatDateTime(dateString) {
+                if (!dateString) return 'Never';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+
+            function renderUsers() {
+                const tableBody = document.getElementById('userTableBody');
+                const startIndex = (currentPage - 1) * usersPerPage;
+                const endIndex = startIndex + usersPerPage;
+                const currentUsers = filteredUsers.slice(startIndex, endIndex);
+
+                tableBody.innerHTML = '';
+
+                currentUsers.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.className = 'user-row';
+                    
+                    const profileDisplay = user.profile_image ? 
+                        `<img src="${user.profile_image}" class="profile-image" alt="Profile">` :
+                        `<div class="user-avatar">${getInitials(user.full_name)}</div>`;
+
+                    row.innerHTML = `
+                        <td>${user.id}</td>
+                        <td>${profileDisplay}</td>
+                        <td>${user.number}</td>
+                        <td>${user.full_name || 'N/A'}</td>
+                        <td>${user.email || 'N/A'}</td>
+                        <td><span class="status-badge ${getStatusClass(user.status)}">${user.status.charAt(0).toUpperCase() + user.status.slice(1)}</span></td>
+                        <td>${formatDateTime(user.last_login)}</td>
+                        <td>
+                            <button class="btn btn-info btn-sm btn-action" onclick="viewUser(${user.id})">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            ${user.status !== 'banned' ? 
+                                `<button class="btn btn-danger btn-sm btn-action" onclick="blockUser(${user.id})">
+                                    <i class="fas fa-ban"></i> Block
+                                </button>` :
+                                `<button class="btn btn-success btn-sm btn-action" onclick="unblockUser(${user.id})">
+                                    <i class="fas fa-check"></i> Unblock
+                                </button>`
+                            }
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                updatePaginationInfo();
+            }
+
+            function updatePaginationInfo() {
+                const startIndex = (currentPage - 1) * usersPerPage + 1;
+                const endIndex = Math.min(currentPage * usersPerPage, filteredUsers.length);
+                
+                document.getElementById('showingStart').textContent = filteredUsers.length > 0 ? startIndex : 0;
+                document.getElementById('showingEnd').textContent = endIndex;
+                document.getElementById('totalUsers').textContent = filteredUsers.length;
+                document.getElementById('currentPageSpan').textContent = currentPage;
+                
+                // Update pagination buttons
+                document.getElementById('prevPageBtn').disabled = currentPage <= 1;
+                document.getElementById('nextPageBtn').disabled = endIndex >= filteredUsers.length;
+            }
+
+            function changePage(direction) {
+                const newPage = currentPage + direction;
+                const maxPage = Math.ceil(filteredUsers.length / usersPerPage);
+                
+                if (newPage >= 1 && newPage <= maxPage) {
+                    currentPage = newPage;
+                    renderUsers();
+                }
+            }
+
+            function filterUsers() {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                const statusFilter = document.getElementById('statusFilter').value;
+                
+                filteredUsers = users.filter(user => {
+                    const matchesSearch = !searchTerm || 
+                        user.id.toString().includes(searchTerm) ||
+                        (user.full_name && user.full_name.toLowerCase().includes(searchTerm)) ||
+                        user.number.includes(searchTerm) ||
+                        (user.email && user.email.toLowerCase().includes(searchTerm));
+                    
+                    const matchesStatus = !statusFilter || user.status === statusFilter;
+                    
+                    return matchesSearch && matchesStatus;
+                });
+                
+                currentPage = 1;
+                renderUsers();
+            }
+
+            function viewUser(userId) {
+                const user = users.find(u => u.id === userId);
+                if (!user) return;
+                
+                // Update profile image/avatar
+                const profileImageContainer = document.getElementById('viewUserProfileImage');
+                if (user.profile_image) {
+                    profileImageContainer.innerHTML = `<img src="${user.profile_image}" class="profile-image mx-auto d-block mb-3" alt="Profile" style="width: 80px; height: 80px;">`;
+                } else {
+                    profileImageContainer.innerHTML = `<div class="user-avatar mx-auto mb-3" style="width: 80px; height: 80px; font-size: 1.5rem;">${getInitials(user.full_name)}</div>`;
+                }
+                
+                // Update basic info
+                document.getElementById('viewUserName').textContent = user.full_name || 'N/A';
+                document.getElementById('viewUserNumber').textContent = user.number;
+                
+                // Update status badge
+                const statusElement = document.getElementById('viewUserStatus');
+                statusElement.textContent = user.status.charAt(0).toUpperCase() + user.status.slice(1);
+                statusElement.className = `status-badge ${getStatusClass(user.status)}`;
+                
+                // Update detailed info
+                document.getElementById('viewUserId').textContent = user.id;
+                document.getElementById('viewUserNumberDetail').textContent = user.number;
+                document.getElementById('viewUserFullName').textContent = user.full_name || 'N/A';
+                document.getElementById('viewUserEmail').textContent = user.email || 'N/A';
+                document.getElementById('viewUserLastLogin').textContent = formatDateTime(user.last_login);
+                document.getElementById('viewUserCreatedAt').textContent = formatDateTime(user.created_at);
+                document.getElementById('viewUserIpAddress').textContent = user.ip_address || 'N/A';
+                document.getElementById('viewUserFailedAttempts').textContent = user.failed_login_attempts;
+                
+                // Show the modal
+                $('#viewUserModal').modal('show');
+            }
+
+            function blockUser(userId) {
+                if (confirm('Are you sure you want to block this user?')) {
+                    const userIndex = users.findIndex(u => u.id === userId);
+                    if (userIndex !== -1) {
+                        users[userIndex].status = 'banned';
+                        users[userIndex].updated_at = new Date().toISOString();
+                        renderUsers();
+                        alert('User has been blocked successfully.');
+                    }
+                }
+            }
+
+            function unblockUser(userId) {
+                if (confirm('Are you sure you want to unblock this user?')) {
+                    const userIndex = users.findIndex(u => u.id === userId);
+                    if (userIndex !== -1) {
+                        users[userIndex].status = 'active';
+                        users[userIndex].updated_at = new Date().toISOString();
+                        renderUsers();
+                        alert('User has been unblocked successfully.');
+                    }
+                }
+            }
+
+            // Event listeners
+            document.getElementById('searchInput').addEventListener('input', filterUsers);
+            document.getElementById('statusFilter').addEventListener('change', filterUsers);
+
+            // Initialize the page
+            document.addEventListener('DOMContentLoaded', function() {
+                renderUsers();
+            });
+
+            // Sidebar toggle functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const sidebarToggle = document.getElementById('sidebarToggle');
+                const sidebarToggleTop = document.getElementById('sidebarToggleTop');
+                const body = document.body;
+
+                if (sidebarToggle) {
+                    sidebarToggle.addEventListener('click', function() {
+                        body.classList.toggle('sidebar-toggled');
+                        document.querySelector('.sidebar').classList.toggle('toggled');
+                    });
+                }
+
+                if (sidebarToggleTop) {
+                    sidebarToggleTop.addEventListener('click', function() {
+                        body.classList.toggle('sidebar-toggled');
+                        document.querySelector('.sidebar').classList.toggle('toggled');
+                    });
+                }
+            });
+        </script>
+
+        <!-- Bootstrap core JavaScript-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+
+    </body>
+    </html>
