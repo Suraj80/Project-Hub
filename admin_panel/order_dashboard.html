@@ -11,1303 +11,1030 @@
     <title>Orders Dashboard - Admin Panel</title>
 
     <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Custom styles for this template-->
-    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        .status-badge {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-            border-radius: 0.25rem;
-            font-weight: 600;
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #6366f1;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #06b6d4;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+            --border-color: #e5e7eb;
         }
-        .status-pending { background-color: #f6c23e; color: #fff; }
-        .status-processing { background-color: #36b9cc; color: #fff; }
-        .status-completed { background-color: #1cc88a; color: #fff; }
-        .status-cancelled { background-color: #e74a3b; color: #fff; }
-        .status-refunded { background-color: #858796; color: #fff; }
-        
-        .delivery-badge {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-            border-radius: 0.25rem;
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        /* Enhanced Navbar */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.15);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
             font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
         }
-        .delivery-download { background-color: #4e73df; color: #fff; }
-        .delivery-pendrive { background-color: #f6c23e; color: #fff; }
-        
-        .filter-card {
-            background: #f8f9fc;
-            border: 1px solid #e3e6f0;
-            border-radius: 0.35rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
+
+        .navbar-nav .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white !important;
         }
-        
-        .chart-container {
-            position: relative;
-            height: 300px;
+
+        .navbar-nav .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white !important;
         }
-        
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #e74a3b;
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 0.75rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem 0;
+            min-height: 100vh;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 1rem;
+        }
+
+        /* Filter Card */
+        .filter-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Metric Cards */
+        .metric-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .metric-icon {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 0.75rem;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .metric-change {
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .metric-change.positive {
+            color: var(--success-color);
+        }
+
+        .metric-change.negative {
+            color: var(--danger-color);
+        }
+
+        /* Chart Cards */
+        .chart-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 350px;
+        }
+
+        .chart-container-small {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-pending { background-color: #fef3c7; color: #92400e; }
+        .status-processing { background-color: #dbeafe; color: #1e40af; }
+        .status-completed { background-color: #d1fae5; color: #065f46; }
+        .status-cancelled { background-color: #fee2e2; color: #991b1b; }
+        .status-refunded { background-color: #f3f4f6; color: #374151; }
+
+        /* Recent Orders Table */
+        .orders-table {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: #f8fafc;
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 600;
+            color: var(--dark-color);
+            padding: 1rem;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .metric-value {
+                font-size: 2rem;
+            }
+            
+            .chart-container {
+                height: 250px;
+            }
+            
+            .chart-container-small {
+                height: 200px;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
         }
     </style>
 </head>
 
-<body id="page-top">
-
-    <!-- Page Wrapper -->
-    <div id="wrapper">
-
-        <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+<body>
+    <!-- Enhanced Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-chart-line me-2"></i>
+                Orders Dashboard
             </a>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
-
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Interface
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#"><i class="fas fa-shopping-cart me-1"></i> Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-chart-bar me-1"></i> Analytics</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-users me-1"></i> Customers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-box me-1"></i> Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-cog me-1"></i> Settings</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger rounded-pill">3</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-cart me-2"></i> New order received</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-check me-2"></i> Order completed</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-exclamation-triangle me-2"></i> Order needs attention</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> Admin
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cogs me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Components</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="buttons.html">Buttons</a>
-                        <a class="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Utilities</span>
-                </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Utilities:</h6>
-                        <a class="collapse-item" href="utilities-color.html">Colors</a>
-                        <a class="collapse-item" href="utilities-border.html">Borders</a>
-                        <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                        <a class="collapse-item" href="utilities-other.html">Other</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Addons
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Pages</span>
-                </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item" href="register.html">Register</a>
-                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="404.html">404 Page</a>
-                        <a class="collapse-item" href="blank.html">Blank Page</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Orders -->
-            <li class="nav-item active">
-                <a class="nav-link" href="orders.html">
-                    <i class="fas fa-fw fa-shopping-cart"></i>
-                    <span>Orders</span>
-                    <div class="notification-badge">3</div>
-                </a>
-            </li>
-
-            <!-- Nav Item - Charts -->
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Charts</span></a>
-            </li>
-
-            <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="tables.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
-
-            <!-- Sidebar Message -->
-            <div class="sidebar-card d-none d-lg-flex">
-                <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="...">
-                <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features, components, and more!</p>
-                <a class="btn btn-success btn-sm" href="https://startbootstrap.com/theme/sb-admin-pro">Upgrade to Pro!</a>
-            </div>
-
-        </ul>
-        <!-- End of Sidebar -->
-
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
-            <div id="content">
-
-                <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
-
-                    <!-- Topbar Search -->
-                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-
-                    <!-- Topbar Navbar -->
-                    <ul class="navbar-nav ml-auto">
-
-                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-                        <li class="nav-item dropdown no-arrow d-sm-none">
-                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-search fa-fw"></i>
-                            </a>
-                            <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                                aria-labelledby="searchDropdown">
-                                <form class="form-inline mr-auto w-100 navbar-search">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control bg-light border-0 small"
-                                            placeholder="Search for..." aria-label="Search"
-                                            aria-describedby="basic-addon2">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary" type="button">
-                                                <i class="fas fa-search fa-sm"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </li>
-
-                        <!-- Nav Item - Alerts -->
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bell fa-fw"></i>
-                                <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter">3+</span>
-                            </a>
-                            <!-- Dropdown - Alerts -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    Order Alerts
-                                </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-primary">
-                                            <i class="fas fa-shopping-cart text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">June 15, 2025</div>
-                                        <span class="font-weight-bold">New order #ORD-2025-001 received!</span>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-success">
-                                            <i class="fas fa-check text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">June 15, 2025</div>
-                                        Order #ORD-2025-002 has been completed!
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-warning">
-                                            <i class="fas fa-exclamation-triangle text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">June 14, 2025</div>
-                                        Pen drive order #ORD-2025-003 needs attention.
-                                    </div>
-                                </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
-                            </div>
-                        </li>
-
-                        <!-- Nav Item - Messages -->
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-envelope fa-fw"></i>
-                                <!-- Counter - Messages -->
-                                <span class="badge badge-danger badge-counter">7</span>
-                            </a>
-                            <!-- Dropdown - Messages -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="messagesDropdown">
-                                <h6 class="dropdown-header">
-                                    Message Center
-                                </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_1.svg" alt="...">
-                                        <div class="status-indicator bg-success"></div>
-                                    </div>
-                                    <div class="font-weight-bold">
-                                        <div class="text-truncate">Hi there! I am wondering if you can help me with a
-                                            problem I've been having.</div>
-                                        <div class="small text-gray-500">Emily Fowler · 58m</div>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_2.svg" alt="...">
-                                        <div class="status-indicator"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-truncate">I have the photos that you ordered last month, how
-                                            would you like them sent to you?</div>
-                                        <div class="small text-gray-500">Jae Chun · 1d</div>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_3.svg" alt="...">
-                                        <div class="status-indicator bg-warning"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-truncate">Last month's report looks great, I am very happy with
-                                            the progress so far, keep up the good work!</div>
-                                        <div class="small text-gray-500">Morgan Alvarez · 2d</div>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
-                            </div>
-                        </li>
-
-                        <div class="topbar-divider d-none d-sm-block"></div>
-
-                        <!-- Nav Item - User Information -->
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
-                            </a>
-                            <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Profile
-                                </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Settings
-                                </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Activity Log
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
-                                </a>
-                            </div>
-                        </li>
-
-                    </ul>
-
-                </nav>
-                <!-- End of Topbar -->
-
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
-
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Orders Dashboard</h1>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Export Orders</a>
-                    </div>
-
-                    <!-- Filter Section -->
-                    <div class="filter-card">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <label for="dateFilter" class="form-label small font-weight-bold text-gray-700">Date Filter:</label>
-                                <select class="form-control form-control-sm" id="dateFilter" onchange="updateDashboard()">
-                                    <option value="today">Today</option>
-                                    <option value="week" selected>This Week</option>
-                                    <option value="month">This Month</option>
-                                    <option value="custom">Custom Range</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="statusFilter" class="form-label small font-weight-bold text-gray-700">Status Filter:</label>
-                                <select class="form-control form-control-sm" id="statusFilter" onchange="updateDashboard()">
-                                    <option value="all">All Status</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="processing">Processing</option>
-                                    <option value="completed">Completed</option>
-                                    <option value="cancelled">Cancelled</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="deliveryFilter" class="form-label small font-weight-bold text-gray-700">Delivery Mode:</label>
-                                <select class="form-control form-control-sm" id="deliveryFilter" onchange="updateDashboard()">
-                                    <option value="all">All Modes</option>
-                                    <option value="download">Download</option>
-                                    <option value="pendrive">Pen Drive</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 d-flex align-items-end">
-                                <button class="btn btn-sm btn-outline-primary" onclick="resetFilters()">
-                                    <i class="fas fa-refresh fa-sm"></i> Reset
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Summary Cards Row -->
-                    <div class="row">
-                        <!-- Total Orders Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Total Orders</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalOrders">152</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pending Orders Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Pending Orders</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="pendingOrders">23</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-clock fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Completed Orders Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Completed Orders</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="completedOrders">118</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Revenue Card -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                Revenue</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="revenue">₹45,280</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-rupee-sign fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Delivery Mode Cards Row -->
-                    <div class="row">
-                        <!-- Download Orders Today -->
-                        <div class="col-xl-6 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Download Orders Today</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="downloadOrdersToday">8</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-download fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pen Drive Orders Today -->
-                        <div class="col-xl-6 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Pen Drive Orders Today</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="pendriveOrdersToday">3</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-usb fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Charts Row -->
-                    <div class="row">
-                        <!-- Order Status Chart -->
-                        <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Order Trends</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Chart Options:</div>
-                                            <a class="dropdown-item" href="#">View Details</a>
-                                            <a class="dropdown-item" href="#">Export Data</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Refresh</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="ordersLineChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Order Status Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Order Status</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-container">
-                                        <canvas id="orderStatusChart"></canvas>
-                                    </div>
-                                    <div class="mt-4 text-center small">
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Completed
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-warning"></i> Pending
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Processing
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-danger"></i> Cancelled
-                                        <!-- </span> -->
-                                         d
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Orders Table -->
-                        <div class="col-12">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Recent Orders</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Order ID</th>
-                                                    <th>Customer</th>
-                                                    <th>Project</th>
-                                                    <th>Amount</th>
-                                                    <th>Status</th>
-                                                    <th>Delivery</th>
-                                                    <th>Date</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>ORD-2025-001</td>
-                                                    <td>Rahul Sharma</td>
-                                                    <td>E-commerce Website (PHP)</td>
-                                                    <td>₹2,500</td>
-                                                    <td><span class="status-badge status-pending">Pending</span></td>
-                                                    <td><span class="delivery-badge delivery-download">Download</span></td>
-                                                    <td>June 15, 2025</td>
-                                                    <td>
-                                                        <button class="btn btn-sm btn-primary">View</button>
-                                                        <button class="btn btn-sm btn-success">Process</button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>ORD-2025-002</td>
-                                                    <td>Priya Patel</td>
-                                                    <td>Student Management System (Java)</td>
-                                                    <td>₹3,200</td>
-                                                    <td><span class="status-badge status-completed">Completed</span></t
-
-                    <!-- Traffic Sources and Device Analytics Row -->
-                    <div class="row">
-                        <!-- Top Traffic Sources -->
-                        <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Top Traffic Sources</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover" id="trafficSourcesTable">
-                                            <thead>
-                                                <tr>
-                                                    <th>Source Type</th>
-                                                    <th>Visitors</th>
-                                                    <th>Sessions</th>
-                                                    <th>Bounce Rate</th>
-                                                    <th>Conversion</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <i class="fab fa-google text-danger mr-2"></i>
-                                                        Google Search
-                                                    </td>
-                                                    <td><strong>320</strong></td>
-                                                    <td>456</td>
-                                                    <td>
-                                                        <span class="badge badge-success">32%</span>
-                                                    </td>
-                                                    <td>
-                                                        <span class="badge badge-primary">8.5%</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <i class="fas fa-globe text-primary mr-2"></i>
-                                                        Direct Visit
-                                                    </td>
-                                                    <td><strong>210</strong></td>
-                                                    <td>298</td>
-                                                    <td>
-                                                        <span class="badge badge-warning">45%</span>
-                                                    </td>
-                                                    <td>
-                                                        <span class="badge badge-primary">12.3%</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <i class="fab fa-facebook text-info mr-2"></i>
-                                                        Social Media
-                                                    </td>
-                                                    <td><strong>115</strong></td>
-                                                    <td>187</td>
-                                                    <td>
-                                                        <span class="badge badge-danger">68%</span>
-                                                    </td>
-                                                    <td>
-                                                        <span class="badge badge-primary">4.2%</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <i class="fas fa-link text-success mr-2"></i>
-                                                        Referral Links
-                                                    </td>
-                                                    <td><strong>85</strong></td>
-                                                    <td>124</td>
-                                                    <td>
-                                                        <span class="badge badge-success">38%</span>
-                                                    </td>
-                                                    <td>
-                                                        <span class="badge badge-primary">6.8%</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <i class="fas fa-envelope text-warning mr-2"></i>
-                                                        Email Campaigns
-                                                    </td>
-                                                    <td><strong>50</strong></td>
-                                                    <td>73</td>
-                                                    <td>
-                                                        <span class="badge badge-success">25%</span>
-                                                    </td>
-                                                    <td>
-                                                        <span class="badge badge-primary">15.6%</span>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Traffic by Device Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Traffic by Device</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-container">
-                                        <canvas id="deviceChart"></canvas>
-                                    </div>
-                                    <div class="mt-4 text-center small">
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Desktop
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Mobile
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Tablet
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Geolocation and Recent Visits Row -->
-                    <div class="row">
-                        <!-- Top Countries -->
-                        <div class="col-xl-6 col-lg-6">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Top Countries</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Country</th>
-                                                    <th>Sessions</th>
-                                                    <th>Users</th>
-                                                    <th>%</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <img src="https://flagcdn.com/w20/in.png" alt="India" class="mr-2" style="width: 20px;">
-                                                        India
-                                                    </td>
-                                                    <td>425</td>
-                                                    <td>320</td>
-                                                    <td>
-                                                        <div class="progress progress-sm">
-                                                            <div class="progress-bar bg-success" style="width: 65%"></div>
-                                                        </div>
-                                                        <small>65%</small>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <img src="https://flagcdn.com/w20/us.png" alt="USA" class="mr-2" style="width: 20px;">
-                                                        United States
-                                                    </td>
-                                                    <td>156</td>
-                                                    <td>118</td>
-                                                    <td>
-                                                        <div class="progress progress-sm">
-                                                            <div class="progress-bar bg-primary" style="width: 24%"></div>
-                                                        </div>
-                                                        <small>24%</small>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <img src="https://flagcdn.com/w20/gb.png" alt="UK" class="mr-2" style="width: 20px;">
-                                                        United Kingdom
-                                                    </td>
-                                                    <td>42</td>
-                                                    <td>35</td>
-                                                    <td>
-                                                        <div class="progress progress-sm">
-                                                            <div class="progress-bar bg-info" style="width: 8%"></div>
-                                                        </div>
-                                                        <small>8%</small>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <img src="https://flagcdn.com/w20/ca.png" alt="Canada" class="mr-2" style="width: 20px;">
-                                                        Canada
-                                                    </td>
-                                                    <td>18</td>
-                                                    <td>15</td>
-                                                    <td>
-                                                        <div class="progress progress-sm">
-                                                            <div class="progress-bar bg-warning" style="width: 3%"></div>
-                                                        </div>
-                                                        <small>3%</small>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Recent Visits -->
-                        <div class="col-xl-6 col-lg-6">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Recent Visits</h6>
-                                    <div class="text-xs text-gray-500">
-                                        <i class="fas fa-circle text-success"></i> Live
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Location</th>
-                                                    <th>Device</th>
-                                                    <th>Entry Page</th>
-                                                    <th>Time</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="recentVisitsTable">
-                                                <tr>
-                                                    <td>
-                                                        <img src="https://flagcdn.com/w16/in.png" alt="India" class="mr-1">
-                                                        Mumbai
-                                                    </td>
-                                                    <td>
-                                                        <i class="fas fa-mobile-alt text-success"></i>
-                                                        <small>Mobile</small>
-                                                    </td>
-                                                    <td>
-                                                        <small>/projects/python</small>
-                                                    </td>
-                                                    <td>
-                                                        <small class="text-success">Now</small>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <img src="https://flagcdn.com/w16/us.png" alt="USA" class="mr-1">
-                                                        New York
-                                                    </td>
-                                                    <td>
-                                                        <i class="fas fa-desktop text-primary"></i>
-                                                        <small>Desktop</small>
-                                                    </td>
-                                                    <td>
-                                                        <small>/projects/java</small>
-                                                    </td>
-                                                    <td>
-                                                        <small>2m ago</small>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <img src="https://flagcdn.com/w16/in.png" alt="India" class="mr-1">
-                                                        Bangalore
-                                                    </td>
-                                                    <td>
-                                                        <i class="fas fa-tablet-alt text-info"></i>
-                                                        <small>Tablet</small>
-                                                    </td>
-                                                    <td>
-                                                        <small>/home</small>
-                                                    </td>
-                                                    <td>
-                                                        <small>5m ago</small>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <img src="https://flagcdn.com/w16/gb.png" alt="UK" class="mr-1">
-                                                        London
-                                                    </td>
-                                                    <td>
-                                                        <i class="fas fa-mobile-alt text-success"></i>
-                                                        <small>Mobile</small>
-                                                    </td>
-                                                    <td>
-                                                        <small>/projects/react</small>
-                                                    </td>
-                                                    <td>
-                                                        <small>8m ago</small>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <img src="https://flagcdn.com/w16/in.png" alt="India" class="mr-1">
-                                                        Delhi
-                                                    </td>
-                                                    <td>
-                                                        <i class="fas fa-desktop text-primary"></i>
-                                                        <small>Desktop</small>
-                                                    </td>
-                                                    <td>
-                                                        <small>/projects/nodejs</small>
-                                                    </td>
-                                                    <td>
-                                                        <small>12m ago</small>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Live Activity Feed -->
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Live Activity Feed</h6>
-                                    <div class="text-xs">
-                                        <span class="badge badge-success">
-                                            <i class="fas fa-circle"></i> 12 Active Users
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="card-body" style="max-height: 300px; overflow-y: auto;">
-                                    <div id="activityFeed">
-                                        <div class="d-flex align-items-center mb-3">
-                                            <div class="mr-3">
-                                                <div class="icon-circle bg-success">
-                                                    <i class="fas fa-user text-white"></i>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div class="small text-gray-500">Just now</div>
-                                                <span>New visitor from <strong>Mumbai, India</strong> viewed Python Projects</span>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center mb-3">
-                                            <div class="mr-3">
-                                                <div class="icon-circle bg-primary">
-                                                    <i class="fas fa-shopping-cart text-white"></i>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div class="small text-gray-500">2 minutes ago</div>
-                                                <span>User from <strong>New York, USA</strong> purchased Java Project</span>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center mb-3">
-                                            <div class="mr-3">
-                                                <div class="icon-circle bg-info">
-                                                    <i class="fas fa-search text-white"></i>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div class="small text-gray-500">3 minutes ago</div>
-                                                <span>Visitor from <strong>London, UK</strong> searched for "React Projects"</span>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center mb-3">
-                                            <div class="mr-3">
-                                                <div class="icon-circle bg-warning">
-                                                    <i class="fas fa-download text-white"></i>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div class="small text-gray-500">5 minutes ago</div>
-                                                <span>User from <strong>Bangalore, India</strong> downloaded Node.js Project</span>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center mb-3">
-                                            <div class="mr-3">
-                                                <div class="icon-circle bg-secondary">
-                                                    <i class="fas fa-eye text-white"></i>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div class="small text-gray-500">8 minutes ago</div>
-                                                <span>Visitor from <strong>Toronto, Canada</strong> viewed pricing page</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <!-- End of Main Content -->
-
-            </div>
-            <!-- End of Content Wrapper -->
-
         </div>
-        <!-- End of Page Wrapper -->
+    </nav>
 
-        <!-- Scroll to Top Button-->
-        <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-        </a>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <!-- Page Header -->
+            <div class="page-header fade-in-up">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="display-6 fw-bold mb-2">Orders Dashboard</h1>
+                            <p class="lead mb-0">Monitor and manage your orders with real-time insights</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button class="btn btn-light btn-lg">
+                                <i class="fas fa-download me-2"></i>Export Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
+            <!-- Filter Section -->
+            <div class="filter-card fade-in-up">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Date Range</label>
+                        <select class="form-select" id="dateFilter" onchange="updateDashboard()">
+                            <option value="today">Today</option>
+                            <option value="week" selected>This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Order Status</label>
+                        <select class="form-select" id="statusFilter" onchange="updateDashboard()">
+                            <option value="all">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="processing">Processing</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Delivery Mode</label>
+                        <select class="form-select" id="deliveryFilter" onchange="updateDashboard()">
+                            <option value="all">All Modes</option>
+                            <option value="download">Download</option>
+                            <option value="pendrive">Pen Drive</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button class="btn btn-outline-primary w-100" onclick="resetFilters()">
+                            <i class="fas fa-refresh me-2"></i>Reset Filters
                         </button>
                     </div>
-                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" href="login.html">Logout</a>
+                </div>
+            </div>
+
+            <!-- Metrics Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="metric-card fade-in-up">
+                        <div class="metric-icon" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="metric-value" id="totalOrders">152</div>
+                        <div class="metric-label">Total Orders</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+12% from last week</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="metric-card fade-in-up">
+                        <div class="metric-icon" style="background: linear-gradient(135deg, var(--warning-color), #f97316);">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="metric-value" id="pendingOrders">23</div>
+                        <div class="metric-label">Pending Orders</div>
+                        <div class="metric-change negative">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>-5% from last week</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="metric-card fade-in-up">
+                        <div class="metric-icon" style="background: linear-gradient(135deg, var(--success-color), #059669);">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="metric-value" id="completedOrders">118</div>
+                        <div class="metric-label">Completed Orders</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+18% from last week</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="metric-card fade-in-up">
+                        <div class="metric-icon" style="background: linear-gradient(135deg, var(--info-color), #0891b2);">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <div class="metric-value" id="revenue">₹45,280</div>
+                        <div class="metric-label">Total Revenue</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+25% from last week</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Bootstrap core JavaScript-->
-        <script src="vendor/jquery/jquery.min.js"></script>
-        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-        <!-- Core plugin JavaScript-->
-        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-        <!-- Custom scripts for all pages-->
-        <script src="js/sb-admin-2.min.js"></script>
-
-        <!-- Chart.js -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-
-        <script>
-            // Traffic Analytics Data
-            const trafficData = {
-                hourly: {
-                    labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
-                    visitors: [12, 8, 5, 3, 2, 4, 8, 15, 25, 35, 42, 48, 52, 45, 38, 41, 44, 38, 32, 28, 25, 20, 18, 15]
-                },
-                daily: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    visitors: [320, 285, 412, 380, 450, 290, 180]
-                },
-                weekly: {
-                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-                    visitors: [1250, 1420, 1180, 1680]
-                }
-            };
-
-            // Update Dashboard based on date filter
-            function updateDashboard() {
-                const dateFilter = document.getElementById('dateFilter').value;
-                updateTrafficChart(dateFilter);
-                updateMetrics(dateFilter);
-            }
-
-            // Update Traffic Line Chart
-            function updateTrafficChart(period) {
-                const ctx = document.getElementById('trafficLineChart').getContext('2d');
-                
-                if (window.trafficChart) {
-                    window.trafficChart.destroy();
-                }
-
-                const data = trafficData[period] || trafficData.daily;
-                
-                window.trafficChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: data.labels,
-                        datasets: [{
-                            label: 'Visitors',
-                            data: data.visitors,
-                            borderColor: '#4e73df',
-                            backgroundColor: 'rgba(78, 115, 223, 0.1)',
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.3
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: {
-                                    color: '#e3e6f0'
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    color: '#e3e6f0'
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            // Device Chart
-            function initDeviceChart() {
-                const ctx = document.getElementById('deviceChart').getContext('2d');
-                
-                new Chart(ctx, {
-                    type: 'pie',
-                    data: {
-                        labels: ['Desktop', 'Mobile', 'Tablet'],
-                        datasets: [{
-                            data: [45, 40, 15],
-                            backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-                            borderWidth: 2,
-                            borderColor: '#fff'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        }
-                    }
-                });
-            }
-
-            // Update Metrics
-            function updateMetrics(period) {
-                const metrics = {
-                    today: {
-                        totalVisitors: 156,
-                        uniqueVisitors: 98,
-                        returningUsers: 58,
-                        activeUsers: 12,
-                        avgSession: '2m 45s',
-                        bounceRate: '42%'
-                    },
-                    week: {
-                        totalVisitors: 2317,
-                        uniqueVisitors: 1456,
-                        returningUsers: 861,
-                        activeUsers: 12,
-                        avgSession: '3m 12s',
-                        bounceRate: '38%'
-                    },
-                    month: {
-                        totalVisitors: 8945,
-                        uniqueVisitors: 5623,
-                        returningUsers: 3322,
-                        activeUsers: 12,
-                        avgSession: '3m 45s',
-                        bounceRate: '35%'
-                    }
-                };
-
-                const data = metrics[period] || metrics.week;
-                
-                document.getElementById('totalVisitors').textContent = data.totalVisitors.toLocaleString();
-                document.getElementById('uniqueVisitors').textContent = data.uniqueVisitors.toLocaleString();
-                document.getElementById('returningUsers').textContent = data.returningUsers.toLocaleString();
-                document.getElementById('activeUsers').textContent = data.activeUsers;
-                document.getElementById('avgSession').textContent = data.avgSession;
-                document.getElementById('bounceRate').textContent = data.bounceRate;
-            }
-
-            // Reset Filters
-            function resetFilters() {
-                document.getElementById('dateFilter').value = 'week';
-                updateDashboard();
-            }
-
-            // Simulate real-time updates
-            function simulateRealTimeUpdates() {
-                setInterval(() => {
-                    // Update active users randomly
-                    const activeUsers = Math.floor(Math.random() * 20) + 5;
-                    document.getElementById('activeUsers').textContent = activeUsers;
-                    
-                    // Update badge
-                    document.querySelector('.badge-success').innerHTML = `<i class="fas fa-circle"></i> ${activeUsers} Active Users`;
-                    
-                    // Add new activity to feed occasionally
-                    if (Math.random() > 0.7) {
-                        addNewActivity();
-                    }
-                }, 10000); // Update every 10 seconds
-            }
-
-            // Add new activity to feed
-            function addNewActivity() {
-                const activities = [
-                    { icon: 'user', color: 'success', text: 'New visitor from <strong>Chennai, India</strong> viewed Django Projects' },
-                    { icon: 'shopping-cart', color: 'primary', text: 'User from <strong>California, USA</strong> purchased ML Project' },
-                    { icon: 'search', color: 'info', text: 'Visitor from <strong>Sydney, Australia</strong> searched for "AI Projects"' },
-                    { icon: 'download', color: 'warning', text: 'User from <strong>Berlin, Germany</strong> downloaded React Project' }
-                ];
-                
-                const activity = activities[Math.floor(Math.random() * activities.length)];
-                const activityFeed = document.getElementById('activityFeed');
-                
-                const newActivity = document.createElement('div');
-                newActivity.className = 'd-flex align-items-center mb-3';
-                newActivity.innerHTML = `
-                    <div class="mr-3">
-                        <div class="icon-circle bg-${activity.color}">
-                            <i class="fas fa-${activity.icon} text-white"></i>
+            <!-- Delivery Mode Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="metric-card fade-in-up">
+                        <div class="metric-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <div class="metric-value" id="downloadOrdersToday">8</div>
+                        <div class="metric-label">Download Orders Today</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+3 from yesterday</span>
                         </div>
                     </div>
-                    <div>
-                        <div class="small text-gray-500">Just now</div>
-                        <span>${activity.text}</span>
+                </div>
+                <div class="col-lg-6">
+                    <div class="metric-card fade-in-up">
+                        <div class="metric-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                            <i class="fas fa-usb"></i>
+                        </div>
+                        <div class="metric-value" id="pendriveOrdersToday">3</div>
+                        <div class="metric-label">Pen Drive Orders Today</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+1 from yesterday</span>
+                        </div>
                     </div>
-                `;
-                
-                activityFeed.insertBefore(newActivity, activityFeed.firstChild);
-                
-                // Remove old activities to keep the feed manageable
-                if (activityFeed.children.length > 8) {
-                    activityFeed.removeChild(activityFeed.lastChild);
-                }
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="row g-4 mb-4">
+                <!-- Orders Trend Chart -->
+                <div class="col-lg-8">
+                    <div class="chart-card fade-in-up">
+                        <div class="chart-header">
+                            <h5 class="chart-title">Orders Trend</h5>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Export Data</a></li>
+                                    <li><a class="dropdown-item" href="#">View Details</a></li>
+                                    <li><a class="dropdown-item" href="#">Refresh</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="ordersLineChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Status Distribution -->
+                <div class="col-lg-4">
+                    <div class="chart-card fade-in-up">
+                        <div class="chart-header">
+                            <h5 class="chart-title">Order Status</h5>
+                        </div>
+                        <div class="chart-container-small">
+                            <canvas id="orderStatusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Charts Row -->
+            <div class="row g-4 mb-4">
+                <!-- Revenue Chart -->
+                <div class="col-lg-6">
+                    <div class="chart-card fade-in-up">
+                        <div class="chart-header">
+                            <h5 class="chart-title">Revenue Overview</h5>
+                        </div>
+                        <div class="chart-container-small">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delivery Mode Distribution -->
+                <div class="col-lg-6">
+                    <div class="chart-card fade-in-up">
+                        <div class="chart-header">
+                            <h5 class="chart-title">Delivery Modes</h5>
+                        </div>
+                        <div class="chart-container-small">
+                            <canvas id="deliveryModeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Orders Table -->
+            <div class="orders-table fade-in-up">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Product</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Delivery Mode</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>#ORD-2025-001</strong></td>
+                                <td>John Doe</td>
+                                <td>Django E-commerce Project</td>
+                                <td>₹2,500</td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                                <td><span class="badge bg-primary">Download</span></td>
+                                <td>Jun 20, 2025</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#ORD-2025-002</strong></td>
+                                <td>Jane Smith</td>
+                                <td>React Portfolio Website</td>
+                                <td>₹1,800</td>
+                                <td><span class="status-badge status-processing">Processing</span></td>
+                                <td><span class="badge bg-warning">Pen Drive</span></td>
+                                <td>Jun 19, 2025</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#ORD-2025-003</strong></td>
+                                <td>Mike Johnson</td>
+                                <td>Python ML Project</td>
+                                <td>₹3,200</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td><span class="badge bg-primary">Download</span></td>
+                                <td>Jun 19, 2025</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#ORD-2025-004</strong></td>
+                                <td>Sarah Wilson</td>
+                                <td>Vue.js Dashboard</td>
+                                <td>₹2,100</td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                                <td><span class="badge bg-warning">Pen Drive</span></td>
+                                <td>Jun 18, 2025</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#ORD-2025-005</strong></td>
+                                <td>David Brown</td>
+                                <td>Angular CRM System</td>
+                                <td>₹4,500</td>
+                                <td><span class="status-badge status-cancelled">Cancelled</span></td>
+                                <td><span class="badge bg-primary">Download</span></td>
+                                <td>Jun 18, 2025</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+    <script>
+        // Orders Data
+        const ordersData = {
+            daily: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                orders: [12, 19, 8, 15, 22, 13, 7],
+                completed: [10, 16, 6, 12, 18, 11, 5],
+                pending: [2, 3, 2, 3, 4, 2, 2]
+            },
+            weekly: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                orders: [85, 92, 78, 94],
+                completed: [72, 78, 65, 82],
+                pending: [13, 14, 13, 12]
+            },
+            monthly: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                orders: [320, 285, 412, 380, 450, 290],
+                completed: [280, 245, 365, 330, 395, 248],
+                pending: [40, 40, 47, 50, 55, 42]
             }
+        };
 
-            // Initialize charts and data on page load
-            document.addEventListener('DOMContentLoaded', function() {
-                updateTrafficChart('daily');
-                initDeviceChart();
-                updateMetrics('week');
-                simulateRealTimeUpdates();
+        // Initialize Charts
+        function initializeCharts() {
+            initOrdersLineChart();
+            initOrderStatusChart();
+            initRevenueChart();
+            initDeliveryModeChart();
+        }
+
+        // Orders Line Chart
+        function initOrdersLineChart() {
+            const ctx = document.getElementById('ordersLineChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ordersData.daily.labels,
+                    datasets: [{
+                        label: 'Total Orders',
+                        data: ordersData.daily.orders,
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#4f46e5',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }, {
+                        label: 'Completed',
+                        data: ordersData.daily.completed,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        pointBackgroundColor: '#10b981',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
             });
-        </script>
+        }
 
-    </body>
+        // Order Status Pie Chart
+        function initOrderStatusChart() {
+            const ctx = document.getElementById('orderStatusChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Processing', 'Pending', 'Cancelled'],
+                    datasets: [{
+                        data: [118, 15, 23, 8],
+                        backgroundColor: [
+                            '#10b981',
+                            '#3b82f6',
+                            '#f59e0b',
+                            '#ef4444'
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+        }
 
+        // Revenue Chart
+        function initRevenueChart() {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Revenue (₹)',
+                        data: [8500, 12000, 6800, 9500, 15200, 7800, 4200],
+                        backgroundColor: 'rgba(79, 70, 229, 0.8)',
+                        borderColor: '#4f46e5',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value.toLocaleString();
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Delivery Mode Chart
+        function initDeliveryModeChart() {
+            const ctx = document.getElementById('deliveryModeChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Download', 'Pen Drive'],
+                    datasets: [{
+                        data: [85, 67],
+                        backgroundColor: [
+                            '#8b5cf6',
+                            '#f59e0b'
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update Dashboard based on filters
+        function updateDashboard() {
+            const dateFilter = document.getElementById('dateFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const deliveryFilter = document.getElementById('deliveryFilter').value;
+            
+            // Update metrics based on filters
+            updateMetrics(dateFilter, statusFilter, deliveryFilter);
+            
+            // Update charts
+            updateCharts(dateFilter);
+        }
+
+        // Update Metrics
+        function updateMetrics(dateFilter, statusFilter, deliveryFilter) {
+            // Sample data updates based on filters
+            let totalOrders, pendingOrders, completedOrders, revenue;
+            
+            switch(dateFilter) {
+                case 'today':
+                    totalOrders = 11;
+                    pendingOrders = 3;
+                    completedOrders = 7;
+                    revenue = '₹6,400';
+                    break;
+                case 'month':
+                    totalOrders = 485;
+                    pendingOrders = 67;
+                    completedOrders = 398;
+                    revenue = '₹1,25,800';
+                    break;
+                default: // week
+                    totalOrders = 152;
+                    pendingOrders = 23;
+                    completedOrders = 118;
+                    revenue = '₹45,280';
+            }
+            
+            // Update DOM elements
+            document.getElementById('totalOrders').textContent = totalOrders;
+            document.getElementById('pendingOrders').textContent = pendingOrders;
+            document.getElementById('completedOrders').textContent = completedOrders;
+            document.getElementById('revenue').textContent = revenue;
+        }
+
+        // Update Charts
+        function updateCharts(dateFilter) {
+            // This would typically re-initialize charts with new data
+            // For demo purposes, we'll just reinitialize with different datasets
+            const chartContainer = document.querySelector('#ordersLineChart');
+            if (chartContainer) {
+                // Destroy existing chart and create new one
+                Chart.getChart(chartContainer)?.destroy();
+                initOrdersLineChart();
+            }
+        }
+
+        // Reset Filters
+        function resetFilters() {
+            document.getElementById('dateFilter').value = 'week';
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('deliveryFilter').value = 'all';
+            updateDashboard();
+        }
+
+        // Real-time updates simulation
+        function simulateRealTimeUpdates() {
+            setInterval(() => {
+                // Simulate new order
+                const currentTotal = parseInt(document.getElementById('totalOrders').textContent);
+                const currentPending = parseInt(document.getElementById('pendingOrders').textContent);
+                
+                // Random chance of new order
+                if (Math.random() > 0.95) {
+                    document.getElementById('totalOrders').textContent = currentTotal + 1;
+                    document.getElementById('pendingOrders').textContent = currentPending + 1;
+                    
+                    // Add notification
+                    showNotification('New order received!', 'success');
+                }
+                
+                // Random chance of order completion
+                if (Math.random() > 0.97 && currentPending > 0) {
+                    const currentCompleted = parseInt(document.getElementById('completedOrders').textContent);
+                    document.getElementById('pendingOrders').textContent = currentPending - 1;
+                    document.getElementById('completedOrders').textContent = currentCompleted + 1;
+                    
+                    showNotification('Order completed!', 'info');
+                }
+            }, 5000); // Check every 5 seconds
+        }
+
+        // Show Notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto dismiss after 4 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            simulateRealTimeUpdates();
+            
+            // Add smooth scrolling for better UX
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Export functionality (placeholder)
+        function exportReport() {
+            showNotification('Report export started...', 'info');
+            
+            // Simulate export process
+            setTimeout(() => {
+                showNotification('Report exported successfully!', 'success');
+            }, 2000);
+        }
+
+        // Add click handler for export button
+        document.addEventListener('DOMContentLoaded', function() {
+            const exportBtn = document.querySelector('.btn-light');
+            if (exportBtn) {
+                exportBtn.addEventListener('click', exportReport);
+            }
+        });
+    </script>
+</body>
 </html>

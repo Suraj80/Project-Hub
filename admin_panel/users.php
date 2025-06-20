@@ -195,8 +195,6 @@
     <script src="assets/js/users.js"></script>
 </body>
 </html>
-
-<?php include 'components/footer.php'; ?> <!-- Footer with scripts -->
  <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -213,3 +211,4 @@
     <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script>
+<?php include 'components/footer.php'; ?> <!-- Footer with scripts -->
