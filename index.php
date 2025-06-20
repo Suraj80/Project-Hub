@@ -107,6 +107,7 @@ session_start();
 </head>
 
 <body class="bg-dark-900 text-white font-sans">
+    
   <div class="relative min-h-screen overflow-x-hidden">
     <!-- Hero Section -->
     <section id="home" class="relative min-h-screen flex items-center justify-center"
@@ -119,11 +120,12 @@ session_start();
         <div class="absolute bottom-40 left-20 w-24 h-24 bg-primary-300 rounded-full opacity-20 animate-float" style="animation-delay: 4s;"></div>
         <div class="absolute bottom-20 right-10 w-12 h-12 bg-accent-300 rounded-full opacity-20 animate-float" style="animation-delay: 1s;"></div>
       </div>
-
+     
       <!-- Hero Content -->
       <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div class="animate-slide-up">
           <!-- Code-style header -->
+           <br>
           <div class="font-mono text-accent-300 text-sm mb-4">
             <span class="text-primary-400">class</span> <span class="text-white">CodeCraft</span> <span class="text-accent-300">{</span>
           </div>
@@ -143,10 +145,10 @@ session_start();
             <span class="text-accent-300 font-mono">Instant download</span>, 
             <span class="text-primary-300 font-mono">clean code</span>, 
             <span class="text-accent-300 font-mono">detailed docs</span>.
-          </p>
+          </p><br>
 
           <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 animate-slide-in-right">
-            <button class="group relative px-8 py-4 bg-primary-600 hover:bg-primary-700 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl animate-glow">
+            <button onclick="window.location.href='products2.php'" class="group relative px-8 py-4 bg-primary-600 hover:bg-primary-700 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl animate-glow">
               <span class="relative z-10">Browse Projects</span>
               <div class="absolute inset-0 bg-gradient-to-r from-primary-600 to-accent-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
