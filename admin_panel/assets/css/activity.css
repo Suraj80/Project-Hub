@@ -1,0 +1,279 @@
+/* Activity Log Page Styles */
+
+.admin-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #4e73df, #36b9cc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.role-super { 
+    background-color: #e3f2fd; 
+    color: #1565c0; 
+    border: 1px solid #1565c0;
+}
+
+.role-editor { 
+    background-color: #f3e5f5; 
+    color: #7b1fa2; 
+    border: 1px solid #7b1fa2;
+}
+
+.role-viewer { 
+    background-color: #e8f5e8; 
+    color: #2e7d32; 
+    border: 1px solid #2e7d32;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-active { 
+    background-color: #d4edda; 
+    color: #155724; 
+}
+
+.status-inactive { 
+    background-color: #f8d7da; 
+    color: #721c24; 
+}
+
+.btn-view {
+    background-color: #36b9cc;
+    border-color: #36b9cc;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 0.25rem;
+}
+
+.btn-view:hover {
+    background-color: #258391;
+    border-color: #258391;
+    color: white;
+}
+
+.table-responsive {
+    border-radius: 0.35rem;
+}
+
+.activity-table th {
+    border-top: none;
+    background-color: #f8f9fc;
+    font-weight: 600;
+    color: #5a5c69;
+    white-space: nowrap;
+}
+
+.activity-table td {
+    vertical-align: middle;
+}
+
+.activity-row:hover {
+    background-color: #f8f9fc;
+}
+
+.search-filter-section {
+    background-color: #f8f9fc;
+    padding: 1.5rem;
+    border-radius: 0.35rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e3e6f0;
+}
+
+.pagination-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding: 1rem 0;
+}
+
+.pagination-info {
+    color: #5a5c69;
+    font-size: 0.875rem;
+}
+
+.profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e3e6f0;
+}
+
+/* Loading indicator styles */
+#loadingIndicator {
+    color: #5a5c69;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* No data message styles */
+#noDataMessage {
+    color: #6c757d;
+}
+
+#noDataMessage .fa-info-circle {
+    color: #17a2b8;
+}
+
+/* Modal profile image styles */
+#viewAdminModal .profile-image {
+    width: 80px;
+    height: 80px;
+    border: 3px solid #e3e6f0;
+}
+
+#viewAdminModal .admin-avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 1.5rem;
+}
+
+/* IP Address styling */
+.ip-address {
+    font-family: 'Courier New', monospace;
+    background-color: #f8f9fa;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+}
+
+/* Date/Time styling */
+.datetime {
+    font-size: 0.875rem;
+    color: #5a5c69;
+}
+
+/* Card header enhancements */
+.card-header {
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+/* Search input focus */
+#searchInput:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+
+/* Filter dropdowns styling */
+.form-control {
+    border-color: #d1d3e2;
+}
+
+.form-control:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+
+/* Button enhancements */
+.btn-outline-primary {
+    border-color: #4e73df;
+    color: #4e73df;
+}
+
+.btn-outline-primary:hover {
+    background-color: #4e73df;
+    border-color: #4e73df;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .search-filter-section .row {
+        margin: 0;
+    }
+    
+    .search-filter-section .col-md-1,
+    .search-filter-section .col-md-2,
+    .search-filter-section .col-md-3,
+    .search-filter-section .col-md-4 {
+        padding: 0.5rem;
+    }
+    
+    .pagination-section {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .activity-table {
+        font-size: 0.875rem;
+    }
+    
+    .admin-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 0.75rem;
+    }
+    
+    .profile-image {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* Username link styling */
+.username-link {
+    color: #4e73df;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.username-link:hover {
+    color: #2e59d9;
+    text-decoration: underline;
+}
+
+/* Table alternating row colors */
+.activity-table tbody tr:nth-child(even) {
+    background-color: #f8f9fc;
+}
+
+.activity-table tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+/* Export button styling */
+.btn-success {
+    background-color: #1cc88a;
+    border-color: #1cc88a;
+}
+
+.btn-success:hover {
+    background-color: #17a673;
+    border-color: #17a673;
+}
+
+/* Refresh button animation */
+.btn-primary .fa-sync-alt {
+    transition: transform 0.3s ease;
+}
+
+.btn-primary:hover .fa-sync-alt {
+    transform: rotate(180deg);
+}

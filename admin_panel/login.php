@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-// Redirect if already logged in
+// FIXED: Corrected typo in dashboard filename
 if(isset($_SESSION['admin_id'])){
-    header('location: admin_dashboard.php');
+    header('location: dashboard1.php');
     exit();
 }
 ?>

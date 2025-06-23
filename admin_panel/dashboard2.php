@@ -1,3 +1,19 @@
+
+  <?php
+session_start();
+
+// Check if admin is logged in
+if (!isset($_SESSION['admin_id'])) {
+    // Not logged in, redirect to login page
+    header("Location: login.php");
+    exit();
+}
+
+  include 'components/header.php';     // <head> with Bootstrap CSS
+    // include 'components/sidebar.php';
+  include 'components/navbar.php';     // Top navbar
+    // Side menu
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,7 +60,7 @@
         }
 
         /* Enhanced Navbar */
-        .navbar {
+        /* .navbar {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             box-shadow: 0 4px 20px rgba(79, 70, 229, 0.15);
             padding: 1rem 0;
@@ -78,7 +94,7 @@
             border: none;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             border-radius: 0.75rem;
-        }
+        } */
 
         /* Main Content */
         .main-content {
@@ -310,64 +326,7 @@
 </head>
 
 <body>
-    <!-- Enhanced Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-chart-line me-2"></i>
-                Orders Dashboard
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#"><i class="fas fa-shopping-cart me-1"></i> Orders</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-chart-bar me-1"></i> Analytics</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-users me-1"></i> Customers</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-box me-1"></i> Products</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-cog me-1"></i> Settings</a>
-                    </li>
-                </ul>
-                
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
-                            <i class="fas fa-bell"></i>
-                            <span class="badge bg-danger rounded-pill">3</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-cart me-2"></i> New order received</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-check me-2"></i> Order completed</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-exclamation-triangle me-2"></i> Order needs attention</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle me-1"></i> Admin
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-cogs me-2"></i> Settings</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+
 
     <!-- Main Content -->
     <div class="main-content">

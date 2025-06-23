@@ -1,4 +1,4 @@
-/* Complete CSS for Products Management */
+/* Complete CSS for Products Management - Improved Alignment */
 
 :root {
     --primary-color: #4e73df;
@@ -38,25 +38,58 @@ body {
     background-color: var(--light-color);
 }
 
-/* Filter Section Styles */
+/* Container and Page Layout */
+.container-fluid {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+/* Page Header - Improved Alignment */
+.d-sm-flex.align-items-center.justify-content-between.mb-4 {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 2rem !important;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.d-sm-flex h1 {
+    margin: 0;
+    font-weight: 700;
+    color: var(--gray-800);
+    flex: 1;
+}
+
+.d-sm-flex div {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Filter Section Styles - Enhanced Alignment */
 .filter-section {
     background: var(--white);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     border: 1px solid var(--gray-200);
 }
 
 .filter-section .row {
-    margin: 0;
+    margin: 0 -0.75rem;
+    align-items: end;
 }
 
 .filter-section .col-md-1,
 .filter-section .col-md-2,
 .filter-section .col-md-3 {
-    padding: 0 0.5rem;
-    margin-bottom: 1rem;
+    padding: 0 0.75rem;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .filter-section .form-label {
@@ -65,6 +98,7 @@ body {
     margin-bottom: 0.5rem;
     display: block;
     font-size: 0.875rem;
+    min-height: 1.25rem;
 }
 
 .filter-section .form-control {
@@ -76,6 +110,7 @@ body {
     color: var(--gray-700);
     background-color: var(--white);
     transition: var(--transition);
+    height: calc(1.5em + 1.25rem + 2px);
 }
 
 .filter-section .form-control:focus {
@@ -93,6 +128,11 @@ body {
     padding: 0.625rem 1rem;
     border-radius: var(--border-radius);
     transition: var(--transition);
+    height: calc(1.5em + 1.25rem + 2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
 .filter-section .btn-outline-secondary:hover {
@@ -101,7 +141,12 @@ body {
     border-color: var(--gray-600);
 }
 
-/* Products Table Styles */
+.filter-section .d-flex.align-items-end {
+    display: flex !important;
+    align-items: flex-end !important;
+}
+
+/* Products Table Styles - Better Alignment */
 .card {
     position: relative;
     display: flex;
@@ -113,10 +158,11 @@ body {
     border: 1px solid var(--gray-200);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
 }
 
 .card-header {
-    padding: 0.75rem 1.25rem;
+    padding: 1rem 1.5rem;
     margin-bottom: 0;
     background-color: var(--gray-100);
     border-bottom: 1px solid var(--gray-200);
@@ -124,9 +170,15 @@ body {
     border-top-right-radius: var(--border-radius);
 }
 
+.card-header h6 {
+    margin: 0;
+    font-weight: 700;
+    color: var(--gray-800);
+}
+
 .card-body {
     flex: 1 1 auto;
-    padding: 1.25rem;
+    padding: 1.5rem;
 }
 
 .table-responsive {
@@ -134,11 +186,13 @@ body {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-200);
 }
 
 .table {
     width: 100%;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     color: var(--gray-800);
     background-color: transparent;
     border-collapse: collapse;
@@ -146,18 +200,32 @@ body {
 
 .table th,
 .table td {
-    padding: 0.75rem;
-    vertical-align: top;
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
     border-top: 1px solid var(--gray-200);
     font-size: 0.875rem;
+    text-align: center;
+}
+
+.table th:first-child,
+.table td:first-child {
+    text-align: center;
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+    text-align: left;
 }
 
 .table thead th {
-    vertical-align: bottom;
+    vertical-align: middle;
     border-bottom: 2px solid var(--gray-200);
     font-weight: 700;
     color: var(--gray-700);
     background-color: var(--gray-100);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.8rem;
 }
 
 .table-bordered {
@@ -174,19 +242,22 @@ body {
     border-bottom-width: 2px;
 }
 
-/* Product Table Content Styles */
+/* Product Table Content Styles - Centered Alignment */
 .product-image-thumb {
     width: 60px;
     height: 60px;
     object-fit: cover;
     border-radius: var(--border-radius);
     border: 2px solid var(--gray-200);
+    display: block;
+    margin: 0 auto;
 }
 
 .product-name {
     font-weight: 600;
     color: var(--gray-800);
     margin-bottom: 0.25rem;
+    text-align: left;
 }
 
 .product-category {
@@ -194,17 +265,19 @@ body {
     color: var(--gray-500);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    text-align: left;
 }
 
 .price-display {
     font-weight: 700;
     font-size: 1.1rem;
     color: var(--success-color);
+    text-align: center;
 }
 
 .difficulty-badge {
     display: inline-block;
-    padding: 0.25rem 0.5rem;
+    padding: 0.4rem 0.8rem;
     font-size: 0.75rem;
     font-weight: 600;
     line-height: 1;
@@ -214,6 +287,7 @@ body {
     border-radius: 0.25rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    min-width: 80px;
 }
 
 .difficulty-beginner {
@@ -237,6 +311,10 @@ body {
 .rating-display {
     color: var(--warning-color);
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
 }
 
 .rating-display i {
@@ -247,11 +325,13 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem;
+    justify-content: center;
+    align-items: center;
 }
 
 .tech-tag {
     display: inline-block;
-    padding: 0.2rem 0.4rem;
+    padding: 0.3rem 0.6rem;
     font-size: 0.7rem;
     font-weight: 500;
     background-color: var(--primary-color);
@@ -259,32 +339,40 @@ body {
     border-radius: 0.25rem;
     text-transform: uppercase;
     letter-spacing: 0.3px;
+    white-space: nowrap;
 }
 
 .featured-badge {
     background-color: var(--warning-color);
     color: var(--white);
-    padding: 0.25rem 0.5rem;
+    padding: 0.4rem 0.8rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    min-width: 80px;
 }
 
 .featured-badge i {
     margin-right: 0.25rem;
 }
 
-/* Action Buttons */
+/* Action Buttons - Centered and Aligned */
 .action-buttons {
     display: flex;
     gap: 0.5rem;
     justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .btn-action {
-    padding: 0.375rem 0.75rem;
+    padding: 0.5rem 0.75rem;
     font-size: 0.75rem;
     border-radius: var(--border-radius);
     border: none;
@@ -294,6 +382,8 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
+    min-width: 70px;
+    justify-content: center;
 }
 
 .btn-action:hover {
@@ -331,9 +421,12 @@ body {
     color: var(--white);
 }
 
-/* Loading Spinner */
+/* Loading Spinner - Centered */
 #loadingSpinner {
     padding: 3rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .spinner-border {
@@ -363,18 +456,22 @@ body {
     color: var(--primary-color) !important;
 }
 
-/* Pagination Styles */
+/* Pagination Styles - Better Alignment */
 .pagination-info {
     font-size: 0.875rem;
     color: var(--gray-600);
     margin: 0;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
+    padding: 1rem 0;
 }
 
 .pagination-wrapper {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    padding: 1rem 0;
 }
 
 .pagination {
@@ -383,6 +480,7 @@ body {
     list-style: none;
     border-radius: var(--border-radius);
     margin: 0;
+    align-items: center;
 }
 
 .page-item {
@@ -391,8 +489,10 @@ body {
 
 .page-link {
     position: relative;
-    display: block;
-    padding: 0.375rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.75rem;
     margin-left: -1px;
     line-height: 1.25;
     color: var(--gray-700);
@@ -400,6 +500,8 @@ body {
     border: 1px solid var(--gray-300);
     text-decoration: none;
     transition: var(--transition);
+    min-width: 40px;
+    height: 40px;
 }
 
 .page-link:hover {
@@ -426,12 +528,14 @@ body {
 }
 
 .pagination-sm .page-link {
-    padding: 0.25rem 0.5rem;
+    padding: 0.375rem 0.5rem;
     font-size: 0.875rem;
     line-height: 1.5;
+    min-width: 35px;
+    height: 35px;
 }
 
-/* Modal Styles */
+/* Modal Styles - Better Centering and Alignment */
 .modal {
     position: fixed;
     top: 0;
@@ -448,15 +552,16 @@ body {
 .modal-dialog {
     position: relative;
     width: auto;
-    margin: 0.5rem;
+    margin: 1.75rem auto;
     pointer-events: none;
     display: flex;
     align-items: center;
-    min-height: calc(100% - 1rem);
+    min-height: calc(100% - 3.5rem);
 }
 
 .modal-dialog.modal-lg {
     max-width: 800px;
+    width: 90%;
 }
 
 .modal-content {
@@ -476,9 +581,9 @@ body {
 
 .modal-header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    padding: 1rem 1rem;
+    padding: 1.5rem;
     border-bottom: 1px solid var(--gray-200);
     border-top-left-radius: var(--border-radius);
     border-top-right-radius: var(--border-radius);
@@ -489,23 +594,24 @@ body {
     line-height: 1.5;
     font-weight: 600;
     color: var(--gray-800);
+    flex: 1;
 }
 
 .modal-body {
     position: relative;
     flex: 1 1 auto;
-    padding: 1rem;
+    padding: 1.5rem;
 }
 
 .modal-footer {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 1rem;
+    padding: 1.5rem;
     border-top: 1px solid var(--gray-200);
     border-bottom-right-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
-    gap: 0.5rem;
+    gap: 0.75rem;
 }
 
 .close {
@@ -520,6 +626,11 @@ body {
     background: transparent;
     border: 0;
     padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
 }
 
 .close:hover {
@@ -528,9 +639,9 @@ body {
     opacity: 0.75;
 }
 
-/* Form Styles */
+/* Form Styles - Better Field Alignment */
 .form-group {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .form-group label {
@@ -545,8 +656,8 @@ body {
     display: block;
     width: 100%;
     height: calc(1.5em + 0.75rem + 2px);
-    padding: 0.375rem 0.75rem;
-    font-size: 1rem;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
     font-weight: 400;
     line-height: 1.5;
     color: var(--gray-700);
@@ -566,19 +677,21 @@ body {
 }
 
 select.form-control {
-    height: calc(1.5em + 0.75rem + 2px);
+    height: calc(1.5em + 1.25rem + 2px);
+    padding: 0.625rem 0.75rem;
 }
 
 textarea.form-control {
     height: auto;
     resize: vertical;
+    padding: 0.75rem;
 }
 
 .form-control-file {
     display: block;
     width: 100%;
-    padding: 0.375rem 0;
-    font-size: 1rem;
+    padding: 0.625rem 0;
+    font-size: 0.875rem;
     font-weight: 400;
     line-height: 1.5;
     color: var(--gray-700);
@@ -604,9 +717,9 @@ textarea.form-control {
 .input-group-text {
     display: flex;
     align-items: center;
-    padding: 0.375rem 0.75rem;
+    padding: 0.625rem 0.75rem;
     margin-bottom: 0;
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-weight: 400;
     line-height: 1.5;
     color: var(--gray-700);
@@ -652,11 +765,11 @@ textarea.form-control {
     color: var(--gray-500);
 }
 
-/* Technology Input Styles */
+/* Technology Input Styles - Better Alignment */
 .technology-input-group {
     display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
     align-items: center;
 }
 
@@ -666,9 +779,15 @@ textarea.form-control {
 
 .technology-input-group .btn {
     flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
 }
 
-/* Image Preview Styles */
+/* Image Preview Styles - Centered */
 .image-preview {
     max-width: 200px;
     max-height: 150px;
@@ -676,17 +795,23 @@ textarea.form-control {
     border-radius: var(--border-radius);
     border: 2px solid var(--gray-200);
     margin-top: 0.5rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #imagePreviewContainer {
-    margin-top: 1rem;
-    padding-top: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
     border-top: 1px solid var(--gray-200);
+    text-align: center;
 }
 
-/* Button Styles */
+/* Button Styles - Consistent Sizing */
 .btn {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     font-weight: 400;
     color: var(--gray-700);
     text-align: center;
@@ -695,12 +820,13 @@ textarea.form-control {
     user-select: none;
     background-color: transparent;
     border: 1px solid transparent;
-    padding: 0.375rem 0.75rem;
-    font-size: 1rem;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
     line-height: 1.5;
     border-radius: var(--border-radius);
     transition: var(--transition);
     text-decoration: none;
+    gap: 0.5rem;
 }
 
 .btn:hover {
@@ -763,7 +889,7 @@ textarea.form-control {
 }
 
 .btn-sm {
-    padding: 0.25rem 0.5rem;
+    padding: 0.375rem 0.75rem;
     font-size: 0.875rem;
     line-height: 1.5;
     border-radius: 0.2rem;
@@ -773,40 +899,67 @@ textarea.form-control {
     box-shadow: var(--box-shadow-sm) !important;
 }
 
-/* Responsive Design */
+/* Responsive Design - Improved Mobile Alignment */
 @media (max-width: 768px) {
+    .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .filter-section {
+        padding: 1.5rem;
+    }
+    
+    .filter-section .row {
+        margin: 0 -0.5rem;
+    }
+    
     .filter-section .col-md-1,
     .filter-section .col-md-2,
     .filter-section .col-md-3 {
+        padding: 0 0.5rem;
         margin-bottom: 1rem;
     }
     
     .action-buttons {
         flex-direction: column;
-        gap: 0.25rem;
+        gap: 0.5rem;
+        align-items: stretch;
     }
     
     .btn-action {
         font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
+        padding: 0.5rem;
+        min-width: auto;
+        width: 100%;
     }
     
     .modal-dialog {
         margin: 0.5rem;
+        width: calc(100% - 1rem);
         max-width: calc(100% - 1rem);
     }
     
     .technology-input-group {
         flex-direction: column;
         align-items: stretch;
+        gap: 0.5rem;
     }
     
     .technology-input-group .btn {
-        margin-top: 0.5rem;
+        width: 100%;
+        height: auto;
+        padding: 0.5rem;
     }
     
     .table-responsive {
         font-size: 0.8rem;
+        border: none;
+    }
+    
+    .table th,
+    .table td {
+        padding: 0.5rem 0.25rem;
     }
     
     .product-image-thumb {
@@ -817,10 +970,26 @@ textarea.form-control {
     .pagination-info {
         margin-bottom: 1rem;
         text-align: center;
+        justify-content: center;
     }
     
     .pagination-wrapper {
         justify-content: center;
+    }
+    
+    .d-sm-flex.align-items-center.justify-content-between.mb-4 {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 1rem;
+    }
+    
+    .d-sm-flex h1 {
+        text-align: center;
+    }
+    
+    .d-sm-flex div {
+        justify-content: center;
+        flex-wrap: wrap;
     }
 }
 
@@ -834,17 +1003,17 @@ textarea.form-control {
     }
     
     .modal-body {
-        padding: 0.75rem;
+        padding: 1rem;
     }
     
     .modal-header,
     .modal-footer {
-        padding: 0.75rem;
+        padding: 1rem;
     }
     
     .btn {
         font-size: 0.875rem;
-        padding: 0.25rem 0.5rem;
+        padding: 0.5rem 0.75rem;
     }
     
     .tech-tags {
@@ -855,72 +1024,13 @@ textarea.form-control {
         font-size: 0.65rem;
         padding: 0.15rem 0.3rem;
     }
-}
-
-/* Print Styles */
-@media print {
-    .filter-section,
-    .modal,
-    .btn,
-    .pagination-wrapper {
-        display: none !important;
-    }
     
-    .card {
-        border: 1px solid #000 !important;
-        box-shadow: none !important;
-    }
-    
-    .table th,
-    .table td {
-        border: 1px solid #000 !important;
+    .page-link {
+        padding: 0.375rem 0.5rem;
+        min-width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
     }
 }
 
-/* Accessibility Improvements */
-.btn:focus,
-.form-control:focus,
-.page-link:focus {
-    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
-    z-index: 3;
-}
-
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-}
-
-/* Animation for smooth transitions */
-.modal.fade {
-    opacity: 0;
-    transition: opacity 0.15s linear;
-}
-
-.modal.show {
-    opacity: 1;
-}
-
-/* Custom scrollbar for better UX */
-.modal-body::-webkit-scrollbar {
-    width: 6px;
-}
-
-.modal-body::-webkit-scrollbar-track {
-    background: var(--gray-100);
-}
-
-.modal-body::-webkit-scrollbar-thumb {
-    background: var(--gray-400);
-    border-radius: 3px;
-}
-
-.modal-body::-webkit-scrollbar-thumb:hover {
-    background: var(--gray-500);
-}
+/* Print Styles

@@ -1,8 +1,16 @@
 <?php
-  include 'config.php';
-  include 'includes/db.php';
+  
+  session_start();
+
+// Check if admin is logged in
+if (!isset($_SESSION['admin_id'])) {
+    // Not logged in, redirect to login page
+    header("Location: login.php");
+    exit();
+}
+
   include 'components/header.php';     // <head> with Bootstrap CSS
-    include 'components/sidebar.php';
+    // include 'components/sidebar.php';
   include 'components/navbar.php';     // Top navbar
     // Side menu
 ?>
@@ -322,7 +330,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
 
     <!-- Products JavaScript -->
-    <script src="assets/js/products.js"></script>
+    <script src="assets/js/product.js"></script>
 
     <!-- Custom template js-->
     <script src="js/sb-admin-2.min.js"></script>

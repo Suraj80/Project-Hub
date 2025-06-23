@@ -1,5 +1,5 @@
 <?php
-// ajax/products_action.php
+// ajax/product_action.php
 header('Content-Type: application/json');
 
 // Database connection
@@ -34,6 +34,12 @@ switch ($action) {
         break;
     case 'get':
         getProduct();
+        break;
+    case 'getCategories':
+        getCategories();
+        break;
+    case 'getTechnologies':
+        getTechnologies();
         break;
     default:
         echo json_encode(['success' => false, 'message' => 'Invalid action']);
@@ -145,7 +151,7 @@ function fetchProducts() {
         foreach ($products as &$product) {
             $product['technologies'] = $product['technologies'] ? explode(',', $product['technologies']) : [];
             $product['featured'] = (bool)$product['featured'];
-            $product['rating'] = (float)$product['rating'];
+            $product['rating'] = $product['rating'] ? (float)$product['rating'] : null;
             $product['price'] = (float)$product['price'];
         }
 
@@ -168,6 +174,11 @@ function addProduct() {
     try {
         $pdo->beginTransaction();
 
+        // Validate required fields
+        if (empty($_POST['productName']) || empty($_POST['productCategory']) || empty($_POST['productPrice']) || empty($_POST['productDifficulty'])) {
+            throw new Exception('Please fill all required fields');
+        }
+
         // Handle image upload
         $imagePath = null;
         if (isset($_FILES['productImage']) && $_FILES['productImage']['error'] === UPLOAD_ERR_OK) {
@@ -185,13 +196,13 @@ function addProduct() {
 
         $stmt = $pdo->prepare($query);
         $stmt->execute([
-            ':name' => $_POST['productName'],
-            ':category' => $_POST['productCategory'],
+            ':name' => trim($_POST['productName']),
+            ':category' => trim($_POST['productCategory']),
             ':price' => floatval($_POST['productPrice']),
-            ':difficulty' => $_POST['productDifficulty'],
+            ':difficulty' => trim($_POST['productDifficulty']),
             ':rating' => !empty($_POST['productRating']) ? floatval($_POST['productRating']) : null,
-            ':duration' => $_POST['productDuration'] ?? null,
-            ':description' => $_POST['productDescription'] ?? null,
+            ':duration' => !empty($_POST['productDuration']) ? trim($_POST['productDuration']) : null,
+            ':description' => !empty($_POST['productDescription']) ? trim($_POST['productDescription']) : null,
             ':image' => $imagePath,
             ':featured' => isset($_POST['productFeatured']) ? 1 : 0
         ]);
@@ -231,10 +242,23 @@ function updateProduct() {
 
         $productId = intval($_POST['productId']);
         
+        if (!$productId) {
+            throw new Exception('Invalid product ID');
+        }
+
+        // Validate required fields
+        if (empty($_POST['productName']) || empty($_POST['productCategory']) || empty($_POST['productPrice']) || empty($_POST['productDifficulty'])) {
+            throw new Exception('Please fill all required fields');
+        }
+        
         // Get current product data
         $currentStmt = $pdo->prepare("SELECT image FROM products WHERE id = :id");
         $currentStmt->execute([':id' => $productId]);
         $currentProduct = $currentStmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$currentProduct) {
+            throw new Exception('Product not found');
+        }
 
         // Handle image upload
         $imagePath = $currentProduct['image']; // Keep current image by default
@@ -261,22 +285,22 @@ function updateProduct() {
         $stmt = $pdo->prepare($query);
         $stmt->execute([
             ':id' => $productId,
-            ':name' => $_POST['productName'],
-            ':category' => $_POST['productCategory'],
+            ':name' => trim($_POST['productName']),
+            ':category' => trim($_POST['productCategory']),
             ':price' => floatval($_POST['productPrice']),
-            ':difficulty' => $_POST['productDifficulty'],
+            ':difficulty' => trim($_POST['productDifficulty']),
             ':rating' => !empty($_POST['productRating']) ? floatval($_POST['productRating']) : null,
-            ':duration' => $_POST['productDuration'] ?? null,
-            ':description' => $_POST['productDescription'] ?? null,
+            ':duration' => !empty($_POST['productDuration']) ? trim($_POST['productDuration']) : null,
+            ':description' => !empty($_POST['productDescription']) ? trim($_POST['productDescription']) : null,
             ':image' => $imagePath,
             ':featured' => isset($_POST['productFeatured']) ? 1 : 0
         ]);
 
-        // Delete existing technologies
+       // Delete existing technologies
         $deleteStmt = $pdo->prepare("DELETE FROM product_technologies WHERE product_id = :product_id");
         $deleteStmt->execute([':product_id' => $productId]);
 
-        // Insert new technologies
+        // Insert updated technologies
         if (isset($_POST['technologies']) && is_array($_POST['technologies'])) {
             $techQuery = "INSERT INTO product_technologies (product_id, technology) VALUES (:product_id, :technology)";
             $techStmt = $pdo->prepare($techQuery);
@@ -307,23 +331,39 @@ function deleteProduct() {
     try {
         $productId = intval($_POST['productId']);
         
-        // Get product image path
+        if (!$productId) {
+            throw new Exception('Invalid product ID');
+        }
+
+        $pdo->beginTransaction();
+
+        // Get product image path before deletion
         $stmt = $pdo->prepare("SELECT image FROM products WHERE id = :id");
         $stmt->execute([':id' => $productId]);
         $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Delete product (technologies will be deleted automatically due to CASCADE)
+        if (!$product) {
+            throw new Exception('Product not found');
+        }
+
+        // Delete technologies first (foreign key constraint)
+        $deleteTechStmt = $pdo->prepare("DELETE FROM product_technologies WHERE product_id = :product_id");
+        $deleteTechStmt->execute([':product_id' => $productId]);
+
+        // Delete product
         $deleteStmt = $pdo->prepare("DELETE FROM products WHERE id = :id");
         $deleteStmt->execute([':id' => $productId]);
 
-        // Delete image file if exists
-        if ($product && $product['image'] && file_exists($product['image'])) {
+        // Delete image file if it exists
+        if ($product['image'] && file_exists($product['image'])) {
             unlink($product['image']);
         }
 
+        $pdo->commit();
         echo json_encode(['success' => true, 'message' => 'Product deleted successfully']);
 
-    } catch (PDOException $e) {
+    } catch (Exception $e) {
+        $pdo->rollBack();
         echo json_encode(['success' => false, 'message' => 'Error deleting product: ' . $e->getMessage()]);
     }
 }
@@ -334,7 +374,11 @@ function getProduct() {
     try {
         $productId = intval($_POST['productId']);
         
-        // Get product with technologies
+        if (!$productId) {
+            throw new Exception('Invalid product ID');
+        }
+
+        // Fetch product with technologies
         $query = "
             SELECT p.*, 
                    GROUP_CONCAT(pt.technology) as technologies
@@ -348,47 +392,82 @@ function getProduct() {
         $stmt->execute([':id' => $productId]);
         $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($product) {
-            $product['technologies'] = $product['technologies'] ? explode(',', $product['technologies']) : [];
-            $product['featured'] = (bool)$product['featured'];
-            $product['rating'] = (float)$product['rating'];
-            $product['price'] = (float)$product['price'];
-            
-            echo json_encode(['success' => true, 'data' => $product]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Product not found']);
+        if (!$product) {
+            throw new Exception('Product not found');
         }
 
-    } catch (PDOException $e) {
+        // Process product data
+        $product['technologies'] = $product['technologies'] ? explode(',', $product['technologies']) : [];
+        $product['featured'] = (bool)$product['featured'];
+        $product['rating'] = $product['rating'] ? (float)$product['rating'] : null;
+        $product['price'] = (float)$product['price'];
+
+        echo json_encode(['success' => true, 'data' => $product]);
+
+    } catch (Exception $e) {
         echo json_encode(['success' => false, 'message' => 'Error fetching product: ' . $e->getMessage()]);
     }
 }
 
-function handleImageUpload($file) {
-    $uploadDir = '../uploads/';
+function getCategories() {
+    global $pdo;
     
-    // Create uploads directory if it doesn't exist
+    try {
+        $query = "SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND category != '' ORDER BY category";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute();
+        $categories = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        echo json_encode(['success' => true, 'data' => $categories]);
+
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error fetching categories: ' . $e->getMessage()]);
+    }
+}
+
+function getTechnologies() {
+    global $pdo;
+    
+    try {
+        $query = "SELECT DISTINCT technology FROM product_technologies WHERE technology IS NOT NULL AND technology != '' ORDER BY technology";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute();
+        $technologies = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        echo json_encode(['success' => true, 'data' => $technologies]);
+
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error fetching technologies: ' . $e->getMessage()]);
+    }
+}
+
+function handleImageUpload($file) {
+    // Define upload directory
+    $uploadDir = 'uploads/';
+    
+    // Create directory if it doesn't exist
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
     }
 
-    // Check file type
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    // Validate file type
+    $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (!in_array($file['type'], $allowedTypes)) {
-        throw new Exception('Invalid file type. Only JPG, PNG, GIF, and WebP are allowed.');
+        throw new Exception('Invalid file type. Only JPEG, PNG, GIF, and WebP images are allowed.');
     }
 
-    // Check file size (5MB max)
-    if ($file['size'] > 5 * 1024 * 1024) {
-        throw new Exception('File size too large. Maximum 5MB allowed.');
+    // Validate file size (5MB max)
+    $maxSize = 5 * 1024 * 1024; // 5MB
+    if ($file['size'] > $maxSize) {
+        throw new Exception('File size too large. Maximum size is 5MB.');
     }
 
     // Generate unique filename
     $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-    $filename = uniqid('product_', true) . '.' . $extension;
+    $filename = uniqid('product_') . '.' . $extension;
     $filepath = $uploadDir . $filename;
 
-    // Move uploaded file to the uploads directory
+    // Move uploaded file
     if (move_uploaded_file($file['tmp_name'], $filepath)) {
         return $filepath;
     } else {
@@ -396,35 +475,28 @@ function handleImageUpload($file) {
     }
 }
 
-// Function to get categories for dropdown
-function getCategories() {
-    global $pdo;
-    
-    try {
-        $query = "SELECT DISTINCT category FROM products ORDER BY category";
-        $stmt = $pdo->prepare($query);
-        $stmt->execute();
-        $categories = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        
-        echo json_encode(['success' => true, 'data' => $categories]);
-    } catch (PDOException $e) {
-        echo json_encode(['success' => false, 'message' => 'Error fetching categories: ' . $e->getMessage()]);
-    }
+// Additional utility functions
+function sanitizeInput($input) {
+    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
 }
 
-// Function to get technologies for autocomplete
-function getTechnologies() {
-    global $pdo;
-    
-    try {
-        $query = "SELECT DISTINCT technology FROM product_technologies ORDER BY technology";
-        $stmt = $pdo->prepare($query);
-        $stmt->execute();
-        $technologies = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        
-        echo json_encode(['success' => true, 'data' => $technologies]);
-    } catch (PDOException $e) {
-        echo json_encode(['success' => false, 'message' => 'Error fetching technologies: ' . $e->getMessage()]);
-    }
+function validateEmail($email) {
+    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
 }
+
+function generateSlug($string) {
+    $slug = strtolower($string);
+    $slug = preg_replace('/[^a-z0-9-]/', '-', $slug);
+    $slug = preg_replace('/-+/', '-', $slug);
+    $slug = trim($slug, '-');
+    return $slug;
+}
+
+function logError($message) {
+    $logFile = '../logs/error.log';
+    $timestamp = date('Y-m-d H:i:s');
+    $logMessage = "[$timestamp] $message" . PHP_EOL;
+    file_put_contents($logFile, $logMessage, FILE_APPEND | LOCK_EX);
+}
+
 ?>

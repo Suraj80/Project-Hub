@@ -1,8 +1,15 @@
 <?php
-  include 'config.php';
-  include 'includes/db.php';
+  session_start();
+
+// Check if admin is logged in
+if (!isset($_SESSION['admin_id'])) {
+    // Not logged in, redirect to login page
+    header("Location: login.php");
+    exit();
+}
+
   include 'components/header.php';     // <head> with Bootstrap CSS
-    include 'components/sidebar.php';
+    // include 'components/sidebar.php';
   include 'components/navbar.php';     // Top navbar
     // Side menu
 ?>

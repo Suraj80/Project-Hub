@@ -1,6 +1,8 @@
 <?php
 // ajax/feedback_action.php - Backend handler for feedback AJAX requests
 
+// Start session
+session_start();
 
 // Set content type to JSON
 header('Content-Type: application/json');
@@ -9,7 +11,7 @@ header('Content-Type: application/json');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Database configuration - Update these with your actual database credentials
+// Database configuration
 $host = 'localhost';
 $dbname = 'project_hub';
 $username = 'suraj';
@@ -28,73 +30,84 @@ try {
     exit;
 }
 
-// Check if action is provided
-if (!isset($_POST['action'])) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'No action specified'
-    ]);
-    exit;
-}
+// Get the action from POST data
+$action = $_POST['action'] ?? '';
 
-$action = $_POST['action'];
+// Initialize response
+$response = [
+    'success' => false,
+    'message' => 'Invalid action',
+    'data' => null
+];
 
 try {
     switch ($action) {
         case 'get_feedback':
-            getFeedback($pdo);
+            $response = getFeedbackData($pdo);
             break;
             
         case 'update_status':
-            updateFeedbackStatus($pdo);
+            $response = updateFeedbackStatus($pdo);
+            break;
+            
+        case 'delete_feedback':
+            $response = deleteFeedback($pdo);
+            break;
+            
+        case 'get_stats':
+            $response = getFeedbackStats($pdo);
             break;
             
         default:
-            echo json_encode([
-                'success' => false,
-                'message' => 'Invalid action'
-            ]);
+            $response['message'] = 'Unknown action: ' . $action;
             break;
     }
 } catch (Exception $e) {
-    echo json_encode([
+    error_log('Feedback Action Error: ' . $e->getMessage());
+    $response = [
         'success' => false,
-        'message' => 'Server error: ' . $e->getMessage()
-    ]);
+        'message' => 'An error occurred while processing your request: ' . $e->getMessage()
+    ];
 }
 
+// Output JSON response
+echo json_encode($response);
+exit;
+
 /**
- * Get all feedback entries
+ * Get all feedback data
  */
-function getFeedback($pdo) {
+function getFeedbackData($pdo) {
     try {
-        $stmt = $pdo->prepare("
-            SELECT 
-                id,
-                name,
-                email,
-                subject,
-                message,
-                status,
-                created_at
-            FROM feedback 
-            ORDER BY created_at DESC
-        ");
+        // Updated query to match your table structure
+        $sql = "SELECT 
+                    id,
+                    name,
+                    email,
+                    subject,
+                    message,
+                    status,
+                    created_at
+                FROM feedback 
+                ORDER BY created_at DESC";
         
+        $stmt = $pdo->prepare($sql);
         $stmt->execute();
-        $feedback = $stmt->fetchAll();
+        $feedback = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        echo json_encode([
+        return [
             'success' => true,
+            'message' => 'Feedback retrieved successfully',
             'data' => $feedback,
             'count' => count($feedback)
-        ]);
+        ];
         
     } catch (PDOException $e) {
-        echo json_encode([
+        error_log('Database Error in getFeedbackData: ' . $e->getMessage());
+        return [
             'success' => false,
-            'message' => 'Failed to fetch feedback: ' . $e->getMessage()
-        ]);
+            'message' => 'Failed to retrieve feedback data: ' . $e->getMessage()
+        ];
     }
 }
 
@@ -102,60 +115,152 @@ function getFeedback($pdo) {
  * Update feedback status
  */
 function updateFeedbackStatus($pdo) {
-    // Validate required parameters
-    if (!isset($_POST['feedback_id']) || !isset($_POST['status'])) {
-        echo json_encode([
+    $feedback_id = $_POST['feedback_id'] ?? null;
+    $status = $_POST['status'] ?? null;
+    
+    // Validate input
+    if (!$feedback_id || !$status) {
+        return [
             'success' => false,
             'message' => 'Missing required parameters'
-        ]);
-        return;
+        ];
     }
     
-    $feedbackId = (int)$_POST['feedback_id'];
-    $status = $_POST['status'];
-    
-    // Validate status
-    $allowedStatuses = ['new', 'read', 'replied'];
-    if (!in_array($status, $allowedStatuses)) {
-        echo json_encode([
+    // Validate status values
+    $valid_statuses = ['new', 'read', 'replied'];
+    if (!in_array($status, $valid_statuses)) {
+        return [
             'success' => false,
             'message' => 'Invalid status value'
-        ]);
-        return;
+        ];
     }
     
     try {
         // Check if feedback exists
-        $checkStmt = $pdo->prepare("SELECT id FROM feedback WHERE id = ?");
-        $checkStmt->execute([$feedbackId]);
+        $checkSql = "SELECT id FROM feedback WHERE id = ?";
+        $checkStmt = $pdo->prepare($checkSql);
+        $checkStmt->execute([$feedback_id]);
         
         if (!$checkStmt->fetch()) {
-            echo json_encode([
+            return [
                 'success' => false,
                 'message' => 'Feedback not found'
-            ]);
-            return;
+            ];
         }
         
         // Update the status
-        $updateStmt = $pdo->prepare("
-            UPDATE feedback 
-            SET status = ? 
-            WHERE id = ?
-        ");
+        $sql = "UPDATE feedback 
+                SET status = ? 
+                WHERE id = ?";
         
-        $updateStmt->execute([$status, $feedbackId]);
+        $stmt = $pdo->prepare($sql);
+        $result = $stmt->execute([$status, $feedback_id]);
         
-        echo json_encode([
-            'success' => true,
-            'message' => 'Feedback status updated successfully'
-        ]);
+        if ($result) {
+            return [
+                'success' => true,
+                'message' => 'Status updated successfully'
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Failed to update status'
+            ];
+        }
         
     } catch (PDOException $e) {
-        echo json_encode([
+        error_log('Database Error in updateFeedbackStatus: ' . $e->getMessage());
+        return [
             'success' => false,
-            'message' => 'Failed to update feedback status: ' . $e->getMessage()
-        ]);
+            'message' => 'Database error occurred: ' . $e->getMessage()
+        ];
+    }
+}
+
+/**
+ * Delete feedback
+ */
+function deleteFeedback($pdo) {
+    $feedback_id = $_POST['feedback_id'] ?? null;
+    
+    if (!$feedback_id) {
+        return [
+            'success' => false,
+            'message' => 'Missing feedback ID'
+        ];
+    }
+    
+    try {
+        // Check if feedback exists
+        $checkSql = "SELECT id, name, email, subject FROM feedback WHERE id = ?";
+        $checkStmt = $pdo->prepare($checkSql);
+        $checkStmt->execute([$feedback_id]);
+        $feedback = $checkStmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$feedback) {
+            return [
+                'success' => false,
+                'message' => 'Feedback not found'
+            ];
+        }
+        
+        // Delete the feedback
+        $sql = "DELETE FROM feedback WHERE id = ?";
+        $stmt = $pdo->prepare($sql);
+        $result = $stmt->execute([$feedback_id]);
+        
+        if ($result) {
+            return [
+                'success' => true,
+                'message' => 'Feedback deleted successfully'
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Failed to delete feedback'
+            ];
+        }
+        
+    } catch (PDOException $e) {
+        error_log('Database Error in deleteFeedback: ' . $e->getMessage());
+        return [
+            'success' => false,
+            'message' => 'Database error occurred: ' . $e->getMessage()
+        ];
+    }
+}
+
+/**
+ * Get feedback statistics
+ */
+function getFeedbackStats($pdo) {
+    try {
+        $sql = "SELECT 
+                    COUNT(*) as total,
+                    SUM(CASE WHEN status = 'new' THEN 1 ELSE 0 END) as new_count,
+                    SUM(CASE WHEN status = 'read' THEN 1 ELSE 0 END) as read_count,
+                    SUM(CASE WHEN status = 'replied' THEN 1 ELSE 0 END) as replied_count,
+                    COUNT(CASE WHEN DATE(created_at) = CURDATE() THEN 1 END) as today_count,
+                    COUNT(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 END) as week_count,
+                    COUNT(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 1 END) as month_count
+                FROM feedback";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        $stats = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return [
+            'success' => true,
+            'message' => 'Statistics retrieved successfully',
+            'data' => $stats
+        ];
+        
+    } catch (PDOException $e) {
+        error_log('Database Error in getFeedbackStats: ' . $e->getMessage());
+        return [
+            'success' => false,
+            'message' => 'Failed to retrieve statistics: ' . $e->getMessage()
+        ];
     }
 }
 ?>

@@ -1,494 +1,494 @@
-// js/products-management.js
+// assets/js/product.js
 
-class ProductsManager {
-    constructor() {
-        this.currentPage = 1;
-        this.itemsPerPage = 10;
-        this.currentFilters = {};
-        this.isEditing = false;
-        this.editingId = null;
+let currentPage = 1;
+let itemsPerPage = 10;
+let currentFilters = {};
+let deleteProductId = null;
+
+$(document).ready(function() {
+    loadProducts();
+    bindEvents();
+});
+
+function bindEvents() {
+    // Search functionality with debounce
+    let searchTimeout;
+    $('#searchInput').on('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            currentFilters.search = $(this).val();
+            currentPage = 1;
+            loadProducts();
+        }, 300);
+    });
+
+    // Filter events
+    $('#categoryFilter, #difficultyFilter, #featuredFilter, #priceFilter').on('change', function() {
+        const filterId = $(this).attr('id');
+        const value = $(this).val();
         
-        this.init();
-    }
-
-    init() {
-        this.bindEvents();
-        this.loadProducts();
-        this.loadCategories();
-        this.loadTechnologies();
-    }
-
-    bindEvents() {
-        // Search and filter events
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            this.debounce(() => this.handleSearch(e.target.value), 300)();
-        });
-
-        document.getElementById('categoryFilter').addEventListener('change', (e) => {
-            this.handleFilter('category', e.target.value);
-        });
-
-        document.getElementById('difficultyFilter').addEventListener('change', (e) => {
-            this.handleFilter('difficulty', e.target.value);
-        });
-
-        document.getElementById('featuredFilter').addEventListener('change', (e) => {
-            this.handleFilter('featured', e.target.value);
-        });
-
-        document.getElementById('priceRangeFilter').addEventListener('change', (e) => {
-            this.handleFilter('priceRange', e.target.value);
-        });
-
-        // Form events
-        document.getElementById('productForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.handleFormSubmit();
-        });
-
-        document.getElementById('addProductBtn').addEventListener('click', () => {
-            this.showAddForm();
-        });
-
-        document.getElementById('cancelBtn').addEventListener('click', () => {
-            this.hideForm();
-        });
-
-        // Image preview
-        document.getElementById('productImage').addEventListener('change', (e) => {
-            this.previewImage(e.target.files[0]);
-        });
-
-        // Technology tags
-        document.getElementById('technologyInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' || e.key === ',') {
-                e.preventDefault();
-                this.addTechnology();
-            }
-        });
-
-        document.getElementById('addTechBtn').addEventListener('click', () => {
-            this.addTechnology();
-        });
-
-        // Pagination
-        document.getElementById('prevPage').addEventListener('click', () => {
-            if (this.currentPage > 1) {
-                this.currentPage--;
-                this.loadProducts();
-            }
-        });
-
-        document.getElementById('nextPage').addEventListener('click', () => {
-            this.currentPage++;
-            this.loadProducts();
-        });
-
-        document.getElementById('itemsPerPage').addEventListener('change', (e) => {
-            this.itemsPerPage = parseInt(e.target.value);
-            this.currentPage = 1;
-            this.loadProducts();
-        });
-    }
-
-    async loadProducts() {
-        try {
-            this.showLoading();
-            
-            const formData = new FormData();
-            formData.append('action', 'fetch');
-            formData.append('page', this.currentPage);
-            formData.append('limit', this.itemsPerPage);
-            
-            // Add filters
-            Object.keys(this.currentFilters).forEach(key => {
-                if (this.currentFilters[key]) {
-                    formData.append(key, this.currentFilters[key]);
-                }
-            });
-
-            const response = await fetch('ajax/product_action.php', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-            
-            if (result.success) {
-                this.renderProducts(result.data);
-                this.updatePagination(result.total, result.page, result.limit);
-            } else {
-                this.showError('Failed to load products: ' + result.message);
-            }
-        } catch (error) {
-            this.showError('Error loading products: ' + error.message);
-        } finally {
-            this.hideLoading();
+        switch(filterId) {
+            case 'categoryFilter':
+                currentFilters.category = value;
+                break;
+            case 'difficultyFilter':
+                currentFilters.difficulty = value;
+                break;
+            case 'featuredFilter':
+                currentFilters.featured = value;
+                break;
+            case 'priceFilter':
+                currentFilters.priceRange = value;
+                break;
         }
-    }
-
-    renderProducts(products) {
-        const container = document.getElementById('productsContainer');
         
-        if (products.length === 0) {
-            container.innerHTML = '<div class="no-products">No products found</div>';
-            return;
-        }
+        currentPage = 1;
+        loadProducts();
+    });
 
-        const productsHTML = products.map(product => `
-            <div class="product-card" data-id="${product.id}">
-                <div class="product-image">
-                    ${product.image ? 
-                        `<img src="${product.image}" alt="${product.name}" loading="lazy">` : 
-                        '<div class="no-image">No Image</div>'
-                    }
-                    ${product.featured ? '<span class="featured-badge">Featured</span>' : ''}
-                </div>
-                <div class="product-content">
-                    <h3 class="product-title">${this.escapeHtml(product.name)}</h3>
-                    <p class="product-category">${this.escapeHtml(product.category)}</p>
-                    <div class="product-meta">
-                        <span class="price">$${parseFloat(product.price).toFixed(2)}</span>
-                        <span class="difficulty difficulty-${product.difficulty.toLowerCase()}">${product.difficulty}</span>
-                        ${product.rating ? `<span class="rating">★ ${product.rating}</span>` : ''}
-                    </div>
-                    ${product.duration ? `<p class="duration">Duration: ${product.duration}</p>` : ''}
-                    ${product.technologies && product.technologies.length > 0 ? `
-                        <div class="technologies">
-                            ${product.technologies.map(tech => `<span class="tech-tag">${this.escapeHtml(tech)}</span>`).join('')}
-                        </div>
-                    ` : ''}
-                    ${product.description ? `<p class="description">${this.escapeHtml(product.description)}</p>` : ''}
-                </div>
-                <div class="product-actions">
-                    <button class="btn btn-edit" onclick="productsManager.editProduct(${product.id})">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                    <button class="btn btn-delete" onclick="productsManager.deleteProduct(${product.id})">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                </div>
-            </div>
-        `).join('');
+    // Form submission
+    $('#productForm').on('submit', function(e) {
+        e.preventDefault();
+        saveProduct();
+    });
 
-        container.innerHTML = productsHTML;
-    }
-
-    updatePagination(total, page, limit) {
-        const totalPages = Math.ceil(total / limit);
-        
-        document.getElementById('currentPage').textContent = page;
-        document.getElementById('totalPages').textContent = totalPages;
-        document.getElementById('totalItems').textContent = total;
-        
-        document.getElementById('prevPage').disabled = page <= 1;
-        document.getElementById('nextPage').disabled = page >= totalPages;
-    }
-
-    handleSearch(searchTerm) {
-        this.currentFilters.search = searchTerm;
-        this.currentPage = 1;
-        this.loadProducts();
-    }
-
-    handleFilter(filterType, value) {
-        this.currentFilters[filterType] = value;
-        this.currentPage = 1;
-        this.loadProducts();
-    }
-
-    showAddForm() {
-        this.isEditing = false;
-        this.editingId = null;
-        document.getElementById('formTitle').textContent = 'Add New Product';
-        document.getElementById('productForm').reset();
-        document.getElementById('imagePreview').style.display = 'none';
-        this.clearTechnologies();
-        document.getElementById('productModal').style.display = 'block';
-    }
-
-    async editProduct(id) {
-        try {
-            const formData = new FormData();
-            formData.append('action', 'get');
-            formData.append('productId', id);
-
-            const response = await fetch('ajax/product_action.php', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-            
-            if (result.success) {
-                this.populateForm(result.data);
-                this.isEditing = true;
-                this.editingId = id;
-                document.getElementById('formTitle').textContent = 'Edit Product';
-                document.getElementById('productModal').style.display = 'block';
-            } else {
-                this.showError('Failed to load product: ' + result.message);
-            }
-        } catch (error) {
-            this.showError('Error loading product: ' + error.message);
-        }
-    }
-
-    populateForm(product) {
-        document.getElementById('productName').value = product.name;
-        document.getElementById('productCategory').value = product.category;
-        document.getElementById('productPrice').value = product.price;
-        document.getElementById('productDifficulty').value = product.difficulty;
-        document.getElementById('productRating').value = product.rating || '';
-        document.getElementById('productDuration').value = product.duration || '';
-        document.getElementById('productDescription').value = product.description || '';
-        document.getElementById('productFeatured').checked = product.featured;
-
-        // Show current image
-        if (product.image) {
-            const preview = document.getElementById('imagePreview');
-            preview.src = product.image;
-            preview.style.display = 'block';
-        }
-
-        // Set technologies
-        this.clearTechnologies();
-        if (product.technologies && product.technologies.length > 0) {
-            product.technologies.forEach(tech => {
-                this.addTechnologyTag(tech);
-            });
-        }
-    }
-
-    async handleFormSubmit() {
-        try {
-            const formData = new FormData();
-            formData.append('action', this.isEditing ? 'update' : 'add');
-            
-            if (this.isEditing) {
-                formData.append('productId', this.editingId);
-            }
-
-            // Get form data
-            formData.append('productName', document.getElementById('productName').value);
-            formData.append('productCategory', document.getElementById('productCategory').value);
-            formData.append('productPrice', document.getElementById('productPrice').value);
-            formData.append('productDifficulty', document.getElementById('productDifficulty').value);
-            formData.append('productRating', document.getElementById('productRating').value);
-            formData.append('productDuration', document.getElementById('productDuration').value);
-            formData.append('productDescription', document.getElementById('productDescription').value);
-            
-            if (document.getElementById('productFeatured').checked) {
-                formData.append('productFeatured', '1');
-            }
-
-            // Add image if selected
-            const imageFile = document.getElementById('productImage').files[0];
-            if (imageFile) {
-                formData.append('productImage', imageFile);
-            }
-
-            // Add technologies
-            const technologies = this.getTechnologies();
-            technologies.forEach(tech => {
-                formData.append('technologies[]', tech);
-            });
-
-            const response = await fetch('ajax/product_action.php', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-            
-            if (result.success) {
-                this.showSuccess(result.message);
-                this.hideForm();
-                this.loadProducts();
-            } else {
-                this.showError(result.message);
-            }
-        } catch (error) {
-            this.showError('Error saving product: ' + error.message);
-        }
-    }
-
-    async deleteProduct(id) {
-        if (!confirm('Are you sure you want to delete this product?')) {
-            return;
-        }
-
-        try {
-            const formData = new FormData();
-            formData.append('action', 'delete');
-            formData.append('productId', id);
-
-            const response = await fetch('ajax/product_action.php', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-            
-            if (result.success) {
-                this.showSuccess(result.message);
-                this.loadProducts();
-            } else {
-                this.showError(result.message);
-            }
-        } catch (error) {
-            this.showError('Error deleting product: ' + error.message);
-        }
-    }
-
-    hideForm() {
-        document.getElementById('productModal').style.display = 'none';
-    }
-
-    previewImage(file) {
+    // Image preview
+    $('#productImage').on('change', function(e) {
+        const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = (e) => {
-                const preview = document.getElementById('imagePreview');
-                preview.src = e.target.result;
-                preview.style.display = 'block';
+            reader.onload = function(e) {
+                $('#currentImagePreview').attr('src', e.target.result).show();
+                $('#imagePreviewContainer').show();
             };
             reader.readAsDataURL(file);
         }
-    }
+    });
+}
 
-    addTechnology() {
-        const input = document.getElementById('technologyInput');
-        const tech = input.value.trim();
-        
-        if (tech) {
-            this.addTechnologyTag(tech);
-            input.value = '';
+function loadProducts() {
+    $('#loadingSpinner').show();
+    
+    const formData = new FormData();
+    formData.append('action', 'fetch');
+    formData.append('page', currentPage);
+    formData.append('limit', itemsPerPage);
+    
+    // Add filters
+    Object.keys(currentFilters).forEach(key => {
+        if (currentFilters[key]) {
+            formData.append(key, currentFilters[key]);
         }
+    });
+
+    $.ajax({
+        url: 'ajax/product_action.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            $('#loadingSpinner').hide();
+            
+            if (response.success) {
+                renderProducts(response.data);
+                updatePagination(response.total, response.page, response.limit);
+            } else {
+                showError('Failed to load products: ' + response.message);
+                $('#productsTableBody').html('<tr><td colspan="9" class="text-center">Error loading products</td></tr>');
+            }
+        },
+        error: function(xhr, status, error) {
+            $('#loadingSpinner').hide();
+            console.error('AJAX Error:', error);
+            showError('Failed to load products. Please try again.');
+            $('#productsTableBody').html('<tr><td colspan="9" class="text-center">Error loading products</td></tr>');
+        }
+    });
+}
+
+function renderProducts(products) {
+    const tbody = $('#productsTableBody');
+    tbody.empty();
+    
+    if (products.length === 0) {
+        tbody.html('<tr><td colspan="9" class="text-center">No products found</td></tr>');
+        return;
     }
 
-    addTechnologyTag(tech) {
-        const container = document.getElementById('technologiesContainer');
-        const tag = document.createElement('span');
-        tag.className = 'tech-tag';
-        tag.innerHTML = `
-            ${this.escapeHtml(tech)}
-            <button type="button" class="remove-tech" onclick="this.parentElement.remove()">×</button>
+    products.forEach(product => {
+        const row = `
+            <tr>
+                <td>
+                    ${product.image ? 
+                        `<img src="${product.image}" alt="${escapeHtml(product.name)}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">` : 
+                        '<div class="bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; border-radius: 5px;"><i class="fas fa-image text-muted"></i></div>'
+                    }
+                </td>
+                <td>${escapeHtml(product.name)}</td>
+                <td>${escapeHtml(product.category)}</td>
+                <td>$${parseFloat(product.price).toFixed(2)}</td>
+                <td>
+                    <span class="badge badge-${getDifficultyBadgeClass(product.difficulty)}">${product.difficulty}</span>
+                </td>
+                <td>
+                    ${product.rating ? 
+                        `<span class="text-warning">${'★'.repeat(Math.floor(product.rating))}${'☆'.repeat(5-Math.floor(product.rating))}</span> ${product.rating}` : 
+                        'No rating'
+                    }
+                </td>
+                <td>
+                    ${product.technologies && product.technologies.length > 0 ? 
+                        product.technologies.map(tech => `<span class="badge badge-secondary mr-1">${escapeHtml(tech)}</span>`).join('') : 
+                        'None'
+                    }
+                </td>
+                <td>
+                    ${product.featured ? 
+                        '<span class="badge badge-success">Featured</span>' : 
+                        '<span class="badge badge-light">Regular</span>'
+                    }
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-info mr-1" onclick="viewProduct(${product.id})" title="View">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-warning mr-1" onclick="editProduct(${product.id})" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="confirmDeleteProduct(${product.id})" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
         `;
-        container.appendChild(tag);
+        tbody.append(row);
+    });
+}
+
+function updatePagination(total, page, limit) {
+    const totalPages = Math.ceil(total / limit);
+    const start = (page - 1) * limit + 1;
+    const end = Math.min(page * limit, total);
+    
+    $('#paginationInfo').text(`Showing ${start} to ${end} of ${total} entries`);
+    
+    const pagination = $('#pagination');
+    pagination.empty();
+    
+    // Previous button
+    pagination.append(`
+        <li class="page-item ${page <= 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="changePage(${page - 1})" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+    `);
+    
+    // Page numbers
+    const startPage = Math.max(1, page - 2);
+    const endPage = Math.min(totalPages, page + 2);
+    
+    for (let i = startPage; i <= endPage; i++) {
+        pagination.append(`
+            <li class="page-item ${i === page ? 'active' : ''}">
+                <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+            </li>
+        `);
     }
+    
+    // Next button
+    pagination.append(`
+        <li class="page-item ${page >= totalPages ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="changePage(${page + 1})" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    `);
+}
 
-    getTechnologies() {
-        const tags = document.querySelectorAll('#technologiesContainer .tech-tag');
-        return Array.from(tags).map(tag => tag.textContent.replace('×', '').trim());
-    }
-
-    clearTechnologies() {
-        document.getElementById('technologiesContainer').innerHTML = '';
-    }
-
-    async loadCategories() {
-        try {
-            const formData = new FormData();
-            formData.append('action', 'getCategories');
-
-            const response = await fetch('ajax/product_action.php', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-            
-            if (result.success) {
-                const select = document.getElementById('categoryFilter');
-                result.data.forEach(category => {
-                    const option = document.createElement('option');
-                    option.value = category;
-                    option.textContent = category;
-                    select.appendChild(option);
-                });
-            }
-        } catch (error) {
-            console.error('Error loading categories:', error);
-        }
-    }
-
-    async loadTechnologies() {
-        try {
-            const formData = new FormData();
-            formData.append('action', 'getTechnologies');
-
-            const response = await fetch('ajax/product_action.php', {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-            
-            if (result.success) {
-                // You can use this data for autocomplete functionality
-                this.availableTechnologies = result.data;
-            }
-        } catch (error) {
-            console.error('Error loading technologies:', error);
-        }
-    }
-
-    showLoading() {
-        document.getElementById('loadingSpinner').style.display = 'block';
-    }
-
-    hideLoading() {
-        document.getElementById('loadingSpinner').style.display = 'none';
-    }
-
-    showSuccess(message) {
-        this.showNotification(message, 'success');
-    }
-
-    showError(message) {
-        this.showNotification(message, 'error');
-    }
-
-    showNotification(message, type) {
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.textContent = message;
-        
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.classList.add('show');
-        }, 100);
-        
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 300);
-        }, 3000);
-    }
-
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
+function changePage(page) {
+    if (page >= 1) {
+        currentPage = page;
+        loadProducts();
     }
 }
 
-// Initialize the products manager when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.productsManager = new ProductsManager();
-});
+function showAddProductModal() {
+    $('#productModalLabel').text('Add New Product');
+    $('#productForm')[0].reset();
+    $('#productId').val('');
+    $('#imagePreviewContainer').hide();
+    clearTechnologies();
+    $('#productModal').modal('show');
+}
+
+function editProduct(id) {
+    const formData = new FormData();
+    formData.append('action', 'get');
+    formData.append('productId', id);
+
+    $.ajax({
+        url: 'ajax/product_action.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                populateForm(response.data);
+                $('#productModalLabel').text('Edit Product');
+                $('#productModal').modal('show');
+            } else {
+                showError('Failed to load product: ' + response.message);
+            }
+        },
+        error: function() {
+            showError('Error loading product');
+        }
+    });
+}
+
+function populateForm(product) {
+    $('#productId').val(product.id);
+    $('#productName').val(product.name);
+    $('#productCategory').val(product.category);
+    $('#productPrice').val(product.price);
+    $('#productDifficulty').val(product.difficulty);
+    $('#productRating').val(product.rating || '');
+    $('#productDuration').val(product.duration || '');
+    $('#productDescription').val(product.description || '');
+    $('#productFeatured').prop('checked', product.featured);
+
+    // Show current image
+    if (product.image) {
+        $('#currentImagePreview').attr('src', product.image);
+        $('#imagePreviewContainer').show();
+    }
+
+    // Set technologies
+    clearTechnologies();
+    if (product.technologies && product.technologies.length > 0) {
+        product.technologies.forEach(tech => {
+            addTechnologyInput(tech);
+        });
+    }
+}
+
+function saveProduct() {
+    const formData = new FormData();
+    const productId = $('#productId').val();
+    
+    formData.append('action', productId ? 'update' : 'add');
+    if (productId) {
+        formData.append('productId', productId);
+    }
+
+    // Add form data
+    formData.append('productName', $('#productName').val());
+    formData.append('productCategory', $('#productCategory').val());
+    formData.append('productPrice', $('#productPrice').val());
+    formData.append('productDifficulty', $('#productDifficulty').val());
+    formData.append('productRating', $('#productRating').val());
+    formData.append('productDuration', $('#productDuration').val());
+    formData.append('productDescription', $('#productDescription').val());
+    
+    if ($('#productFeatured').is(':checked')) {
+        formData.append('productFeatured', '1');
+    }
+
+    // Add image if selected
+    const imageFile = $('#productImage')[0].files[0];
+    if (imageFile) {
+        formData.append('productImage', imageFile);
+    }
+
+    // Add technologies
+    const technologies = getTechnologies();
+    technologies.forEach(tech => {
+        formData.append('technologies[]', tech);
+    });
+
+    $.ajax({
+        url: 'ajax/product_action.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                showSuccess(response.message);
+                $('#productModal').modal('hide');
+                loadProducts();
+            } else {
+                showError(response.message);
+            }
+        },
+        error: function() {
+            showError('Error saving product');
+        }
+    });
+}
+
+function confirmDeleteProduct(id) {
+    deleteProductId = id;
+    $('#deleteModal').modal('show');
+}
+
+function confirmDelete() {
+    if (deleteProductId) {
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('productId', deleteProductId);
+
+        $.ajax({
+            url: 'ajax/product_action.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    showSuccess(response.message);
+                    $('#deleteModal').modal('hide');
+                    loadProducts();
+                } else {
+                    showError(response.message);
+                }
+            },
+            error: function() {
+                showError('Error deleting product');
+            }
+        });
+    }
+}
+
+function viewProduct(id) {
+    const formData = new FormData();
+    formData.append('action', 'get');
+    formData.append('productId', id);
+
+    $.ajax({
+        url: 'ajax/product_action.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                displayProductDetails(response.data);
+                $('#productDetailsModal').modal('show');
+            } else {
+                showError('Failed to load product details');
+            }
+        },
+        error: function() {
+            showError('Error loading product details');
+        }
+    });
+}
+
+function displayProductDetails(product) {
+    const detailsHtml = `
+        <div class="row">
+            <div class="col-md-4">
+                ${product.image ? 
+                    `<img src="${product.image}" alt="${escapeHtml(product.name)}" class="img-fluid rounded">` : 
+                    '<div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px; border-radius: 5px;"><i class="fas fa-image fa-3x text-muted"></i></div>'
+                }
+            </div>
+            <div class="col-md-8">
+                <h4>${escapeHtml(product.name)}</h4>
+                <p><strong>Category:</strong> ${escapeHtml(product.category)}</p>
+                <p><strong>Price:</strong> $${parseFloat(product.price).toFixed(2)}</p>
+                <p><strong>Difficulty:</strong> <span class="badge badge-${getDifficultyBadgeClass(product.difficulty)}">${product.difficulty}</span></p>
+                ${product.rating ? `<p><strong>Rating:</strong> ${product.rating}/5</p>` : ''}
+                ${product.duration ? `<p><strong>Duration:</strong> ${escapeHtml(product.duration)}</p>` : ''}
+                <p><strong>Featured:</strong> ${product.featured ? 'Yes' : 'No'}</p>
+                ${product.description ? `<p><strong>Description:</strong><br>${escapeHtml(product.description)}</p>` : ''}
+                ${product.technologies && product.technologies.length > 0 ? `
+                    <p><strong>Technologies:</strong><br>
+                    ${product.technologies.map(tech => `<span class="badge badge-secondary mr-1">${escapeHtml(tech)}</span>`).join('')}
+                    </p>
+                ` : ''}
+            </div>
+        </div>
+    `;
+    
+    $('#productDetailsBody').html(detailsHtml);
+}
+
+function clearFilters() {
+    currentFilters = {};
+    $('#searchInput').val('');
+    $('#categoryFilter, #difficultyFilter, #featuredFilter, #priceFilter').val('');
+    currentPage = 1;
+    loadProducts();
+}
+
+function addTechnologyInput(value = '') {
+    const container = $('#technologiesContainer');
+    const inputGroup = $(`
+        <div class="technology-input-group mb-2">
+            <div class="input-group">
+                <input type="text" class="form-control" name="technologies[]" placeholder="Enter technology" value="${escapeHtml(value)}">
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeTechnologyInput(this)">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `);
+    container.append(inputGroup);
+}
+
+function removeTechnologyInput(button) {
+    $(button).closest('.technology-input-group').remove();
+}
+
+function getTechnologies() {
+    const technologies = [];
+    $('input[name="technologies[]"]').each(function() {
+        const value = $(this).val().trim();
+        if (value) {
+            technologies.push(value);
+        }
+    });
+    return technologies;
+}
+
+function clearTechnologies() {
+    $('#technologiesContainer').empty();
+    addTechnologyInput(); // Add one empty input
+}
+
+function getDifficultyBadgeClass(difficulty) {
+    switch(difficulty.toLowerCase()) {
+        case 'beginner': return 'success';
+        case 'intermediate': return 'warning';
+        case 'advanced': return 'danger';
+        default: return 'secondary';
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function showSuccess(message) {
+    // You can use Bootstrap toast or alert here
+    alert('Success: ' + message);
+}
+
+function showError(message) {
+    // You can use Bootstrap toast or alert here
+    alert('Error: ' + message);
+}

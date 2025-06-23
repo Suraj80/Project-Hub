@@ -1,5 +1,4 @@
-/* Feedback Management Styles */
-
+/* Custom Styles for Feedback Management */
 .status-badge {
     display: inline-block;
     padding: 0.25rem 0.5rem;
@@ -84,15 +83,7 @@
     margin: 1rem 0;
 }
 
-.success-message {
-    background-color: #d4edda;
-    color: #155724;
-    padding: 1rem;
-    border-radius: 0.25rem;
-    margin: 1rem 0;
-}
-
-/* Enhanced Modal Styles for Better Message Display */
+/* Enhanced Modal Styles */
 .modal-body #viewFeedbackMessage {
     background-color: #f8f9fc;
     border: 1px solid #e3e6f0;
@@ -107,13 +98,11 @@
     color: #5a5c69;
 }
 
-/* Ensure proper text wrapping in modal */
 .modal-body .form-control-plaintext {
     word-wrap: break-word;
     white-space: pre-wrap;
 }
 
-/* Button spacing in modal footer */
 .modal-footer .btn {
     margin-left: 0.5rem;
 }
@@ -122,8 +111,33 @@
     margin-left: 0;
 }
 
-/* Responsive improvements */
+/* Responsive */
 @media (max-width: 768px) {
+    .sidebar {
+        width: 14rem;
+        margin-left: -14rem;
+        transition: margin-left 0.3s ease;
+    }
+    
+    .sidebar.toggled {
+        margin-left: 0;
+    }
+    
+    #content-wrapper {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    body.sidebar-toggled .sidebar {
+        margin-left: 0;
+        width: 14rem;
+    }
+    
+    body.sidebar-toggled #content-wrapper {
+        margin-left: 0;
+        width: 100%;
+    }
+    
     .search-filter-section {
         padding: 1rem;
     }
@@ -143,41 +157,16 @@
     }
 }
 
-/* Action buttons container */
-.action-buttons {
-    white-space: nowrap;
+/* Loading spinner animation */
+.fa-spin {
+    animation: fa-spin 2s infinite linear;
 }
 
-/* Status filter and search improvements */
-.search-filter-section .form-group label {
-    font-size: 0.875rem;
-    margin-bottom: 0.5rem;
-}
-
-/* Modal content improvements */
-.modal-lg {
-    max-width: 800px;
-}
-
-.modal-body .row .col-md-6 {
-    margin-bottom: 1rem;
-}
-
-/* Scrollbar styling for message area */
-#viewFeedbackMessage::-webkit-scrollbar {
-    width: 6px;
-}
-
-#viewFeedbackMessage::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-}
-
-#viewFeedbackMessage::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
-}
-
-#viewFeedbackMessage::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+@keyframes fa-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(359deg);
+    }
 }

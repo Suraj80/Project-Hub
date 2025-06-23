@@ -44,23 +44,28 @@ loginForm.addEventListener('submit', async (e) => {
         // Prepare form data
         const formData = new FormData();
         formData.append('username', username);
-        formData.append('password', password) ;
+        formData.append('password', password);
         
-        // Send AJAX request
+        // Send AJAX request - FIXED: Updated URL path
         const response = await fetch('ajax/login_action.php', {
             method: 'POST',
             body: formData,
-            credentials: 'same-origin' // Include session cookies
+            credentials: 'same-origin'
         });
+        
+        // Check if response is ok
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
         const data = await response.json();
         
         if (data.success) {
             showMessage(data.message, 'success');
             
-            // Redirect after successful login
+            // FIXED: Use correct property name from PHP response
             setTimeout(() => {
-                window.location.href = data.redirect_url || 'admin_dashboard.php';
+                window.location.href = data.redirect || 'dashboard1.php';
             }, 1500);
         } else {
             showMessage(data.message, 'error');
