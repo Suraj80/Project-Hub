@@ -1,6 +1,8 @@
 <?php
 session_start();
+include 'components/header.php'; 
 
+include 'components/navbar.php'; 
 // Check if admin is logged in
 if (!isset($_SESSION['admin_id'])) {
     // Not logged in, redirect to login page
@@ -92,7 +94,7 @@ $login_time = $_SESSION['login_time'] ?? time();
             align-items: center;
             position: relative;
             text-decoration: none;
-        } */
+        } 
 
         /* .sidebar .nav-item .nav-link:hover {
             color: #fff;
@@ -316,8 +318,7 @@ $login_time = $_SESSION['login_time'] ?? time();
 <body id="page-top">
     <!-- Page Wrapper -->
    
-<!-- <?php
-include 'components/navbar.php';?>   -->
+
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">

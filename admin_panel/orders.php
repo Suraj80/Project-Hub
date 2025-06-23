@@ -10,7 +10,7 @@ if (!isset($_SESSION['admin_id'])) {
 
   include 'components/header.php';     // <head> with Bootstrap CSS
     // include 'components/sidebar.php';
-  include 'components/navbar.php';     // Top navbar
+//   include 'components/navbar.php';     // Top navbar
     // Side menu
 ?>
 <!DOCTYPE html>
